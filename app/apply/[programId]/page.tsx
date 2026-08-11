@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { fetchProgram } from "@/lib/queries";
 import { supabase } from "@/lib/supabase";
 import TrackedLink from "@/app/_components/TrackedLink";
+import BookmarkButton from "@/app/_components/BookmarkButton";
 import { submitApplication, submitHelpRequest } from "./actions";
 import ApplySteps from "./ApplySteps";
 import HelpChatbot from "./HelpChatbot";
@@ -34,8 +35,12 @@ export default async function ApplyPage({
         ← 뒤로
       </Link>
 
-      <div className="rounded-2xl border border-neutral-200 bg-white p-5 space-y-2">
-        <div className="flex items-center gap-1.5">
+      <div className="relative rounded-2xl border border-neutral-200 bg-white p-5 space-y-2">
+        <BookmarkButton
+          programId={program.id}
+          className="absolute top-5 right-5 text-neutral-300 hover:text-emerald-600"
+        />
+        <div className="flex items-center gap-1.5 pr-8">
           <h1 className="font-semibold text-lg">{program.title}</h1>
           {program.org_type && (
             <span

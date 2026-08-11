@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { categories, type Category } from "@/lib/data";
 import { fetchProgramsByCategory } from "@/lib/queries";
 import TrackedLink from "@/app/_components/TrackedLink";
+import BookmarkButton from "@/app/_components/BookmarkButton";
 
 export default async function CategoryPage({
   params,
@@ -51,9 +52,13 @@ export default async function CategoryPage({
         {items.map((p) => (
           <div
             key={p.id}
-            className="rounded-2xl border border-neutral-200 bg-white p-5 flex flex-col gap-2"
+            className="relative rounded-2xl border border-neutral-200 bg-white p-5 flex flex-col gap-2"
           >
-            <div className="flex items-start justify-between gap-2">
+            <BookmarkButton
+              programId={p.id}
+              className="absolute top-4 right-4 text-neutral-300 hover:text-emerald-600"
+            />
+            <div className="flex items-start justify-between gap-2 pr-8">
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="font-semibold">{p.title}</h3>

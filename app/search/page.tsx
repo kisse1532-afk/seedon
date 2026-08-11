@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { fetchAllPrograms } from "@/lib/queries";
 import TrackedLink from "@/app/_components/TrackedLink";
+import BookmarkButton from "@/app/_components/BookmarkButton";
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
@@ -49,8 +50,12 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             </p>
           )}
           {results.map((p) => (
-            <div key={p.id} className="rounded-2xl border border-neutral-200 bg-white p-5 flex flex-col gap-2">
-              <div className="flex items-start justify-between gap-2">
+            <div key={p.id} className="relative rounded-2xl border border-neutral-200 bg-white p-5 flex flex-col gap-2">
+              <BookmarkButton
+                programId={p.id}
+                className="absolute top-4 right-4 text-neutral-300 hover:text-emerald-600"
+              />
+              <div className="flex items-start justify-between gap-2 pr-8">
                 <div>
                   <h3 className="font-semibold">{p.title}</h3>
                   <p className="text-xs text-neutral-400">{p.org}</p>
