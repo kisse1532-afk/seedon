@@ -20,7 +20,7 @@ export async function submitApplication(programId: string, formData: FormData) {
 
   if (error) {
     console.error("[submitApplication] insert failed", error);
-    // mock 데이터로 만든 프로그램(DB에 없는 program_id)일 경우 FK 에러가 날 수 있음 - 일단 통과시키고 로그만 남김
+    throw new Error("신청 정보를 저장하지 못했어요. 잠시 후 다시 시도해주세요.");
   }
 
   redirect(`/apply/${programId}/complete`);
@@ -44,6 +44,7 @@ export async function submitHelpRequest(programId: string, formData: FormData) {
 
   if (error) {
     console.error("[submitHelpRequest] insert failed", error);
+    throw new Error("도움 요청을 저장하지 못했어요. 잠시 후 다시 시도해주세요.");
   }
 
   redirect(`/apply/${programId}/help-complete`);

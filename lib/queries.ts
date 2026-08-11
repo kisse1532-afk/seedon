@@ -1,7 +1,10 @@
 import { supabase } from "@/lib/supabase";
-import { programs as mockPrograms, type Category, type Program, type CommunityPost } from "@/lib/data";
+import type { Category, Program, CommunityPost } from "@/lib/data";
 
-// Supabase에서 게시된 프로그램을 가져온다. 실패 시(연동 전 등) mock 데이터로 폴백.
+// Supabase에서 게시된 프로그램을 가져온다.
+// (과거엔 조회 실패/빈 결과 시 mock 데이터로 폴백했으나, 실제 DB에 없는 프로그램 ID로
+// 신청서를 제출하면 FK 제약으로 저장이 조용히 실패하면서도 "신청 완료" 화면이 뜨는
+// 문제가 있어 제거함. 이제 DB 데이터가 6개 카테고리 전부 채워져 있어 폴백이 불필요함.)
 export async function fetchProgramsByCategory(category: Category): Promise<Program[]> {
   const { data, error } = await supabase
     .from("programs")
@@ -9,9 +12,7 @@ export async function fetchProgramsByCategory(category: Category): Promise<Progr
     .eq("status", "published")
     .eq("category", category);
 
-  if (error || !data || data.length === 0) {
-    return mockPrograms.filter((p) => p.category === category);
-  }
+  if (error || !data) return [];
   return data as Program[];
 }
 
@@ -22,9 +23,7 @@ export async function fetchProgram(id: string): Promise<Program | undefined> {
     .eq("id", id)
     .single();
 
-  if (error || !data) {
-    return mockPrograms.find((p) => p.id === id);
-  }
+  if (error || !data) return undefined;
   return data as Program;
 }
 
@@ -133,7 +132,7 @@ export async function fetchEventStats(windowDays = 30): Promise<EventStats> {
 export async function fetchPlatformStats() {
   const { data, error } = await supabase.from("programs").select("category").eq("status", "published");
   if (error || !data) {
-    return { total: mockPrograms.length, categoryCount: new Set(mockPrograms.map((p) => p.category)).size };
+    return { total: 0, categoryCount: 0 };
   }
   const categorySet = new Set((data as { category: string }[]).map((row) => row.category));
   return { total: data.length, categoryCount: categorySet.size };
@@ -146,9 +145,7 @@ export async function fetchProgramsWithPhone(): Promise<Program[]> {
     .select("*")
     .eq("status", "published")
     .not("phone", "is", null);
-  if (error || !data || data.length === 0) {
-    return mockPrograms.filter((p) => Boolean(p.phone));
-  }
+  if (error || !data) return [];
   return data as Program[];
 }
 
