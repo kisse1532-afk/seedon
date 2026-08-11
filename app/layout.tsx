@@ -22,6 +22,7 @@ export default function RootLayout({
               <a href="/recommend" className="hover:text-emerald-600">AI 맞춤추천</a>
               <a href="/bookmarks" className="hover:text-emerald-600">북마크</a>
               <a href="/report" className="hover:text-emerald-600">제보하기</a>
+              <a href="/login" className="hover:text-emerald-600">로그인</a>
             </nav>
           </div>
         </header>
