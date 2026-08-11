@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
-function loginWith(provider: "kakao" | "google") {
+function loginWith(provider: "kakao" | "google" | "apple") {
   supabase.auth.signInWithOAuth({
     provider,
     options: { redirectTo: `${window.location.origin}/login/terms` },
@@ -37,6 +37,12 @@ export default function LoginPage() {
           className="w-full rounded-full border border-neutral-300 text-sm font-medium py-3 hover:bg-neutral-50 transition"
         >
           구글로 시작하기
+        </button>
+        <button
+          onClick={() => loginWith("apple")}
+          className="w-full rounded-full bg-black text-white text-sm font-medium py-3 hover:bg-neutral-800 transition"
+        >
+           애플로 시작하기
         </button>
         <Link
           href="/login/email"
