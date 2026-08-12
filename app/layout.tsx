@@ -13,7 +13,8 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko">
-      <body className="antialiased min-h-screen bg-sage text-neutral-900">
+      {/* overflow-x-hidden: 홈 히어로의 full-bleed(w-screen)가 스크롤바 폭만큼 넘치는 것 방지 */}
+      <body className="antialiased min-h-screen overflow-x-hidden bg-sage text-neutral-900">
         <header className="bg-seed-900">
           <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between">
             <Link href="/" className="font-bold text-base text-white">
