@@ -71,8 +71,19 @@ export default async function NewProgramPage({
           <input name="phone" placeholder="1388" className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm" />
         </div>
         <div className="space-y-1">
-          <label className="text-xs text-neutral-500">신청 마감일 (선택, 비워두면 상시모집)</label>
+          <label className="text-xs text-neutral-500">신청 마감일 (모집 기간이 정해진 경우만)</label>
           <input name="apply_deadline" type="date" className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm" />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs text-neutral-500">
+            마감일이 없다면 어떤 경우인가요? (홈 목록 도장 문구가 여기서 나옴)
+          </label>
+          <select name="enrollment_status" defaultValue="" className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm">
+            <option value="">아직 확인 못 함 (&quot;상시 안내&quot;로 표시)</option>
+            <option value="상시 신청">상시 신청 — 연중 아무 때나 본인이 신청 가능</option>
+            <option value="언제든 이용">언제든 이용 — 신청 절차 없이 바로 쓰는 서비스·사이트·전화</option>
+            <option value="기관 통해 신청">기관 통해 신청 — 학교·주민센터·복지기관 추천으로만 가능</option>
+          </select>
         </div>
         <div className="space-y-1">
           <label className="text-xs text-neutral-500">

@@ -22,6 +22,7 @@ export async function createProgram(formData: FormData) {
   const apply_method = String(formData.get("apply_method") || "");
   const phone = String(formData.get("phone") || "");
   const apply_deadline = String(formData.get("apply_deadline") || "");
+  const enrollment_status = String(formData.get("enrollment_status") || "");
   const reopen_note = String(formData.get("reopen_note") || "");
   const review_note = String(formData.get("review_note") || "");
   const tags = parseTags(formData.get("tags"));
@@ -38,6 +39,7 @@ export async function createProgram(formData: FormData) {
     apply_method,
     phone: phone || null,
     apply_deadline: apply_deadline || null,
+    enrollment_status: enrollment_status || null,
     reopen_note: reopen_note || null,
     review_note: review_note || null,
     status: "published",
@@ -60,6 +62,7 @@ export async function updateProgram(id: string, formData: FormData) {
   const apply_method = String(formData.get("apply_method") || "");
   const phone = String(formData.get("phone") || "");
   const apply_deadline = String(formData.get("apply_deadline") || "");
+  const enrollment_status = String(formData.get("enrollment_status") || "");
   const reopen_note = String(formData.get("reopen_note") || "");
   const review_note = String(formData.get("review_note") || "");
   const tags = parseTags(formData.get("tags"));
@@ -69,6 +72,7 @@ export async function updateProgram(id: string, formData: FormData) {
     title, org, description, category, tags, link, status, org_type, apply_method,
     phone: phone || null,
     apply_deadline: apply_deadline || null,
+    enrollment_status: enrollment_status || null,
     reopen_note: reopen_note || null,
     review_note: review_note || null,
   };
