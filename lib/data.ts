@@ -37,6 +37,7 @@ export type Program = {
   apply_steps?: ApplyStep[];
   phone?: string;
   last_verified_at?: string;
+  enrollment_status?: string;
 };
 
 // Supabase 연결 실패 시 폴백용 (2026.08 리서치 기준, 공공+비영리, 신청 URL·단계 재검증 완료)

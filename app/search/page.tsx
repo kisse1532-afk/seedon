@@ -2,6 +2,7 @@ import Link from "next/link";
 import { fetchAllPrograms } from "@/lib/queries";
 import TrackedLink from "@/app/_components/TrackedLink";
 import BookmarkButton from "@/app/_components/BookmarkButton";
+import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
@@ -57,7 +58,10 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               />
               <div className="flex items-start justify-between gap-2 pr-8">
                 <div>
-                  <h3 className="font-semibold">{p.title}</h3>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <h3 className="font-semibold">{p.title}</h3>
+                    <EnrollmentBadge status={p.enrollment_status} />
+                  </div>
                   <p className="text-xs text-neutral-400">{p.org}</p>
                 </div>
               </div>

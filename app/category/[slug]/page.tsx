@@ -4,6 +4,7 @@ import { categories, type Category } from "@/lib/data";
 import { fetchProgramsByCategory } from "@/lib/queries";
 import TrackedLink from "@/app/_components/TrackedLink";
 import BookmarkButton from "@/app/_components/BookmarkButton";
+import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
 
 export default async function CategoryPage({
   params,
@@ -60,7 +61,7 @@ export default async function CategoryPage({
             />
             <div className="flex items-start justify-between gap-2 pr-8">
               <div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   <h3 className="font-semibold">{p.title}</h3>
                   {p.org_type && (
                     <span
@@ -73,6 +74,7 @@ export default async function CategoryPage({
                       {p.org_type === "public" ? "공공" : "비영리"}
                     </span>
                   )}
+                  <EnrollmentBadge status={p.enrollment_status} />
                 </div>
                 <p className="text-xs text-neutral-400">{p.org}</p>
               </div>
