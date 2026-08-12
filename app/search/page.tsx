@@ -3,7 +3,7 @@ import { fetchAllPrograms } from "@/lib/queries";
 import TrackedLink from "@/app/_components/TrackedLink";
 import BookmarkButton from "@/app/_components/BookmarkButton";
 import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
-import { categories, getEnrollmentBadgeLabel } from "@/lib/data";
+import { categories } from "@/lib/data";
 import { matchCategory } from "@/lib/recommend";
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
@@ -81,7 +81,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 <div>
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <h3 className="font-semibold">{p.title}</h3>
-                    <EnrollmentBadge status={getEnrollmentBadgeLabel(p)} />
+                    <EnrollmentBadge program={p} />
                   </div>
                   <p className="text-xs text-neutral-400">{p.org}</p>
                 </div>

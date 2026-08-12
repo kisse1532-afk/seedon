@@ -75,6 +75,17 @@ export default async function NewProgramPage({
           <input name="apply_deadline" type="date" className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm" />
         </div>
         <div className="space-y-1">
+          <label className="text-xs text-neutral-500">
+            이번 회차 모집 종료 시 안내 (선택) — 입력하면 홈 &quot;지금 신청할 수 있어요&quot;에서 빠지고 이 문구가 대신 표시됨
+          </label>
+          <input
+            name="reopen_note"
+            type="text"
+            placeholder="예: 매년 4~6월 모집"
+            className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm"
+          />
+        </div>
+        <div className="space-y-1">
           <label className="text-xs text-neutral-500">태그 (쉼표로 구분)</label>
           <input name="tags" placeholder="무료, 온라인신청" className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm" />
         </div>

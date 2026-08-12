@@ -39,12 +39,19 @@ export type Program = {
   last_verified_at?: string;
   enrollment_status?: string;
   apply_deadline?: string;
+  /** 값이 있으면 이번 회차 모집 종료. 홈의 "지금 신청할 수 있어요"에서 제외되고 이 문구가 배지로 표시된다. */
+  reopen_note?: string;
 };
 
 // 카드 배지에 쓸 접수상태 문구를 계산한다.
 // 마감일이 지난 프로그램은 조회 쿼리 단계에서 이미 걸러지므로, 여기서는
 // "곧 마감"인지만 판단하면 된다.
-export function getEnrollmentBadgeLabel(program: Pick<Program, "apply_deadline" | "enrollment_status">): string | undefined {
+export function getEnrollmentBadgeLabel(
+  program: Pick<Program, "apply_deadline" | "enrollment_status" | "reopen_note">
+): string | undefined {
+  // 이번 회차가 끝난 프로그램은 마감일·상시모집보다 "다음 모집 안내"를 우선 보여준다.
+  if (program.reopen_note) return program.reopen_note;
+
   if (program.apply_deadline) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);

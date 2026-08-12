@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { categories, getEnrollmentBadgeLabel, type Category } from "@/lib/data";
+import { categories, type Category } from "@/lib/data";
 import { fetchProgramsByCategory } from "@/lib/queries";
 import TrackedLink from "@/app/_components/TrackedLink";
 import BookmarkButton from "@/app/_components/BookmarkButton";
@@ -77,7 +77,7 @@ export default async function CategoryPage({
                       {p.org_type === "public" ? "공공" : "비영리"}
                     </span>
                   )}
-                  <EnrollmentBadge status={getEnrollmentBadgeLabel(p)} />
+                  <EnrollmentBadge program={p} />
                 </div>
                 <p className="text-xs text-neutral-400">{p.org}</p>
               </div>
