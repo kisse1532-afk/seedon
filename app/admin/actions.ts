@@ -22,6 +22,7 @@ export async function createProgram(formData: FormData) {
   const apply_method = String(formData.get("apply_method") || "");
   const phone = String(formData.get("phone") || "");
   const apply_deadline = String(formData.get("apply_deadline") || "");
+  const reopen_note = String(formData.get("reopen_note") || "");
   const tags = parseTags(formData.get("tags"));
 
   const { error } = await supabase.from("programs").insert({
@@ -36,6 +37,7 @@ export async function createProgram(formData: FormData) {
     apply_method,
     phone: phone || null,
     apply_deadline: apply_deadline || null,
+    reopen_note: reopen_note || null,
     status: "published",
     last_verified_at: new Date().toISOString().slice(0, 10),
   });
@@ -56,6 +58,7 @@ export async function updateProgram(id: string, formData: FormData) {
   const apply_method = String(formData.get("apply_method") || "");
   const phone = String(formData.get("phone") || "");
   const apply_deadline = String(formData.get("apply_deadline") || "");
+  const reopen_note = String(formData.get("reopen_note") || "");
   const tags = parseTags(formData.get("tags"));
   const reverify = formData.get("reverify") === "on";
 
@@ -63,6 +66,7 @@ export async function updateProgram(id: string, formData: FormData) {
     title, org, description, category, tags, link, status, org_type, apply_method,
     phone: phone || null,
     apply_deadline: apply_deadline || null,
+    reopen_note: reopen_note || null,
   };
   if (reverify) {
     update.last_verified_at = new Date().toISOString().slice(0, 10);

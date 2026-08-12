@@ -149,12 +149,15 @@ export async function fetchCategoryCounts(): Promise<Record<string, number>> {
 }
 
 // --- 홈: 지금 신청할 수 있는 프로그램 (마감 임박순 → 상시모집순) ---
+// reopen_note가 있는 프로그램(= 이번 회차 모집 종료)은 여기서 제외한다.
+// 카테고리·검색에는 계속 보이되, 지금 신청 못 하는 걸 신청 가능한 것처럼 띄우지 않기 위함.
 export async function fetchOpenPrograms(limit = 5): Promise<Program[]> {
   const today = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase
     .from("programs")
     .select("*")
     .eq("status", "published")
+    .is("reopen_note", null)
     .or(`apply_deadline.is.null,apply_deadline.gte.${today}`)
     .order("apply_deadline", { ascending: true, nullsFirst: false })
     .limit(limit);
