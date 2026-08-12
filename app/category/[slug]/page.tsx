@@ -34,10 +34,10 @@ export default async function CategoryPage({
           <Link
             key={c.slug}
             href={`/category/${c.slug}`}
-            className={`text-xs px-3 py-1.5 rounded-full border ${
+            className={`text-xs px-3 py-1.5 rounded-lg border ${
               c.slug === slug
-                ? "bg-emerald-600 text-white border-emerald-600"
-                : "border-neutral-300 text-neutral-500 hover:border-emerald-400"
+                ? "bg-emerald-800 text-white border-emerald-800"
+                : "border-sage-border bg-white text-neutral-500 hover:border-emerald-400"
             }`}
           >
             {c.label}
@@ -56,7 +56,7 @@ export default async function CategoryPage({
         {items.map((p) => (
           <div
             key={p.id}
-            className="relative rounded-2xl border border-neutral-200 bg-white p-5 flex flex-col gap-2"
+            className="relative rounded-lg border border-sage-border bg-white p-5 flex flex-col gap-2"
           >
             <BookmarkButton
               programId={p.id}
@@ -68,7 +68,7 @@ export default async function CategoryPage({
                   <h3 className="font-semibold">{p.title}</h3>
                   {p.org_type && (
                     <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                      className={`text-[10px] px-1.5 py-0.5 rounded-lg ${
                         p.org_type === "public"
                           ? "bg-blue-50 text-blue-600"
                           : "bg-purple-50 text-purple-600"
@@ -115,7 +115,7 @@ export default async function CategoryPage({
                   event="category_card_click"
                   programId={p.id}
                   category={p.category}
-                  className="text-sm font-medium bg-emerald-600 text-white rounded-full px-4 py-1.5 hover:bg-emerald-700"
+                  className="text-sm font-medium bg-emerald-800 text-white rounded-lg px-4 py-1.5 hover:bg-emerald-900"
                 >
                   신청 알아보기 →
                 </TrackedLink>
