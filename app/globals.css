@@ -12,11 +12,18 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* 씨드온 팔레트 — 색을 바꿀 땐 이 블록의 값만 고치면 전체에 반영됨 */
 @theme {
-  --color-sage: #eff1de;
-  --color-sage-border: #cfdabe;
-  --color-warm-brown: #40372a;
-  --color-terracotta: #b0725d;
+  --color-sage: #f3f4ef;          /* 페이지 배경 (종이빛 오프화이트) */
+  --color-sage-border: #e0e3da;   /* 카드·구분선 테두리 */
+  --color-sage-line: #ebede6;     /* 목록 내부 옅은 구분선 */
+  --color-seed-900: #1b2420;      /* 헤더·푸터 딥그린 */
+  --color-seed-800: #2c3d34;
+  --color-seed-700: #3e6e56;      /* 버튼·링크 등 브랜드 강조색 */
+  --color-seed-100: #e6eee9;
+  --color-seed-mint: #9fc7b2;     /* 어두운 배경 위 보조 텍스트 */
+  --color-warm-brown: #43403a;    /* 긴급 상담 배너 바탕 */
+  --color-terracotta: #ae7e6c;    /* 긴급 상담 버튼 */
 }
 
 @media (prefers-color-scheme: dark) {

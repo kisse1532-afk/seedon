@@ -57,6 +57,34 @@ export function getEnrollmentBadgeLabel(program: Pick<Program, "apply_deadline" 
   return program.enrollment_status;
 }
 
+// 홈 목록 왼쪽에 세우는 날짜 도장. 마감일이 없으면 "상시", 있으면 D-day로 보여준다.
+export type DeadlineStamp = {
+  label: string;
+  caption: string;
+  tone: "always" | "soon" | "normal";
+};
+
+export function getDeadlineStamp(
+  program: Pick<Program, "apply_deadline">
+): DeadlineStamp {
+  if (!program.apply_deadline) {
+    return { label: "상시", caption: "모집", tone: "always" };
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const deadline = new Date(program.apply_deadline);
+  const daysLeft = Math.ceil((deadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  const caption = `${deadline.getMonth() + 1}/${deadline.getDate()} 마감`;
+
+  if (daysLeft <= 0) return { label: "오늘", caption, tone: "soon" };
+  return {
+    label: `D-${daysLeft}`,
+    caption,
+    tone: daysLeft <= 7 ? "soon" : "normal",
+  };
+}
+
 // Supabase 연결 실패 시 폴백용 (2026.08 리서치 기준, 공공+비영리, 신청 URL·단계 재검증 완료)
 export const programs: Program[] = [
   {

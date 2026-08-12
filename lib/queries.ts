@@ -130,6 +130,39 @@ export async function fetchEventStats(windowDays = 30): Promise<EventStats> {
   };
 }
 
+// --- 홈: 카테고리별 등록 개수 (리서치팀이 프로그램을 올리면 자동으로 늘어남) ---
+export async function fetchCategoryCounts(): Promise<Record<string, number>> {
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("programs")
+    .select("category")
+    .eq("status", "published")
+    .or(`apply_deadline.is.null,apply_deadline.gte.${today}`);
+
+  if (error || !data) return {};
+
+  const counts: Record<string, number> = {};
+  for (const row of data as { category: string }[]) {
+    counts[row.category] = (counts[row.category] || 0) + 1;
+  }
+  return counts;
+}
+
+// --- 홈: 지금 신청할 수 있는 프로그램 (마감 임박순 → 상시모집순) ---
+export async function fetchOpenPrograms(limit = 5): Promise<Program[]> {
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("programs")
+    .select("*")
+    .eq("status", "published")
+    .or(`apply_deadline.is.null,apply_deadline.gte.${today}`)
+    .order("apply_deadline", { ascending: true, nullsFirst: false })
+    .limit(limit);
+
+  if (error || !data) return [];
+  return data as Program[];
+}
+
 // --- 홈 신뢰 지표 (사랑의열매 CSR허브 벤치마킹) ---
 export async function fetchPlatformStats() {
   const { data, error } = await supabase.from("programs").select("category").eq("status", "published");
