@@ -41,7 +41,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           name="q"
           defaultValue={query}
           placeholder="예: 학원비, 심리상담, 문화체험 카드..."
-          className="w-full rounded-full border border-neutral-300 px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+          className="w-full rounded-lg border border-sage-border bg-white px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
       </form>
 
@@ -55,7 +55,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             </p>
           )}
           {results.map((p) => (
-            <div key={p.id} className="relative rounded-2xl border border-neutral-200 bg-white p-5 flex flex-col gap-2">
+            <div key={p.id} className="relative rounded-lg border border-sage-border bg-white p-5 flex flex-col gap-2">
               <BookmarkButton
                 programId={p.id}
                 className="absolute top-4 right-4 text-neutral-300 hover:text-emerald-600"
@@ -76,7 +76,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                   event="category_card_click"
                   programId={p.id}
                   category={p.category}
-                  className="text-sm font-medium bg-emerald-600 text-white rounded-full px-4 py-1.5 hover:bg-emerald-700"
+                  className="text-sm font-medium bg-emerald-800 text-white rounded-lg px-4 py-1.5 hover:bg-emerald-900"
                 >
                   신청 알아보기 →
                 </TrackedLink>

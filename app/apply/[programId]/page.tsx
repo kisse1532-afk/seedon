@@ -37,7 +37,7 @@ export default async function ApplyPage({
         ← 뒤로
       </Link>
 
-      <div className="relative rounded-2xl border border-neutral-200 bg-white p-5 space-y-2">
+      <div className="relative rounded-lg border border-sage-border bg-white p-5 space-y-2">
         <BookmarkButton
           programId={program.id}
           className="absolute top-5 right-5 text-neutral-300 hover:text-emerald-600"
@@ -46,7 +46,7 @@ export default async function ApplyPage({
           <h1 className="font-semibold text-lg">{program.title}</h1>
           {program.org_type && (
             <span
-              className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+              className={`text-[10px] px-1.5 py-0.5 rounded-lg ${
                 program.org_type === "public"
                   ? "bg-blue-50 text-blue-600"
                   : "bg-purple-50 text-purple-600"
@@ -63,7 +63,7 @@ export default async function ApplyPage({
 
       {program.apply_steps && <ApplySteps steps={program.apply_steps} />}
 
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 space-y-2">
+      <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-5 space-y-2">
         <h2 className="font-medium text-sm text-emerald-800">✅ 이렇게 신청하세요</h2>
         {program.apply_method && (
           <p className="text-sm text-emerald-900">{program.apply_method}</p>
@@ -76,7 +76,7 @@ export default async function ApplyPage({
               programId={program.id}
               category={program.category}
               external
-              className="text-xs bg-emerald-600 text-white rounded-full px-4 py-1.5 hover:bg-emerald-700"
+              className="text-xs bg-emerald-800 text-white rounded-lg px-4 py-1.5 hover:bg-emerald-900"
             >
               {program.apply_link_label || "공식 페이지 바로가기 ↗"}
             </TrackedLink>
@@ -84,7 +84,7 @@ export default async function ApplyPage({
           {program.phone && (
             <a
               href={`tel:${program.phone.replace(/[^0-9]/g, "")}`}
-              className="text-xs border border-emerald-300 text-emerald-700 rounded-full px-4 py-1.5 hover:bg-emerald-100"
+              className="text-xs border border-emerald-300 text-emerald-700 rounded-lg px-4 py-1.5 hover:bg-emerald-100"
             >
               📞 {program.phone}
             </a>
@@ -100,7 +100,7 @@ export default async function ApplyPage({
         submitHelp={submitHelp}
       />
 
-      <form action={submit} className="rounded-2xl border border-neutral-200 bg-white p-5 space-y-4">
+      <form action={submit} className="rounded-lg border border-sage-border bg-white p-5 space-y-4">
         <div>
           <h2 className="font-medium text-sm mb-1">이 프로그램 관심 등록</h2>
           <p className="text-xs text-neutral-400">
@@ -116,7 +116,7 @@ export default async function ApplyPage({
             name="name"
             type="text"
             required
-            className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full rounded-lg border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             placeholder="이름을 입력해주세요"
           />
         </div>
@@ -128,14 +128,14 @@ export default async function ApplyPage({
             name="contact"
             type="tel"
             required
-            className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full rounded-lg border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             placeholder="010-0000-0000"
           />
         </div>
 
         <button
           type="submit"
-          className="w-full rounded-full bg-neutral-800 text-white text-sm font-medium py-3 hover:bg-neutral-900"
+          className="w-full rounded-lg bg-neutral-800 text-white text-sm font-medium py-3 hover:bg-neutral-900"
         >
           관심 등록하기
         </button>
