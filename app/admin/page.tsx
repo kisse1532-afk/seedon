@@ -257,6 +257,11 @@ export default async function AdminPage({
                       <p className="text-xs text-neutral-400 truncate">
                         {p.org} · 확인일 {p.last_verified_at}
                       </p>
+                      {p.review_note && (
+                        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded px-2 py-1 mt-1">
+                          검토 메모: {p.review_note}
+                        </p>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Link
