@@ -1,106 +1,201 @@
 import Link from "next/link";
-import { categories } from "@/lib/data";
-import { fetchPlatformStats } from "@/lib/queries";
+import { categories, getDeadlineStamp } from "@/lib/data";
+import { fetchCategoryCounts, fetchOpenPrograms } from "@/lib/queries";
+import TrackedLink from "@/app/_components/TrackedLink";
 
 const situations = [
-  { label: "당장 생활비가 급해요", emoji: "💳", href: "/category/living" },
-  { label: "지낼 곳이 필요해요", emoji: "🏠", href: "/category/housing" },
-  { label: "누군가와 이야기하고 싶어요", emoji: "💬", href: "/category/counseling" },
-  { label: "공부·진로가 고민이에요", emoji: "🧭", href: "/category/career" },
+  { label: "💳 생활비가 급해요", href: "/category/living" },
+  { label: "🏠 지낼 곳이 필요해요", href: "/category/housing" },
+  { label: "💬 얘기할 사람이 필요해요", href: "/category/counseling" },
+  { label: "🧭 진로가 고민이에요", href: "/category/career" },
 ];
 
+const stampTone = {
+  soon: "text-terracotta",
+  always: "text-[11px] text-neutral-400",
+  normal: "text-seed-700",
+} as const;
+
 export default async function HomePage() {
-  const stats = await fetchPlatformStats();
+  const [counts, open] = await Promise.all([
+    fetchCategoryCounts(),
+    fetchOpenPrograms(5),
+  ]);
+
+  const today = new Date();
+  const todayLabel = `${today.getMonth() + 1}월 ${today.getDate()}일`;
 
   return (
-    <div className="space-y-8">
-      <section className="text-center py-10">
-        <h1 className="text-2xl font-bold mb-2">어떤 도움이 필요하신가요?</h1>
-        <p className="text-neutral-500 text-sm mb-3">
-          이미 있는 지원제도를, 눈치 보지 않고 찾아볼 수 있어요.
+    <div className="space-y-6">
+      {/* 진입부 — 검색이 첫 화면에 오도록 */}
+      <section className="-mx-4 -mt-6 px-4 py-9 text-center bg-seed-900 bg-[radial-gradient(600px_260px_at_50%_-30%,#395b4a_0%,transparent_66%)]">
+        <p className="text-xs font-semibold text-seed-mint mb-3">
+          청소년 지원 정보 플랫폼, 씨드온
         </p>
-        <p className="inline-block text-[11px] text-emerald-800 bg-white border border-sage-border rounded-lg px-3 py-1 mb-6">
-          🌱 {categories.length}개 카테고리 · {stats.total}개 프로그램 등록 · 매일 자동 업데이트
+        <h1 className="text-2xl sm:text-3xl font-extrabold leading-snug tracking-tight text-white text-balance">
+          이미 있는 지원을,
+          <br />
+          눈치 보지 않고
+        </h1>
+        <p className="mt-3.5 mb-5 mx-auto max-w-[46ch] text-[13px] leading-relaxed text-white/60">
+          교육·주거·상담·생활비까지. 단어로 검색해도 되고, 문장으로 적어도 맞는 지원을 찾아드려요.
         </p>
-        <form action="/search" className="max-w-md mx-auto">
+
+        <form action="/search" className="max-w-[520px] mx-auto flex items-center gap-2 h-12 rounded-lg bg-white pl-4 pr-2">
           <input
             type="text"
             name="q"
-            placeholder="예: 학원비, 심리상담, 문화체험 카드..."
-            className="w-full rounded-lg border border-sage-border bg-white px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            placeholder="지금 어떤 상황인지 적어보세요. 예: 학원비가 부담돼요"
+            className="flex-1 min-w-0 text-[13px] bg-transparent focus:outline-none placeholder:text-neutral-400"
           />
+          <button
+            type="submit"
+            className="shrink-0 rounded-lg bg-seed-700 px-4 py-2 text-xs font-bold text-white hover:brightness-110"
+          >
+            찾기
+          </button>
         </form>
-      </section>
 
-      <section>
-        <h2 className="text-xs font-semibold text-emerald-800 uppercase tracking-wide mb-3">지금 가장 급한 게 뭐예요?</h2>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="mt-4 flex flex-wrap justify-center gap-1.5">
           {situations.map((s) => (
-            <Link key={s.href} href={s.href}
-              className="rounded-lg border border-sage-border bg-white p-4 flex items-center gap-3 hover:border-emerald-400 hover:shadow-sm transition">
-              <span className="text-xl">{s.emoji}</span>
-              <span className="text-sm font-medium leading-tight">{s.label}</span>
+            <Link
+              key={s.href}
+              href={s.href}
+              className="rounded-lg border border-white/15 bg-white/15 px-3 py-1.5 text-xs font-semibold text-white/90 hover:bg-white/25 hover:text-white transition"
+            >
+              {s.label}
             </Link>
           ))}
         </div>
       </section>
 
-      <section className="text-center">
-        <Link href="/theme/phone"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-neutral-600 bg-white border border-sage-border rounded-lg px-4 py-2 hover:border-emerald-400 hover:text-emerald-800 transition">
-          📞 전화 한 통이면 돼요
-        </Link>
-      </section>
-
-      <section className="rounded-lg bg-warm-brown p-5">
-        <p className="text-sm text-white font-medium mb-1">지금 많이 힘드신가요?</p>
-        <p className="text-xs text-white/60 mb-3">
-          어떤 이야기든 24시간 비밀 보장되는 상담으로 바로 연결할 수 있어요.
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <a href="tel:1388" className="text-xs font-medium bg-terracotta text-white rounded-lg px-4 py-1.5 hover:brightness-110">
-            📞 1388 바로 전화하기
-          </a>
-          <Link href="/apply/counsel-01" className="text-xs font-medium border border-white/20 text-white rounded-lg px-4 py-1.5 hover:bg-white/10">
-            먼저 안내 읽어보기
+      {/* 카테고리 — 개수는 DB에서 자동 반영 */}
+      <section>
+        <div className="flex items-end justify-between gap-3 mb-3">
+          <h2 className="text-sm font-extrabold tracking-tight">카테고리</h2>
+          <Link href="/search" className="text-xs font-semibold text-seed-700">
+            전체 보기 →
           </Link>
         </div>
-      </section>
-
-      <section>
-        <h2 className="text-xs font-semibold text-emerald-800 uppercase tracking-wide mb-3">카테고리로 둘러보기</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
           {categories.map((c) => (
-            <Link key={c.slug} href={`/category/${c.slug}`}
-              className="rounded-lg border border-sage-border bg-white p-5 text-center hover:border-emerald-400 hover:shadow-sm transition">
-              <div className="text-2xl mb-2">{c.emoji}</div>
-              <div className="text-sm font-medium">{c.label}</div>
+            <Link
+              key={c.slug}
+              href={`/category/${c.slug}`}
+              className="rounded-lg border border-sage-border bg-white px-1 py-3 flex flex-col items-center gap-1.5 hover:border-seed-700 transition"
+            >
+              <span className="text-lg leading-none">{c.emoji}</span>
+              <span className="text-[11.5px] font-bold text-center leading-tight">{c.label}</span>
+              <span className="text-[10.5px] text-neutral-400 tabular-nums">
+                {counts[c.slug] ?? 0}
+              </span>
             </Link>
           ))}
         </div>
       </section>
 
-      <section className="rounded-lg border border-sage-border bg-white p-5 text-center">
-        <p className="text-sm text-neutral-700 mb-2">
-          내 상황을 말로 설명하면 AI가 맞는 지원을 찾아드려요.
-        </p>
-        <Link href="/recommend" className="inline-block rounded-lg bg-emerald-800 text-white text-sm px-5 py-2 hover:bg-emerald-900">
-          AI 맞춤추천 받기
-        </Link>
+      {/* 지금 신청할 수 있는 프로그램 — 마감 임박순 */}
+      <section>
+        <div className="flex items-end justify-between gap-3 mb-3">
+          <div className="flex flex-col gap-0.5">
+            <h2 className="text-sm font-extrabold tracking-tight">지금 신청할 수 있어요</h2>
+            <span className="text-[11.5px] text-neutral-400">
+              {todayLabel} 기준 · 마감된 건 자동으로 내려가요
+            </span>
+          </div>
+          <Link href="/search" className="text-xs font-semibold text-seed-700 whitespace-nowrap">
+            전체 →
+          </Link>
+        </div>
+
+        <div className="rounded-lg border border-sage-border bg-white overflow-hidden">
+          {open.length === 0 && (
+            <p className="text-sm text-neutral-400 py-10 text-center">
+              아직 등록된 프로그램이 없어요. 곧 추가될 예정이에요.
+            </p>
+          )}
+          {open.map((p) => {
+            const stamp = getDeadlineStamp(p);
+            return (
+              <TrackedLink
+                key={p.id}
+                href={`/apply/${p.id}`}
+                event="category_card_click"
+                programId={p.id}
+                category={p.category}
+                className="grid grid-cols-[62px_1fr_auto] gap-3 items-center px-3.5 py-3 border-b border-sage-line last:border-b-0 hover:bg-sage/40 transition"
+              >
+                <span className="text-center border-r border-sage-line pr-2.5">
+                  <span
+                    className={`block text-[13px] font-extrabold tabular-nums leading-tight ${stampTone[stamp.tone]}`}
+                  >
+                    {stamp.label}
+                  </span>
+                  <span className="block text-[9.5px] text-neutral-400 mt-0.5">
+                    {stamp.caption}
+                  </span>
+                </span>
+
+                <span className="min-w-0">
+                  <span className="flex items-center gap-1.5 flex-wrap text-[13.5px] font-bold leading-snug">
+                    {p.title}
+                    {p.org_type && (
+                      <span
+                        className={`text-[10px] font-bold px-1.5 py-0.5 rounded-lg ${
+                          p.org_type === "public"
+                            ? "bg-blue-50 text-blue-700"
+                            : "bg-purple-50 text-purple-700"
+                        }`}
+                      >
+                        {p.org_type === "public" ? "공공" : "비영리"}
+                      </span>
+                    )}
+                  </span>
+                  <span className="block text-[11.5px] text-neutral-400 mt-0.5 truncate">
+                    {p.org}
+                  </span>
+                </span>
+
+                <span className="hidden sm:inline-block shrink-0 rounded-lg bg-seed-700 px-3 py-1.5 text-xs font-bold text-white whitespace-nowrap">
+                  신청 알아보기
+                </span>
+              </TrackedLink>
+            );
+          })}
+        </div>
       </section>
 
-      <section className="rounded-lg border border-sage-border bg-white p-5 text-center">
-        <p className="text-sm text-neutral-700 mb-2">
-          다른 청소년들은 어떤 도움을 받았을까요?
-        </p>
-        <Link href="/community" className="inline-block rounded-lg border border-emerald-800 text-emerald-800 text-sm px-5 py-2 hover:bg-emerald-50">
-          커뮤니티 둘러보기
-        </Link>
+      {/* 긴급 상담 */}
+      <section className="rounded-lg bg-warm-brown p-4 flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <h2 className="text-[13.5px] font-bold text-white mb-0.5">지금 많이 힘들다면</h2>
+          <p className="text-[11.5px] text-white/60">
+            청소년전화 1388 · 무료이고, 24시간 언제 걸어도 돼요.
+          </p>
+        </div>
+        <a
+          href="tel:1388"
+          className="rounded-lg bg-terracotta px-5 py-2.5 text-[13px] font-bold text-white hover:brightness-110"
+        >
+          📞 1388 전화하기
+        </a>
       </section>
 
-      <p className="text-[11px] text-neutral-400 text-center pt-2">
-        씨드온은 광고 없이, 등록된 프로그램을 있는 그대로 보여드려요.
-      </p>
+      {/* 신뢰 한 줄 */}
+      <section className="rounded-lg border border-sage-border bg-white px-4 py-3.5 grid sm:grid-cols-3 gap-2.5">
+        <p className="text-[11.5px] leading-relaxed text-neutral-600">
+          <b className="block text-xs text-neutral-900 mb-0.5">공식 링크만</b>
+          출처 확인된 것만 올려요
+        </p>
+        <p className="text-[11.5px] leading-relaxed text-neutral-600">
+          <b className="block text-xs text-neutral-900 mb-0.5">매일 확인</b>
+          마감된 건 자동으로 내려가요
+        </p>
+        <p className="text-[11.5px] leading-relaxed text-neutral-600">
+          <b className="block text-xs text-neutral-900 mb-0.5">최소한만</b>
+          소득·가정 상황 안 물어봐요
+        </p>
+      </section>
     </div>
   );
 }
