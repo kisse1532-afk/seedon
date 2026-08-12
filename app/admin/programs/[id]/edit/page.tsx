@@ -21,6 +21,7 @@ export default async function EditProgramPage({
     apply_method?: string;
     phone?: string;
     last_verified_at?: string;
+    apply_deadline?: string;
   };
 
   return (
@@ -74,6 +75,10 @@ export default async function EditProgramPage({
         <div className="space-y-1">
           <label className="text-xs text-neutral-500">문의 전화 (선택)</label>
           <input name="phone" defaultValue={full.phone || ""} className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm" />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs text-neutral-500">신청 마감일 (선택, 비워두면 상시모집)</label>
+          <input name="apply_deadline" type="date" defaultValue={full.apply_deadline || ""} className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm" />
         </div>
         <div className="space-y-1">
           <label className="text-xs text-neutral-500">태그 (쉼표로 구분)</label>

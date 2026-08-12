@@ -6,11 +6,13 @@ import type { Category, Program, CommunityPost } from "@/lib/data";
 // 신청서를 제출하면 FK 제약으로 저장이 조용히 실패하면서도 "신청 완료" 화면이 뜨는
 // 문제가 있어 제거함. 이제 DB 데이터가 6개 카테고리 전부 채워져 있어 폴백이 불필요함.)
 export async function fetchProgramsByCategory(category: Category): Promise<Program[]> {
+  const today = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase
     .from("programs")
     .select("*")
     .eq("status", "published")
-    .eq("category", category);
+    .eq("category", category)
+    .or(`apply_deadline.is.null,apply_deadline.gte.${today}`);
 
   if (error || !data) return [];
   return data as Program[];
@@ -140,11 +142,13 @@ export async function fetchPlatformStats() {
 
 // --- "전화 한 통이면 돼요" 테마 (임팩트닷커리어 벤치마킹 — phone 필드가 있는 프로그램만) ---
 export async function fetchProgramsWithPhone(): Promise<Program[]> {
+  const today = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase
     .from("programs")
     .select("*")
     .eq("status", "published")
-    .not("phone", "is", null);
+    .not("phone", "is", null)
+    .or(`apply_deadline.is.null,apply_deadline.gte.${today}`);
   if (error || !data) return [];
   return data as Program[];
 }

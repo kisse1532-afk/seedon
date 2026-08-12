@@ -3,12 +3,16 @@ import { fetchAllPrograms } from "@/lib/queries";
 import TrackedLink from "@/app/_components/TrackedLink";
 import BookmarkButton from "@/app/_components/BookmarkButton";
 import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
+import { getEnrollmentBadgeLabel } from "@/lib/data";
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
   const query = (q || "").trim();
+  const today = new Date().toISOString().slice(0, 10);
   const all = await fetchAllPrograms();
-  const published = all.filter((p) => p.status === "published");
+  const published = all.filter(
+    (p) => p.status === "published" && (!p.apply_deadline || p.apply_deadline >= today)
+  );
 
   const results = query
     ? published.filter((p) => {
@@ -60,7 +64,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 <div>
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <h3 className="font-semibold">{p.title}</h3>
-                    <EnrollmentBadge status={p.enrollment_status} />
+                    <EnrollmentBadge status={getEnrollmentBadgeLabel(p)} />
                   </div>
                   <p className="text-xs text-neutral-400">{p.org}</p>
                 </div>

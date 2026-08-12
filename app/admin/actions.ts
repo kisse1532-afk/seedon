@@ -21,6 +21,7 @@ export async function createProgram(formData: FormData) {
   const org_type = String(formData.get("org_type") || "public");
   const apply_method = String(formData.get("apply_method") || "");
   const phone = String(formData.get("phone") || "");
+  const apply_deadline = String(formData.get("apply_deadline") || "");
   const tags = parseTags(formData.get("tags"));
 
   const { error } = await supabase.from("programs").insert({
@@ -34,6 +35,7 @@ export async function createProgram(formData: FormData) {
     org_type,
     apply_method,
     phone: phone || null,
+    apply_deadline: apply_deadline || null,
     status: "published",
     last_verified_at: new Date().toISOString().slice(0, 10),
   });
@@ -53,12 +55,14 @@ export async function updateProgram(id: string, formData: FormData) {
   const org_type = String(formData.get("org_type") || "public");
   const apply_method = String(formData.get("apply_method") || "");
   const phone = String(formData.get("phone") || "");
+  const apply_deadline = String(formData.get("apply_deadline") || "");
   const tags = parseTags(formData.get("tags"));
   const reverify = formData.get("reverify") === "on";
 
   const update: Record<string, unknown> = {
     title, org, description, category, tags, link, status, org_type, apply_method,
     phone: phone || null,
+    apply_deadline: apply_deadline || null,
   };
   if (reverify) {
     update.last_verified_at = new Date().toISOString().slice(0, 10);

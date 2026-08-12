@@ -71,6 +71,10 @@ export default async function NewProgramPage({
           <input name="phone" placeholder="1388" className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm" />
         </div>
         <div className="space-y-1">
+          <label className="text-xs text-neutral-500">신청 마감일 (선택, 비워두면 상시모집)</label>
+          <input name="apply_deadline" type="date" className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm" />
+        </div>
+        <div className="space-y-1">
           <label className="text-xs text-neutral-500">태그 (쉼표로 구분)</label>
           <input name="tags" placeholder="무료, 온라인신청" className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm" />
         </div>

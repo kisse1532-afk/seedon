@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import TrackedLink from "@/app/_components/TrackedLink";
 import BookmarkButton from "@/app/_components/BookmarkButton";
 import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
+import { getEnrollmentBadgeLabel } from "@/lib/data";
 import { submitApplication, submitHelpRequest } from "./actions";
 import ApplySteps from "./ApplySteps";
 import HelpChatbot from "./HelpChatbot";
@@ -54,7 +55,7 @@ export default async function ApplyPage({
               {program.org_type === "public" ? "공공" : "비영리"}
             </span>
           )}
-          <EnrollmentBadge status={program.enrollment_status} />
+          <EnrollmentBadge status={getEnrollmentBadgeLabel(program)} />
         </div>
         <p className="text-xs text-neutral-400">{program.org}</p>
         <p className="text-sm text-neutral-600">{program.description}</p>

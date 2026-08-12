@@ -38,7 +38,24 @@ export type Program = {
   phone?: string;
   last_verified_at?: string;
   enrollment_status?: string;
+  apply_deadline?: string;
 };
+
+// 카드 배지에 쓸 접수상태 문구를 계산한다.
+// 마감일이 지난 프로그램은 조회 쿼리 단계에서 이미 걸러지므로, 여기서는
+// "곧 마감"인지만 판단하면 된다.
+export function getEnrollmentBadgeLabel(program: Pick<Program, "apply_deadline" | "enrollment_status">): string | undefined {
+  if (program.apply_deadline) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const deadline = new Date(program.apply_deadline);
+    const daysLeft = Math.ceil((deadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    if (daysLeft >= 0 && daysLeft <= 7) {
+      return daysLeft === 0 ? "오늘 마감" : `마감 D-${daysLeft}`;
+    }
+  }
+  return program.enrollment_status;
+}
 
 // Supabase 연결 실패 시 폴백용 (2026.08 리서치 기준, 공공+비영리, 신청 URL·단계 재검증 완료)
 export const programs: Program[] = [
