@@ -11,9 +11,9 @@ const situations = [
 ];
 
 const stampTone = {
-  soon: "text-terracotta",
+  soon: "text-[13px] text-terracotta",
+  normal: "text-[13px] text-seed-700",
   always: "text-[11px] text-neutral-400",
-  normal: "text-seed-700",
 } as const;
 
 export default async function HomePage() {
@@ -127,7 +127,7 @@ export default async function HomePage() {
               >
                 <span className="text-center border-r border-sage-line pr-2.5">
                   <span
-                    className={`block text-[13px] font-extrabold tabular-nums leading-tight ${stampTone[stamp.tone]}`}
+                    className={`block font-extrabold tabular-nums leading-tight ${stampTone[stamp.tone]}`}
                   >
                     {stamp.label}
                   </span>
