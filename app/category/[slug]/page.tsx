@@ -5,6 +5,7 @@ import { fetchProgramsByCategory } from "@/lib/queries";
 import TrackedLink from "@/app/_components/TrackedLink";
 import BookmarkButton from "@/app/_components/BookmarkButton";
 import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
+import SosBanner from "@/app/_components/SosBanner";
 
 export default async function CategoryPage({
   params,
@@ -43,6 +44,8 @@ export default async function CategoryPage({
           </Link>
         ))}
       </div>
+
+      {slug === "counseling" && <SosBanner />}
 
       <div className="grid gap-3">
         {items.length === 0 && (
