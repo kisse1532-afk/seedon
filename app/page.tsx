@@ -3,6 +3,10 @@ import { categories, getDeadlineStamp } from "@/lib/data";
 import { fetchCategoryCounts, fetchOpenPrograms } from "@/lib/queries";
 import TrackedLink from "@/app/_components/TrackedLink";
 
+// 홈은 매 요청마다 DB를 다시 읽는다. 이게 없으면 빌드 시점 데이터로 고정되어,
+// 리서치팀이 프로그램을 등록해도 재배포 전까지 카테고리 개수·목록이 안 바뀐다.
+export const dynamic = "force-dynamic";
+
 const situations = [
   { label: "💳 생활비가 급해요", href: "/category/living" },
   { label: "🏠 지낼 곳이 필요해요", href: "/category/housing" },
