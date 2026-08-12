@@ -36,7 +36,12 @@ export async function fetchAllPrograms() {
     .select("*")
     .order("created_at", { ascending: false });
   if (error) return [];
-  return data as (Program & { status: string; link: string | null; last_verified_at: string })[];
+  return data as (Program & {
+    status: string;
+    link: string | null;
+    last_verified_at: string;
+    review_note: string | null;
+  })[];
 }
 
 export async function fetchReports() {

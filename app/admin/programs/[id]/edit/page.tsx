@@ -23,6 +23,7 @@ export default async function EditProgramPage({
     last_verified_at?: string;
     apply_deadline?: string;
     reopen_note?: string;
+    review_note?: string;
   };
 
   return (
@@ -90,6 +91,18 @@ export default async function EditProgramPage({
             type="text"
             defaultValue={full.reopen_note || ""}
             placeholder="예: 매년 4~6월 모집"
+            className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs text-neutral-500">
+            검토 메모 (내부용, 공개 화면에 안 나옴) — 내리거나 보류한 사유를 남겨두세요
+          </label>
+          <input
+            name="review_note"
+            type="text"
+            defaultValue={full.review_note || ""}
+            placeholder="예: 2026-08-12 공식 링크 접속 불가로 대기중 전환"
             className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm"
           />
         </div>
