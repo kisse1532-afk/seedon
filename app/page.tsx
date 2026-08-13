@@ -196,18 +196,17 @@ export default async function HomePage() {
       {/* 긴급 연락 — 1388 하나만 두면 "그 번호가 내 상황이 아닌" 청소년은
           갈 곳이 없다. 세 번호를 나란히 두고, 번호마다 "이럴 때 거는 데"를
           붙여야 실제로 고를 수 있다. */}
-      {/* 넓은 화면에서는 제목을 왼쪽, 번호를 오른쪽에 둔다. 세 칸을 폭에
-          맞춰 늘리면 번호끼리 멀어져 한 덩어리로 안 읽히기 때문. */}
-      <section className="rounded-lg border border-sos-line bg-cream p-4 sm:p-5 sm:flex sm:items-center sm:justify-between sm:gap-6">
-        <div>
-          <h2 className="text-[13.5px] sm:text-[15px] font-bold text-sos-ink mb-0.5">
-            힘들 땐 전화해도 돼요
-          </h2>
-          <p className="text-[11.5px] sm:text-xs text-sos-sub mb-3.5 sm:mb-0">
-            전부 무료예요. 이름 안 밝혀도 되고요.
-          </p>
-        </div>
-        <div className="grid grid-cols-3 gap-2 shrink-0 sm:w-[366px]">
+      {/* 번호는 제목 아래에 두고 전체를 가운데로 모은다. 넓은 화면에서
+          세 칸을 폭에 맞춰 늘리면 번호끼리 멀어져 한 덩어리로 안 읽히므로,
+          칸 묶음의 최대 폭을 잡아 가운데에 세운다. */}
+      <section className="rounded-lg border border-sos-line bg-cream px-4 py-5 sm:px-5 sm:py-7 text-center">
+        <h2 className="text-[17px] sm:text-xl font-extrabold tracking-tight text-sos-ink mb-1">
+          힘들 땐 전화해도 돼요
+        </h2>
+        <p className="text-[12.5px] sm:text-sm text-sos-sub mb-4 sm:mb-5">
+          전부 무료예요. 이름 안 밝혀도 되고요.
+        </p>
+        <div className="grid grid-cols-3 gap-2 sm:gap-2.5 mx-auto max-w-[366px] sm:max-w-[420px]">
           {sosLines.map((s) => (
             <PhoneLink
               key={s.number}
