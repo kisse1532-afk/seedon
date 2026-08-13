@@ -5,8 +5,10 @@
  * 심볼(토글+새싹)은 원본 도형을 그대로 옮겼다. 규칙상 그라데이션·회전·
  * 비율 왜곡을 하지 않으므로 크기는 height 하나로만 조절한다.
  *
- * 노브(가운데 원)는 "항상 배경색과 동일"해야 뚫린 구멍처럼 보인다.
- * 그래서 배경 톤별로 도형 색을 나눠 두고 tone으로 고르게 했다.
+ * 노브(가운데 원)는 원본 기본형(seedon-symbol.svg)과 같은 흰색을 쓴다.
+ * cream/dark 변형은 노브를 배경색으로 칠해 "뚫린 구멍"처럼 보이게 하지만,
+ * 실제 화면에서는 토글 버튼이 아니라 배경이 파인 것처럼 읽혀 어색했다
+ * (2026.08.13 로드 확인). 몸통·잎 색은 배경 톤에 따라 계속 나눈다.
  *
  * 워드마크("씨드온")를 원본 SVG의 <text>가 아니라 HTML 글자로 그리는 이유:
  * 원본은 Pretendard를 지정하는데 사이트에 그 폰트가 아직 없다. <img>로
@@ -17,10 +19,10 @@
 type Tone = "dark" | "cream";
 
 const TONE = {
-  // 어두운 배경(헤더·푸터, Dark Surface #37562F) 위
-  dark: { body: "#5FDDA8", leaf: "#8FDC6A", knob: "#37562F", text: "#FFFFFF" },
+  // 어두운 배경(헤더·푸터) 위
+  dark: { body: "#5FDDA8", leaf: "#8FDC6A", knob: "#FFFFFF", text: "#FFFFFF" },
   // 크림 배경(본문, Cream #FAF6EE) 위
-  cream: { body: "#2BBE8C", leaf: "#72CF5E", knob: "#FAF6EE", text: "#487A4E" },
+  cream: { body: "#2BBE8C", leaf: "#72CF5E", knob: "#FFFFFF", text: "#487A4E" },
 } as const satisfies Record<Tone, Record<string, string>>;
 
 export function SeedonSymbol({
