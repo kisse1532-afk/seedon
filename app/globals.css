@@ -46,7 +46,12 @@
   --color-sage: #faf6ee;           /* 기존 오프화이트 → Cream */
   --color-sage-border: #e7dfd0;    /* → Border */
   --color-sage-line: #f0e9db;      /* → Border를 옅게 (CI에 없어 파생) */
-  --color-seed-900: #37562f;       /* 헤더·푸터 → Dark Surface */
+  /* 헤더·푸터는 Dark Surface보다 한 톤 어둡게 깐다. 히어로와 같은 색이면
+     경계가 뭉개져 "층이 나뉜 것도 아니고 안 나뉜 것도 아닌" 상태가 된다
+     (2026.08.13 로드 지적). 위가 어두워야 헤더가 뒤로 물러나고 검색창이
+     앞으로 나온다. Dark Surface를 어둡게 해서 만든 파생색. */
+  --color-seed-950: #2a4224;       /* 헤더·푸터 */
+  --color-seed-900: #37562f;       /* 히어로 등 어두운 면 → Dark Surface */
   --color-seed-800: #2f4a29;       /* Dark Surface를 살짝 어둡게 (파생) */
   --color-seed-700: #17916a;       /* 브랜드 강조 → Primary Deep */
   --color-seed-100: #e6f8ef;       /* → Mint */
