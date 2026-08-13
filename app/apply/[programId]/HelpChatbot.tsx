@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { ApplyStep } from "@/lib/data";
+import PhoneLink from "@/app/_components/PhoneLink";
 
 type Props = {
   programTitle: string;
@@ -141,12 +142,12 @@ export default function HelpChatbot({
                   <p className="text-xs text-neutral-500">
                     청소년 상담 1388(국번없이, 24시간·무료)로 전화하면 지금 바로 대화할 수 있어요.
                   </p>
-                  <a
-                    href="tel:1388"
+                  <PhoneLink
+                    number="1388"
                     className="inline-block text-xs bg-amber-500 text-white rounded-full px-4 py-1.5 hover:bg-amber-600"
                   >
                     1388 전화하기
-                  </a>
+                  </PhoneLink>
                 </div>
                 <div className="rounded-xl border border-amber-200 bg-white p-3 space-y-1.5">
                   <p className="text-sm font-medium text-amber-900">📝 씨드온 직원이 연락드릴게요</p>

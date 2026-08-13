@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { categories, getDeadlineStamp } from "@/lib/data";
+import PhoneLink from "@/app/_components/PhoneLink";
 import { fetchCategoryCounts, fetchOpenPrograms } from "@/lib/queries";
 import TrackedLink from "@/app/_components/TrackedLink";
 
@@ -192,12 +193,12 @@ export default async function HomePage() {
             청소년전화 1388 · 무료이고, 24시간 언제 걸어도 돼요.
           </p>
         </div>
-        <a
-          href="tel:1388"
+        <PhoneLink
+          number="1388"
           className="rounded-lg bg-terracotta px-5 sm:px-6 py-2.5 sm:py-3 text-[13px] sm:text-sm font-bold text-white hover:brightness-110"
         >
           📞 1388 전화하기
-        </a>
+        </PhoneLink>
       </section>
 
       {/* 신뢰 한 줄 */}
