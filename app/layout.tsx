@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="ko">
       {/* overflow-x-hidden: 홈 히어로의 full-bleed(w-screen)가 스크롤바 폭만큼 넘치는 것 방지 */}
       <body className="antialiased min-h-screen overflow-x-hidden bg-sage text-neutral-900">
-        <header className="bg-seed-900">
+        <header className="bg-seed-950">
           <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between">
             <Link href="/" aria-label="씨드온 홈">
               <Logo tone="dark" height={26} />
@@ -40,7 +40,7 @@ export default function RootLayout({
 
         <main className="mx-auto max-w-5xl px-4 py-6">{children}</main>
 
-        <footer className="bg-seed-900 text-seed-mint mt-8 pb-24">
+        <footer className="bg-seed-950 text-seed-mint mt-8 pb-24">
           <div className="mx-auto max-w-5xl px-4 pt-8 pb-5">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
               <div>
