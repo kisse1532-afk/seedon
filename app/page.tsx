@@ -17,10 +17,12 @@ const situations = [
 
 // 긴급 연락 3종. head/tail로 나눈 건 "1577-0199"에서 국번만 크게 보이게
 // 하려는 것 — 세 칸 폭이 같아야 해서 뒷자리는 작게 붙인다.
+// 설명을 두 줄로 나눠 두는 건 칸이 옆으로 퍼지지 않게 하려는 것 —
+// 한 줄로 흘리면 칸 폭이 글자 길이만큼 벌어져 세 칸이 멀어진다.
 const sosLines = [
-  { number: "1388", head: "1388", tail: "", name: "청소년전화", desc: "무슨 얘기든 24시간" },
-  { number: "1577-0199", head: "1577", tail: "-0199", name: "마음이 힘들 때", desc: "정신건강 위기상담" },
-  { number: "117", head: "117", tail: "", name: "학교폭력", desc: "신고하고 상담받기" },
+  { number: "1388", head: "1388", tail: "", name: "청소년전화", desc: ["무슨 얘기든", "24시간"] },
+  { number: "1577-0199", head: "1577", tail: "-0199", name: "마음이 힘들 때", desc: ["정신건강", "위기상담"] },
+  { number: "117", head: "117", tail: "", name: "학교폭력", desc: ["신고하고", "상담받기"] },
 ];
 
 const stampTone = {
@@ -194,29 +196,35 @@ export default async function HomePage() {
       {/* 긴급 연락 — 1388 하나만 두면 "그 번호가 내 상황이 아닌" 청소년은
           갈 곳이 없다. 세 번호를 나란히 두고, 번호마다 "이럴 때 거는 데"를
           붙여야 실제로 고를 수 있다. */}
-      <section className="rounded-lg border border-sos-line bg-cream p-4 sm:p-5">
-        <h2 className="text-[13.5px] sm:text-[15px] font-bold text-sos-ink mb-0.5">
-          힘들 땐 전화해도 돼요
-        </h2>
-        <p className="text-[11.5px] sm:text-xs text-sos-sub mb-3.5">
-          전부 무료예요. 이름 안 밝혀도 되고요.
-        </p>
-        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+      {/* 넓은 화면에서는 제목을 왼쪽, 번호를 오른쪽에 둔다. 세 칸을 폭에
+          맞춰 늘리면 번호끼리 멀어져 한 덩어리로 안 읽히기 때문. */}
+      <section className="rounded-lg border border-sos-line bg-cream p-4 sm:p-5 sm:flex sm:items-center sm:justify-between sm:gap-6">
+        <div>
+          <h2 className="text-[13.5px] sm:text-[15px] font-bold text-sos-ink mb-0.5">
+            힘들 땐 전화해도 돼요
+          </h2>
+          <p className="text-[11.5px] sm:text-xs text-sos-sub mb-3.5 sm:mb-0">
+            전부 무료예요. 이름 안 밝혀도 되고요.
+          </p>
+        </div>
+        <div className="grid grid-cols-3 gap-2 shrink-0 sm:w-[366px]">
           {sosLines.map((s) => (
             <PhoneLink
               key={s.number}
               number={s.number}
-              className="block rounded-lg border border-sos-line bg-sos-tile px-1.5 py-2.5 sm:py-3 text-center hover:brightness-95 transition"
+              className="block rounded-lg border border-sos-line bg-sos-tile px-1.5 py-2.5 text-center hover:brightness-95 transition"
             >
-              <span className="block text-[15px] sm:text-lg font-extrabold tracking-tight text-sos-num leading-tight">
+              <span className="block text-base font-extrabold tracking-tight text-sos-num leading-tight">
                 {s.head}
-                {s.tail && <span className="text-[11px] sm:text-xs">{s.tail}</span>}
+                {s.tail && <span className="text-xs">{s.tail}</span>}
               </span>
-              <span className="block text-[10.5px] sm:text-xs font-bold text-sos-ink mt-1">
+              <span className="block text-[10.5px] font-bold text-sos-ink mt-1">
                 {s.name}
               </span>
-              <span className="block text-[9.5px] sm:text-[10.5px] text-sos-meta mt-0.5 leading-snug">
-                {s.desc}
+              <span className="block text-[9.5px] text-sos-meta mt-0.5 leading-snug">
+                {s.desc[0]}
+                <br />
+                {s.desc[1]}
               </span>
             </PhoneLink>
           ))}
