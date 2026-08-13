@@ -47,7 +47,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           name="q"
           defaultValue={query}
           placeholder="지금 어떤 상황인지 적어보세요. 예: 학원비가 부담돼요"
-          className="w-full rounded-lg border border-sage-border bg-white px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="w-full rounded-lg border border-sage-border bg-white px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
         />
       </form>
 
@@ -75,7 +75,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             <div key={p.id} className="relative rounded-lg border border-sage-border bg-white p-5 flex flex-col gap-2">
               <BookmarkButton
                 programId={p.id}
-                className="absolute top-4 right-4 text-neutral-300 hover:text-emerald-600"
+                className="absolute top-4 right-4 text-neutral-300 hover:text-primary-deep"
               />
               <div className="flex items-start justify-between gap-2 pr-8">
                 <div>
@@ -93,7 +93,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                   event="category_card_click"
                   programId={p.id}
                   category={p.category}
-                  className="text-sm font-medium bg-emerald-800 text-white rounded-lg px-4 py-1.5 hover:bg-emerald-900"
+                  className="text-sm font-medium bg-primary-deep text-white rounded-lg px-4 py-1.5 hover:opacity-90 transition-opacity"
                 >
                   신청 알아보기 →
                 </TrackedLink>

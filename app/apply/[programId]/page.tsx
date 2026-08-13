@@ -39,7 +39,7 @@ export default async function ApplyPage({
       <div className="relative rounded-lg border border-sage-border bg-white p-5 space-y-2">
         <BookmarkButton
           programId={program.id}
-          className="absolute top-5 right-5 text-neutral-300 hover:text-emerald-600"
+          className="absolute top-5 right-5 text-neutral-300 hover:text-primary-deep"
         />
         <div className="flex items-center gap-1.5 pr-8 flex-wrap">
           <h1 className="font-semibold text-lg">{program.title}</h1>
@@ -47,8 +47,8 @@ export default async function ApplyPage({
             <span
               className={`text-[10px] px-1.5 py-0.5 rounded-lg ${
                 program.org_type === "public"
-                  ? "bg-blue-50 text-blue-600"
-                  : "bg-purple-50 text-purple-600"
+                  ? "bg-mint text-ink"
+                  : "bg-brand-border/60 text-ink-60"
               }`}
             >
               {program.org_type === "public" ? "공공" : "비영리"}
@@ -62,10 +62,10 @@ export default async function ApplyPage({
 
       {program.apply_steps && <ApplySteps steps={program.apply_steps} />}
 
-      <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-5 space-y-2">
-        <h2 className="font-medium text-sm text-emerald-800">✅ 이렇게 신청하세요</h2>
+      <div className="rounded-lg border border-primary/30 bg-mint p-5 space-y-2">
+        <h2 className="font-medium text-sm text-ink">✅ 이렇게 신청하세요</h2>
         {program.apply_method && (
-          <p className="text-sm text-emerald-900">{program.apply_method}</p>
+          <p className="text-sm text-body">{program.apply_method}</p>
         )}
         <div className="flex flex-wrap gap-2 pt-1">
           {program.link && (
@@ -75,7 +75,9 @@ export default async function ApplyPage({
               programId={program.id}
               category={program.category}
               external
-              className="text-xs bg-emerald-800 text-white rounded-lg px-4 py-1.5 hover:bg-emerald-900"
+              // CTA 색(#FFAE6B)은 브랜드 규칙상 화면당 하나만 쓴다.
+              // 이 화면에서 실제 신청으로 넘어가는 버튼이 여기 하나뿐이라 여기에 배정.
+              className="text-xs font-bold bg-cta text-dark-surface rounded-lg px-4 py-1.5 hover:opacity-90 transition-opacity"
             >
               {program.apply_link_label || "공식 페이지 바로가기 ↗"}
             </TrackedLink>
@@ -83,7 +85,7 @@ export default async function ApplyPage({
           {program.phone && (
             <a
               href={`tel:${program.phone.replace(/[^0-9]/g, "")}`}
-              className="text-xs border border-emerald-300 text-emerald-700 rounded-lg px-4 py-1.5 hover:bg-emerald-100"
+              className="text-xs border border-primary-deep/40 text-primary-deep rounded-lg px-4 py-1.5 hover:bg-mint"
             >
               📞 {program.phone}
             </a>
@@ -115,7 +117,7 @@ export default async function ApplyPage({
             name="name"
             type="text"
             required
-            className="w-full rounded-lg border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full rounded-lg border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="이름을 입력해주세요"
           />
         </div>
@@ -127,7 +129,7 @@ export default async function ApplyPage({
             name="contact"
             type="tel"
             required
-            className="w-full rounded-lg border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full rounded-lg border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="010-0000-0000"
           />
         </div>

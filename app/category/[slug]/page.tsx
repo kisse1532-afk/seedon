@@ -36,8 +36,8 @@ export default async function CategoryPage({
             href={`/category/${c.slug}`}
             className={`text-xs px-3 py-1.5 rounded-lg border ${
               c.slug === slug
-                ? "bg-emerald-800 text-white border-emerald-800"
-                : "border-sage-border bg-white text-neutral-500 hover:border-emerald-400"
+                ? "bg-primary-deep text-white border-primary-deep"
+                : "border-sage-border bg-white text-neutral-500 hover:border-primary"
             }`}
           >
             {c.label}
@@ -60,7 +60,7 @@ export default async function CategoryPage({
           >
             <BookmarkButton
               programId={p.id}
-              className="absolute top-4 right-4 text-neutral-300 hover:text-emerald-600"
+              className="absolute top-4 right-4 text-neutral-300 hover:text-primary-deep"
             />
             <div className="flex items-start justify-between gap-2 pr-8">
               <div>
@@ -70,8 +70,8 @@ export default async function CategoryPage({
                     <span
                       className={`text-[10px] px-1.5 py-0.5 rounded-lg ${
                         p.org_type === "public"
-                          ? "bg-blue-50 text-blue-600"
-                          : "bg-purple-50 text-purple-600"
+                          ? "bg-mint text-ink"
+                          : "bg-brand-border/60 text-ink-60"
                       }`}
                     >
                       {p.org_type === "public" ? "공공" : "비영리"}
@@ -115,7 +115,7 @@ export default async function CategoryPage({
                   event="category_card_click"
                   programId={p.id}
                   category={p.category}
-                  className="text-sm font-medium bg-emerald-800 text-white rounded-lg px-4 py-1.5 hover:bg-emerald-900"
+                  className="text-sm font-medium bg-primary-deep text-white rounded-lg px-4 py-1.5 hover:opacity-90 transition-opacity"
                 >
                   신청 알아보기 →
                 </TrackedLink>

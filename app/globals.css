@@ -1,40 +1,66 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf6ee;
+  --foreground: #576351;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-/* 씨드온 팔레트 — 색을 바꿀 땐 이 블록의 값만 고치면 전체에 반영됨 */
+/* ── 씨드온 브랜드 토큰 v1.0 (2026.08.13 적용) ───────────────────────
+   원본: public/brand/tokens.css · 규칙: public/brand/BRAND.md
+   색을 바꿀 땐 이 블록의 값만 고치면 화면 전체에 반영된다.        */
 @theme {
-  --color-sage: #f3f4ef;          /* 페이지 배경 (종이빛 오프화이트) */
-  --color-sage-border: #e0e3da;   /* 카드·구분선 테두리 */
-  --color-sage-line: #ebede6;     /* 목록 내부 옅은 구분선 */
-  --color-seed-900: #1b2420;      /* 헤더·푸터 딥그린 */
-  --color-seed-800: #2c3d34;
-  --color-seed-700: #3e6e56;      /* 버튼·링크 등 브랜드 강조색 */
-  --color-seed-100: #e6eee9;
-  --color-seed-mint: #9fc7b2;     /* 어두운 배경 위 보조 텍스트 */
-  --color-warm-brown: #43403a;    /* 긴급 상담 배너 바탕 */
-  --color-terracotta: #ae7e6c;    /* 긴급 상담 버튼 */
-}
+  /* 브랜드 핵심 */
+  --color-primary: #2bbe8c;        /* 로고 토글, 활성 상태, 면 채움 */
+  --color-primary-deep: #17916a;   /* 텍스트·링크·버튼 배경 */
+  --color-sprout: #72cf5e;         /* 로고 잎, 성장 지표 */
+  --color-cta: #ffae6b;            /* 신청·전환 버튼 (화면당 1개만) */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* 면 */
+  --color-cream: #faf6ee;          /* 기본 배경 */
+  --color-mint: #e6f8ef;           /* 카드·강조 면 */
+  --color-brand-border: #e7dfd0;   /* 구분선·테두리 */
+
+  /* 글자 */
+  --color-ink: #487a4e;            /* 제목 */
+  --color-ink-60: #7b8c72;         /* 보조 텍스트 */
+  --color-body: #576351;           /* 본문 */
+  --color-meta: #9dac92;           /* 캡션·메타 */
+
+  /* 어두운 배경 (헤더·푸터) */
+  --color-dark-surface: #37562f;
+  --color-dark-primary: #5fdda8;
+  --color-dark-sprout: #8fdc6a;
+
+  /* 라운드 */
+  --radius-card: 18px;
+  --radius-control: 12px;
+
+  /* ── 기존 화면이 쓰던 이름 → 새 브랜드 값으로 연결 ──────────────
+     화면 코드를 한꺼번에 안 고쳐도 색이 따라오게 하는 다리 역할.
+     2·3단계에서 화면을 옮기고 나면 이 블록은 지울 수 있다.       */
+  --color-sage: #faf6ee;           /* 기존 오프화이트 → Cream */
+  --color-sage-border: #e7dfd0;    /* → Border */
+  --color-sage-line: #f0e9db;      /* → Border를 옅게 (CI에 없어 파생) */
+  --color-seed-900: #37562f;       /* 헤더·푸터 → Dark Surface */
+  --color-seed-800: #2f4a29;       /* Dark Surface를 살짝 어둡게 (파생) */
+  --color-seed-700: #17916a;       /* 브랜드 강조 → Primary Deep */
+  --color-seed-100: #e6f8ef;       /* → Mint */
+  --color-seed-mint: #b6c6ab;      /* 어두운 배경 위 보조 텍스트
+                                      (CI에 없어 Cream+Dark Surface 혼합) */
+
+  /* 긴급 상담 배너 — 일부러 브랜드색과 구분되게 남겨둔 색 */
+  --color-warm-brown: #43403a;
+  --color-terracotta: #ae7e6c;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Pretendard, -apple-system, "Apple SD Gothic Neo",
+    "Malgun Gothic", "맑은 고딕", sans-serif;
 }

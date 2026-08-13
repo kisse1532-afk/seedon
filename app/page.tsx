@@ -33,7 +33,7 @@ export default async function HomePage() {
     <div className="space-y-6">
       {/* 진입부 — 검색이 첫 화면에 오도록.
           화면 끝까지 채우려고 full-bleed 처리(안쪽 내용만 max-w로 다시 묶음) */}
-      <section className="-mt-6 w-screen ml-[calc(50%-50vw)] bg-seed-900 bg-[radial-gradient(700px_300px_at_50%_-25%,#395b4a_0%,transparent_68%)]">
+      <section className="-mt-6 w-screen ml-[calc(50%-50vw)] bg-seed-900 bg-[radial-gradient(700px_300px_at_50%_-25%,#4B6E42_0%,transparent_68%)]">
         <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14 lg:py-16 text-center">
           <p className="text-xs sm:text-[13px] font-semibold text-seed-mint mb-3">
             청소년 지원 정보 플랫폼, 씨드온
@@ -158,8 +158,8 @@ export default async function HomePage() {
                       <span
                         className={`text-[10px] font-bold px-1.5 py-0.5 rounded-lg ${
                           p.org_type === "public"
-                            ? "bg-blue-50 text-blue-700"
-                            : "bg-purple-50 text-purple-700"
+                            ? "bg-mint text-ink"
+                            : "bg-brand-border/60 text-ink-60"
                         }`}
                       >
                         {p.org_type === "public" ? "공공" : "비영리"}

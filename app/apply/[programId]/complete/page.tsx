@@ -20,7 +20,7 @@ export default async function ApplyCompletePage({
       </p>
       <Link
         href="/"
-        className="inline-block rounded-full bg-emerald-600 text-white text-sm px-6 py-2.5 hover:bg-emerald-700 mt-2"
+        className="inline-block rounded-full bg-primary-deep text-white text-sm px-6 py-2.5 hover:opacity-90 transition-opacity mt-2"
       >
         홈으로 돌아가기
       </Link>

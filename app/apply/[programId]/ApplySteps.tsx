@@ -10,7 +10,7 @@ export default function ApplySteps({ steps }: { steps: ApplyStep[] }) {
         {steps.map((step, i) => (
           <div key={i} className="flex items-center shrink-0">
             <div className="w-[104px] flex flex-col items-center text-center gap-1.5">
-              <div className="w-11 h-11 rounded-full bg-emerald-50 flex items-center justify-center text-lg">
+              <div className="w-11 h-11 rounded-full bg-mint flex items-center justify-center text-lg">
                 {step.icon}
               </div>
               <div className="text-xs font-medium leading-tight">{step.title}</div>

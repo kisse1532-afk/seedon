@@ -1,0 +1,21 @@
+:root{
+  --seedon-primary:#2BBE8C;
+  --seedon-primary-deep:#17916A;
+  --seedon-sprout:#72CF5E;
+  --seedon-cta:#FFAE6B;
+  --seedon-bg-cream:#FAF6EE;
+  --seedon-surface-mint:#E6F8EF;
+  --seedon-border:#E7DFD0;
+  --seedon-ink-100:#487A4E;
+  --seedon-ink-60:#7B8C72;
+  --seedon-text-body:#576351;
+  --seedon-text-meta:#9DAC92;
+  --seedon-dark-surface:#37562F;
+  --seedon-dark-primary:#5FDDA8;
+  --seedon-dark-sprout:#8FDC6A;
+
+  --seedon-font: Pretendard, -apple-system, "Apple SD Gothic Neo", sans-serif;
+  --seedon-radius-card: 18px;
+  --seedon-radius-control: 12px;
+  --seedon-radius-pill: 999px;
+}
