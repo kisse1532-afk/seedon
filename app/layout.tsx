@@ -2,11 +2,23 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
 import BottomNav from "@/app/_components/BottomNav";
+import Logo from "@/app/_components/Logo";
 
 export const metadata: Metadata = {
   title: "씨드온 | SeedOn",
   description: "이미 존재하지만 닿지 않는 지원을, 눈치 보지 않고 쓸 수 있게.",
+  // 브랜드 에셋 v1.0 — public/brand/
+  icons: {
+    icon: [
+      { url: "/brand/favicon.png", type: "image/png" },
+      { url: "/brand/logo/seedon-symbol.svg", type: "image/svg+xml" },
+    ],
+    apple: "/brand/app-icon-512.png",
+  },
 };
+
+// 홈 화면에 추가했을 때 주소창·상태바에 깔리는 색 (브랜드 Dark Surface)
+export const viewport = { themeColor: "#37562F" };
 
 export default function RootLayout({
   children,
@@ -17,8 +29,8 @@ export default function RootLayout({
       <body className="antialiased min-h-screen overflow-x-hidden bg-sage text-neutral-900">
         <header className="bg-seed-900">
           <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between">
-            <Link href="/" className="font-bold text-base text-white">
-              🌱 씨드온
+            <Link href="/" aria-label="씨드온 홈">
+              <Logo tone="dark" height={26} />
             </Link>
             <Link href="/report" className="text-xs font-semibold text-seed-mint hover:text-white">
               제보하기
@@ -32,7 +44,7 @@ export default function RootLayout({
           <div className="mx-auto max-w-5xl px-4 pt-8 pb-5">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
               <div>
-                <p className="text-white text-sm font-bold mb-1.5">🌱 씨드온</p>
+                <Logo tone="dark" height={22} className="mb-2" />
                 <p className="text-[11px] leading-relaxed text-seed-mint/70 max-w-[28ch]">
                   이미 존재하지만 닿지 않는 지원을, 눈치 보지 않고 쓸 수 있게.
                 </p>
