@@ -3,6 +3,7 @@ import Link from "next/link";
 import "./globals.css";
 import BottomNav from "@/app/_components/BottomNav";
 import Logo from "@/app/_components/Logo";
+import PhoneLink from "@/app/_components/PhoneLink";
 
 export const metadata: Metadata = {
   title: "씨드온 | SeedOn",
@@ -61,9 +62,9 @@ export default function RootLayout({
               <div>
                 <h2 className="text-white text-[11px] font-bold mb-2">긴급 연락</h2>
                 <ul className="flex flex-col gap-1.5 text-[11px]">
-                  <li><a href="tel:1388" className="hover:text-white">청소년전화 1388</a></li>
-                  <li><a href="tel:1577-0199" className="hover:text-white">위기상담 1577-0199</a></li>
-                  <li><a href="tel:117" className="hover:text-white">학교폭력 117</a></li>
+                  <li><PhoneLink number="1388" className="hover:text-white">청소년전화 1388</PhoneLink></li>
+                  <li><PhoneLink number="1577-0199" className="hover:text-white">위기상담 1577-0199</PhoneLink></li>
+                  <li><PhoneLink number="117" className="hover:text-white">학교폭력 117</PhoneLink></li>
                 </ul>
               </div>
             </div>
