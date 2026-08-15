@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { mergeLocalBookmarksIntoAccount } from "@/lib/bookmarks";
+import { flushPendingConsent } from "@/lib/consent";
 
 export default function LoginCompletePage() {
   const [movedCount, setMovedCount] = useState(0);
@@ -21,6 +22,9 @@ export default function LoginCompletePage() {
     })();
     setMovedCount(before);
     mergeLocalBookmarksIntoAccount();
+    // 동의를 체크한 시점에는 아직 세션이 없을 수 있어 브라우저에 맡겨둔다.
+    // 여기까지 왔으면 로그인이 끝난 것이므로 계정에 올린다.
+    flushPendingConsent();
   }, []);
 
   return (
