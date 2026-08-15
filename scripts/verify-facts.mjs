@@ -39,6 +39,8 @@ if (!url || !key) {
   process.exit(1);
 }
 
+const { readNoticeAttachment } = await import("./lib/hwpx.mjs");
+
 const only = process.argv.slice(2).filter((a) => !a.startsWith("-"));
 
 const res = await fetch(
@@ -81,7 +83,9 @@ async function fetchText(link) {
       headers: { "User-Agent": UA, "Accept-Language": "ko-KR,ko;q=0.9" },
     });
     if (!r.ok) return { error: `HTTP ${r.status}` };
-    return { text: toText(await r.text()) };
+    // 첨부 공고문을 찾을 때 원본 HTML을 다시 받지 않도록 같이 돌려준다.
+    const html = await r.text();
+    return { text: toText(html), html };
   } catch (e) {
     return { error: String(e?.cause?.code || e?.message || e) };
   } finally {
@@ -115,18 +119,57 @@ const OUR_OWN_MATH = new Set(["324만원", "649만원", "974만원"]);
 
 /** 설명에 적힌 금액 표기 */
 function amounts(text) {
-  return [...(text || "").matchAll(/\d[\d,]*\s*만\s*\d*\s*천?\s*원|\d[\d,]*\s*원/g)]
+  return [...(text || "").matchAll(/\d[\d,]*\s*억?\s*\d*\s*만\s*\d*\s*천?\s*원|\d[\d,]*\s*원/g)]
     .map((m) => m[0])
     .filter((a) => norm(a).length >= 4 && !OUR_OWN_MATH.has(norm(a)));
+}
+
+/**
+ * 금액 표기를 숫자로 바꾼다. "125만원"과 "1,250,000원"은 같은 돈이다.
+ *
+ * 우리는 청소년이 읽기 쉽게 "125만원"으로 쓰고, 공고문은 "1,250,000원"으로
+ * 쓴다. 글자만 맞춰보면 근거가 있는데도 "못 찾음"으로 뜨고, 그러면 다음
+ * 사람이 멀쩡한 금액을 지운다. 실제로 서울시 그룹활동 지원사업에서 그랬다.
+ */
+function wonValue(s) {
+  const t = (s || "").replace(/[\s,]/g, "");
+  const m = t.match(/^(?:(\d+)억)?(?:(\d+)만)?(?:(\d+)천)?(\d+)?원$/);
+  if (!m) return null;
+  const [, eok, man, cheon, plain] = m;
+  if (!eok && !man && !cheon) return plain ? Number(plain) : null;
+  return (
+    Number(eok || 0) * 1e8 +
+    Number(man || 0) * 1e4 +
+    Number(cheon || 0) * 1e3 +
+    Number(plain || 0)
+  );
+}
+
+/** 글자 그대로 있거나, 금액을 숫자로 바꿨을 때 같은 값이 있으면 근거가 있는 것이다. */
+function pageHasAmount(pageText, pageValues, amount) {
+  if (norm(pageText).includes(norm(amount))) return true;
+  const v = wonValue(amount);
+  return v !== null && pageValues.has(v);
+}
+
+/** 페이지에 적힌 모든 금액을 숫자로 모아둔다. */
+function amountValues(text) {
+  const set = new Set();
+  for (const m of (text || "").matchAll(/\d[\d,]*\s*억?\s*\d*\s*만\s*\d*\s*천?\s*원|\d[\d,]*\s*원/g)) {
+    const v = wonValue(m[0]);
+    if (v !== null) set.add(v);
+  }
+  return set;
 }
 
 const unread = [];
 const titleMiss = [];
 const amountMiss = [];
 const ok = [];
+const foundInAttachment = [];
 
 for (const p of programs) {
-  const { text, error } = await fetchText(p.link);
+  const { text, error, html } = await fetchText(p.link);
 
   // 본문이 너무 짧으면 자바스크립트로 그려지는 화면이라 대조가 불가능하다.
   if (error || !text || text.length < 400) {
@@ -134,13 +177,33 @@ for (const p of programs) {
     continue;
   }
 
-  const page = norm(text);
+  let pageText = text;
+  let pageValues = amountValues(text);
   const toks = titleTokens(p.title);
-  const hitToks = toks.filter((w) => page.includes(norm(w)));
-  const titleOk = toks.length === 0 || hitToks.length / toks.length >= 0.5;
 
   const amts = amounts(p.description);
-  const missAmts = amts.filter((a) => !page.includes(norm(a)));
+  let missAmts = amts.filter((a) => !pageHasAmount(pageText, pageValues, a));
+
+  /* 웹페이지에서 금액을 못 찾으면 첨부 공고문(hwpx)까지 열어본다.
+     공공기관이 제목만 웹에 올리고 내용은 첨부에만 넣는 일이 흔하다.
+     이걸 안 보면 근거가 있는데도 "근거 없는 금액"으로 판정해서, 다음 사람이
+     멀쩡한 숫자를 지우게 된다 — 서울시 그룹활동 지원사업에서 실제로 그랬다. */
+  if (missAmts.length) {
+    const att = await readNoticeAttachment(p.link, { html }).catch(() => null);
+    if (att) {
+      const attValues = amountValues(att.text);
+      const found = missAmts.filter((a) => pageHasAmount(att.text, attValues, a));
+      if (found.length) foundInAttachment.push({ ...p, found, attUrl: att.url });
+      missAmts = missAmts.filter((a) => !found.includes(a));
+      // 사업명 대조에도 첨부 본문을 함께 쓴다
+      pageText += att.text;
+      pageValues = new Set([...pageValues, ...attValues]);
+    }
+  }
+
+  const page = norm(pageText);
+  const hitToks = toks.filter((w) => page.includes(norm(w)));
+  const titleOk = toks.length === 0 || hitToks.length / toks.length >= 0.5;
 
   if (!titleOk) titleMiss.push({ ...p, toks, hitToks });
   else if (missAmts.length) amountMiss.push({ ...p, missAmts });
@@ -166,6 +229,13 @@ if (amountMiss.length) {
     "틀린 금액은 없는 것보다 나빠요. 확인해서 근거가 없으면 지울 것.");
   for (const p of amountMiss)
     console.log(`   - ${p.id} · ${p.title}\n     못 찾은 금액: ${p.missAmts.join(", ")}\n     ${p.link}`);
+}
+
+if (foundInAttachment.length) {
+  head("첨부 공고문에서 금액 근거를 찾음", foundInAttachment.length,
+    "웹페이지에는 없지만 첨부 한글파일에 있었어요. 근거가 있는 숫자니 지우지 마세요.");
+  for (const p of foundInAttachment)
+    console.log(`   - ${p.id} · ${p.title}\n     찾은 금액: ${p.found.join(", ")}\n     ${p.attUrl}`);
 }
 
 if (unread.length) {
