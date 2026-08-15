@@ -4,6 +4,7 @@ import { fetchProgramsByCategory } from "@/lib/queries";
 import TrackedLink from "@/app/_components/TrackedLink";
 import BookmarkButton from "@/app/_components/BookmarkButton";
 import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
+import CategoryIcon from "@/app/_components/CategoryIcon";
 
 export default async function RecommendResultsPage({
   searchParams,
@@ -36,8 +37,9 @@ export default async function RecommendResultsPage({
 
       {matched && (
         <>
-          <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-full px-3 py-1 inline-block">
-            {matched.emoji} {matched.label} 관련 프로그램을 찾았어요
+          <p className="inline-flex items-center gap-1.5 rounded-full border border-mint bg-mint px-3.5 py-1.5 text-xs font-semibold text-primary-deep">
+            <CategoryIcon slug={matched.slug} className="h-[15px] w-[15px]" />
+            {matched.label} 관련 프로그램을 찾았어요
           </p>
           <div className="grid gap-3">
             {items.length === 0 && (

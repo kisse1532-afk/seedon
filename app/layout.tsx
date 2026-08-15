@@ -26,6 +26,18 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko">
+      <head>
+        {/* Pretendard — 지금까지 globals.css에 이름만 적혀 있고 실제로 불러오는 코드가
+            없어서, 이 글꼴이 깔려 있지 않은 기기(=대부분의 안드로이드·윈도우)에서는
+            맑은 고딕 같은 시스템 기본 글꼴로 떨어지고 있었다. 한글 서비스는 글꼴이
+            인상의 절반이라 실제로 불러오도록 고친다.
+            dynamic-subset은 화면에 쓰인 글자만 잘라서 받아 가벼운 판본이다. */}
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+        />
+      </head>
       {/* overflow-x-hidden: 홈 히어로의 full-bleed(w-screen)가 스크롤바 폭만큼 넘치는 것 방지 */}
       <body className="antialiased min-h-screen overflow-x-hidden bg-sage text-neutral-900">
         <header className="bg-seed-950">
