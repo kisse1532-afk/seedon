@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { saveReferralSource } from "@/lib/consent";
 
 const options = [
   "학교 선생님 소개",
@@ -44,7 +45,12 @@ export default function LoginSurveyPage() {
 
       <button
         disabled={!selected}
-        onClick={() => router.push("/login/complete")}
+        onClick={async () => {
+          // 그동안 답을 받고 그냥 버렸다. 어디서 알고 왔는지는 다음 청소년에게
+          // 어떻게 닿을지 정하는 근거가 된다.
+          if (selected) await saveReferralSource(selected);
+          router.push("/login/complete");
+        }}
         className={`w-full rounded-full text-sm font-medium py-3 transition ${
           selected ? "bg-primary-deep text-white hover:brightness-110" : "bg-cream text-meta cursor-not-allowed"
         }`}

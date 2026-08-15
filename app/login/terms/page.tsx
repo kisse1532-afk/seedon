@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SeedonSymbol } from "@/app/_components/Logo";
+import { saveConsent } from "@/lib/consent";
 
 export default function LoginTermsPage() {
   const router = useRouter();
   const [terms, setTerms] = useState(false);
   const [privacy, setPrivacy] = useState(false);
   const [marketing, setMarketing] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const allRequired = terms && privacy;
   const allChecked = terms && privacy && marketing;
@@ -66,13 +68,19 @@ export default function LoginTermsPage() {
       </div>
 
       <button
-        disabled={!allRequired}
-        onClick={() => router.push("/login/survey")}
+        disabled={!allRequired || saving}
+        onClick={async () => {
+          // 체크만 받고 넘어가면 동의를 받은 게 아니다. 무엇에 언제 동의했는지
+          // 남긴 다음에 이동한다.
+          setSaving(true);
+          await saveConsent({ terms, privacy, marketing });
+          router.push("/login/survey");
+        }}
         className={`w-full rounded-full text-sm font-medium py-3 transition ${
           allRequired ? "bg-primary-deep text-white hover:brightness-110" : "bg-cream text-meta cursor-not-allowed"
         }`}
       >
-        동의하고 계속하기
+        {saving ? "저장 중..." : "동의하고 계속하기"}
       </button>
     </div>
   );
