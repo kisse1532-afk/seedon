@@ -153,18 +153,48 @@ export async function fetchCategoryCounts(): Promise<Record<string, number>> {
   return counts;
 }
 
-// --- 홈: 지금 신청할 수 있는 프로그램 (마감 임박순 → 상시모집순) ---
-// reopen_note가 있는 프로그램(= 이번 회차 모집 종료)은 여기서 제외한다.
+// --- 홈: 지금 신청할 수 있는 프로그램 ---
+// reopen_note가 있는 프로그램(= 이번 회차 모집 종료)은 두 목록 모두에서 제외한다.
 // 카테고리·검색에는 계속 보이되, 지금 신청 못 하는 걸 신청 가능한 것처럼 띄우지 않기 위함.
-export async function fetchOpenPrograms(limit = 5): Promise<Program[]> {
+//
+// "언제까지 해야 하는 것"과 "아무 때나 되는 것"은 청소년이 해야 할 행동이 다르다.
+// 앞엣것은 날짜를 놓치면 끝이고, 뒤엣것은 마음이 준비됐을 때 하면 된다.
+// 한 목록에 섞어 놓으면 그 차이가 도장 하나로만 남아 잘 안 읽혀서 둘로 나눈다
+// (2026-08-15 로드 요청).
+
+/** 신청 기간이 정해져 있고 아직 안 지난 것. 마감이 가까운 순. */
+export async function fetchDeadlinePrograms(limit = 6): Promise<Program[]> {
   const today = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase
     .from("programs")
     .select("*")
     .eq("status", "published")
     .is("reopen_note", null)
-    .or(`apply_deadline.is.null,apply_deadline.gte.${today}`)
-    .order("apply_deadline", { ascending: true, nullsFirst: false })
+    .not("apply_deadline", "is", null)
+    .gte("apply_deadline", today)
+    .order("apply_deadline", { ascending: true })
+    .limit(limit);
+
+  if (error || !data) return [];
+  return data as Program[];
+}
+
+/**
+ * 마감일 없이 아무 때나 신청·이용할 수 있는 것.
+ *
+ * enrollment_status가 비어 있는 건(= 접수 방식을 아직 확인 못 한 것) 일부러
+ * 제외한다. 확인도 안 된 걸 "아무 때나 돼요"라고 띄우면 청소년이 헛걸음하고,
+ * 그건 정보 비대칭을 없애는 게 아니라 새로 만드는 것이다.
+ */
+export async function fetchAlwaysOpenPrograms(limit = 8): Promise<Program[]> {
+  const { data, error } = await supabase
+    .from("programs")
+    .select("*")
+    .eq("status", "published")
+    .is("reopen_note", null)
+    .is("apply_deadline", null)
+    .not("enrollment_status", "is", null)
+    .order("created_at", { ascending: false })
     .limit(limit);
 
   if (error || !data) return [];

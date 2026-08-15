@@ -34,6 +34,14 @@ export type Program = {
   org_type?: OrgType;
   apply_method?: string;
   apply_link_label?: string;
+  /**
+   * 링크가 어떤 페이지인지.
+   * 'apply' = 그 페이지에 신청·상세 안내가 있음
+   * 'info'  = 기관 대문·포털이라 들어가서 더 찾아야 함
+   * 둘을 구분하지 않고 다 "신청하기"로 보여주면, 눌러본 청소년이 재단 홈에
+   * 떨어져 처음부터 다시 찾게 된다(2026-08-15 로드 지적).
+   */
+  link_kind?: "apply" | "info";
   apply_steps?: ApplyStep[];
   phone?: string;
   last_verified_at?: string;

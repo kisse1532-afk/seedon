@@ -123,7 +123,9 @@ export default async function CategoryPage({
                     rel="noopener noreferrer"
                     className="text-xs text-meta underline transition hover:text-ink"
                   >
-                    공식 페이지
+                    {/* 기관 대문으로 가는 링크를 "공식 페이지"라고 부르면 이 프로그램
+                        페이지로 가는 줄 알고 눌렀다가 헤맨다. 이름을 사실대로 쓴다. */}
+                    {p.link_kind === "info" ? "기관 홈페이지" : "공식 페이지"}
                   </a>
                 )}
                 <TrackedLink
