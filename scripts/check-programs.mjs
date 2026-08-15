@@ -23,13 +23,9 @@ if ((process.env.HTTPS_PROXY || process.env.https_proxy) && !process.env.NODE_US
   process.exit(r.status ?? 1);
 }
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const readKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const writeKey = process.env.SUPABASE_SERVICE_ROLE_KEY || readKey;
-if (!url || !readKey) {
-  console.error("NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY 가 필요해요.");
-  process.exit(1);
-}
+const envLib = await import("./lib/env.mjs");
+const { url, key: readKey } = envLib.requireSupabase();
+const writeKey = envLib.writeKey(readKey);
 const fix = process.argv.includes("--fix");
 const today = new Date().toISOString().slice(0, 10);
 
