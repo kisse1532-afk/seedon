@@ -81,6 +81,14 @@ const noEnrollment = programs.filter(
 /* ── 4. 링크가 기관 대문이라 딥링크로 바꿔야 하는 것 ─────────────────────── */
 const infoLinks = programs.filter((p) => p.link_kind === "info");
 
+/* ── 5. 금액이 적힌 카드 ──────────────────────────────────────────────────
+   2026-08-15에 공식 페이지에 근거가 없는 금액이 두 건 나왔다("1년 최대 200만원",
+   "연 300만원"). 틀린 금액은 없는 것보다 나쁘다 — 청소년이 그 숫자를 보고
+   움직이기 때문이다. 숫자가 적힌 카드를 모아 보여주고, 근거를 확인했는지
+   되짚게 한다. 매년 1월 기준 중위소득이 바뀔 때 전수 갱신할 목록이기도 하다. */
+const MONEY = /\d[\d,]*\s*(만원|만\s*\d*천원|억|원\b)/;
+const withMoney = programs.filter((p) => MONEY.test(`${p.description} ${p.apply_method ?? ""}`));
+
 function report(title, rows, hint) {
   if (rows.length === 0) return;
   console.log(`\n## ${title} (${rows.length}건)`);
@@ -93,6 +101,7 @@ report("마감이 지났는데 게시 중", expired, fix ? "→ 아래에서 자
 report("청소년 대상이 아닐 수 있음", ageSuspect, "제목·설명에 대학생·성인만 보여요. 확인해서 아니면 내릴 것.");
 report("접수 방식 미입력 — 홈에 안 보임", noEnrollment, "상시/기간 중 무엇인지 확인해 채울 것.");
 report("링크가 기관 대문 — 딥링크로 교체 필요", infoLinks, "그 사업 페이지를 찾아 link를 바꾸고 link_kind='apply'로.");
+report("금액이 적힌 카드 — 공식 페이지에 그 숫자가 있는지 확인", withMoney, "근거 없는 금액은 없는 것보다 나빠요. 매년 1월 기준액 갱신 때도 이 목록을 봅니다.");
 
 if (fix && expired.length > 0) {
   for (const p of expired) {
