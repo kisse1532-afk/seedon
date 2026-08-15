@@ -16,11 +16,20 @@ import { useState } from "react";
 export default function PhoneLink({
   number,
   className,
+  wrapperClassName = "relative inline-flex items-center",
   children,
 }: {
   /** 실제로 걸 번호. 하이픈이 있어도 되고, tel:에는 숫자만 넣는다. */
   number: string;
   className?: string;
+  /**
+   * 바깥 감싸개의 클래스. 기본값은 글자 길이만큼만 차지하는 inline-flex라
+   * 푸터처럼 글줄 안에 섞일 때 맞다. 반대로 그리드 칸을 꽉 채워야 하는
+   * 곳(홈 긴급 연락 타일)에서는 "relative block w-full"을 넘긴다 —
+   * 기본값 그대로 두면 칸 안에서 글자 길이만큼만 차지해 타일 폭이 번호마다
+   * 달라진다(2026.08.15 확인).
+   */
+  wrapperClassName?: string;
   children: React.ReactNode;
 }) {
   const [copied, setCopied] = useState(false);
@@ -37,7 +46,7 @@ export default function PhoneLink({
   }
 
   return (
-    <span className="relative inline-flex items-center">
+    <span className={wrapperClassName}>
       <a
         href={`tel:${number.replace(/[^0-9]/g, "")}`}
         onClick={handleClick}

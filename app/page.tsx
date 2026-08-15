@@ -300,31 +300,34 @@ export default async function HomePage() {
       {/* 긴급 연락 — 1388 하나만 두면 "그 번호가 내 상황이 아닌" 청소년은
           갈 곳이 없다. 세 번호를 나란히 두고, 번호마다 "이럴 때 거는 데"를
           붙여야 실제로 고를 수 있다. */}
-      {/* 번호는 제목 아래에 두고 전체를 가운데로 모은다. 넓은 화면에서
-          세 칸을 폭에 맞춰 늘리면 번호끼리 멀어져 한 덩어리로 안 읽히므로,
-          칸 묶음의 최대 폭을 잡아 가운데에 세운다. */}
-      <section className="rounded-card border border-sos-line bg-sos-tile/45 px-4 py-6 text-center sm:px-5 sm:py-8">
-        <h2 className="mb-1 text-[18px] font-extrabold tracking-tight text-sos-ink sm:text-[22px]">
+      {/* 번호는 제목 아래에 두고 전체를 가운데로 모은다. 넓은 화면에서 세 칸을
+          폭에 맞춰 끝까지 늘리면 번호끼리 멀어져 한 덩어리로 안 읽히므로 최대
+          폭을 잡되, 그 값이 너무 작으면(366/430px) 이번엔 칸이 배경 안에서
+          쪼그라들어 보인다(2026.08.15 로드 지적). 640px까지 열고 칸 자체를
+          키워서, 한 덩어리로 읽히면서도 배경에 눌리지 않게 맞췄다. */}
+      <section className="rounded-card border border-sos-line bg-sos-tile/45 px-4 py-7 text-center sm:px-6 sm:py-9">
+        <h2 className="mb-1 text-[19px] font-extrabold tracking-tight text-sos-ink sm:text-[23px]">
           힘들 땐 전화해도 돼요
         </h2>
-        <p className="mb-5 text-[12.5px] text-sos-sub sm:text-sm">
+        <p className="mb-6 text-[13px] text-sos-sub sm:text-[15px]">
           전부 무료예요. 이름 안 밝혀도 되고요.
         </p>
-        <div className="mx-auto grid max-w-[366px] grid-cols-3 gap-2 sm:max-w-[430px] sm:gap-2.5">
+        <div className="mx-auto grid max-w-[560px] grid-cols-3 gap-2.5 sm:gap-3.5">
           {sosLines.map((s) => (
             <PhoneLink
               key={s.number}
               number={s.number}
-              className="block rounded-xl border border-sos-line bg-white px-1.5 py-3 text-center transition hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-12px_rgba(194,112,42,0.6)]"
+              wrapperClassName="relative block w-full"
+              className="block h-full rounded-2xl border border-sos-line bg-white px-2 py-4 text-center transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_-12px_rgba(194,112,42,0.6)] sm:py-6"
             >
-              <span className="block text-[17px] font-extrabold leading-tight tracking-tight text-sos-num">
+              <span className="block text-[21px] font-extrabold leading-tight tracking-tight text-sos-num sm:text-[28px]">
                 {s.head}
-                {s.tail && <span className="text-xs">{s.tail}</span>}
+                {s.tail && <span className="text-[13px] sm:text-[17px]">{s.tail}</span>}
               </span>
-              <span className="mt-1 block text-[10.5px] font-bold text-sos-ink">
+              <span className="mt-1.5 block text-[11.5px] font-bold text-sos-ink sm:text-[14px]">
                 {s.name}
               </span>
-              <span className="mt-0.5 block text-[9.5px] leading-snug text-sos-meta">
+              <span className="mt-1 block text-[10px] leading-snug text-sos-meta sm:text-[12.5px]">
                 {s.desc[0]}
                 <br />
                 {s.desc[1]}
