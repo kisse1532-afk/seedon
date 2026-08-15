@@ -31,23 +31,23 @@ export default async function ApplyPage({
     <div className="max-w-md mx-auto space-y-6">
       <Link
         href={`/category/${program.category}`}
-        className="text-sm text-neutral-400 hover:text-neutral-600"
+        className="text-[13px] font-medium text-meta transition hover:text-ink"
       >
         ← 뒤로
       </Link>
 
-      <div className="relative rounded-lg border border-sage-border bg-white p-5 space-y-2">
+      <div className="relative space-y-2 rounded-card border border-sage-border bg-white p-5">
         <BookmarkButton
           programId={program.id}
-          className="absolute top-5 right-5 text-neutral-300 hover:text-primary-deep"
+          className="absolute top-5 right-5 text-sage-border hover:text-primary-deep"
         />
-        <div className="flex items-center gap-1.5 pr-8 flex-wrap">
-          <h1 className="font-semibold text-lg">{program.title}</h1>
+        <div className="flex flex-wrap items-center gap-1.5 pr-8">
+          <h1 className="text-lg font-extrabold tracking-tight text-ink">{program.title}</h1>
           {program.org_type && (
             <span
-              className={`text-[10px] px-1.5 py-0.5 rounded-lg ${
+              className={`rounded-md px-1.5 py-0.5 text-[10px] font-bold ${
                 program.org_type === "public"
-                  ? "bg-mint text-ink"
+                  ? "bg-mint text-primary-deep"
                   : "bg-brand-border/60 text-ink-60"
               }`}
             >
@@ -56,16 +56,16 @@ export default async function ApplyPage({
           )}
           <EnrollmentBadge program={program} />
         </div>
-        <p className="text-xs text-neutral-400">{program.org}</p>
-        <p className="text-sm text-neutral-600">{program.description}</p>
+        <p className="text-xs text-meta">{program.org}</p>
+        <p className="text-sm leading-relaxed text-body">{program.description}</p>
       </div>
 
       {program.apply_steps && <ApplySteps steps={program.apply_steps} />}
 
-      <div className="rounded-lg border border-primary/30 bg-mint p-5 space-y-2">
-        <h2 className="font-medium text-sm text-ink">✅ 이렇게 신청하세요</h2>
+      <div className="space-y-2 rounded-card border border-primary/30 bg-mint p-5">
+        <h2 className="text-sm font-bold text-primary-deep">이렇게 신청하세요</h2>
         {program.apply_method && (
-          <p className="text-sm text-body">{program.apply_method}</p>
+          <p className="text-sm leading-relaxed text-body">{program.apply_method}</p>
         )}
         <div className="flex flex-wrap gap-2 pt-1">
           {program.link && (
@@ -85,9 +85,9 @@ export default async function ApplyPage({
           {program.phone && (
             <a
               href={`tel:${program.phone.replace(/[^0-9]/g, "")}`}
-              className="text-xs border border-primary-deep/40 text-primary-deep rounded-lg px-4 py-1.5 hover:bg-mint"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-primary-deep/40 px-4 py-2 text-xs font-semibold text-primary-deep transition hover:bg-white"
             >
-              📞 {program.phone}
+              {program.phone}
             </a>
           )}
         </div>
@@ -101,47 +101,50 @@ export default async function ApplyPage({
         submitHelp={submitHelp}
       />
 
-      <form action={submit} className="rounded-lg border border-sage-border bg-white p-5 space-y-4">
+      <form action={submit} className="space-y-4 rounded-card border border-sage-border bg-white p-5">
         <div>
-          <h2 className="font-medium text-sm mb-1">이 프로그램 관심 등록</h2>
-          <p className="text-xs text-neutral-400">
+          <h2 className="mb-1 text-sm font-bold text-ink">이 프로그램 관심 등록</h2>
+          <p className="text-xs leading-relaxed text-ink-60">
             신청을 대신 처리해드리진 않지만, 남겨주시면 씨드온이 관련 소식이나
             다음 단계 프로그램을 챙겨드려요.
           </p>
         </div>
 
-        <div className="space-y-1">
-          <label htmlFor="name" className="text-xs text-neutral-500">이름</label>
+        <div className="space-y-1.5">
+          <label htmlFor="name" className="text-xs font-semibold text-ink-60">이름</label>
           <input
             id="name"
             name="name"
             type="text"
             required
-            className="w-full rounded-lg border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full rounded-control border border-sage-border px-4 py-3 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-neutral-400"
             placeholder="이름을 입력해주세요"
           />
         </div>
 
-        <div className="space-y-1">
-          <label htmlFor="contact" className="text-xs text-neutral-500">연락처</label>
+        <div className="space-y-1.5">
+          <label htmlFor="contact" className="text-xs font-semibold text-ink-60">연락처</label>
           <input
             id="contact"
             name="contact"
             type="tel"
             required
-            className="w-full rounded-lg border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full rounded-control border border-sage-border px-4 py-3 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-neutral-400"
             placeholder="010-0000-0000"
           />
         </div>
 
+        {/* 이 버튼만 검정(neutral-800)이라 브랜드 밖으로 튀어 있었다.
+            신청 자체는 위 CTA에서 하고 여기는 부수 동작이므로, 눈에 덜 띄는
+            테두리 버튼으로 두되 색은 브랜드 안에서 쓴다. */}
         <button
           type="submit"
-          className="w-full rounded-lg bg-neutral-800 text-white text-sm font-medium py-3 hover:bg-neutral-900"
+          className="w-full rounded-control border border-primary-deep bg-white py-3.5 text-sm font-bold text-primary-deep transition hover:bg-mint"
         >
           관심 등록하기
         </button>
 
-        <p className="text-[11px] text-neutral-400 text-center">
+        <p className="text-center text-[11px] leading-relaxed text-meta">
           입력하신 정보는 씨드온이 소식 전달 목적으로만 사용하고, 처리가 끝나면
           일정 기간 뒤 삭제해요. 실제 신청은 위 &apos;이렇게 신청하세요&apos;
           안내를 따라 직접 진행해주세요.
