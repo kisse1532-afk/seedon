@@ -81,6 +81,12 @@ const blocked = [];
 const moved = [];
 const ok = [];
 
+/* http:// 는 열리든 안 열리든 무조건 고쳐야 한다. 브라우저가 "안전하지 않음"
+   경고를 띄워서 청소년이 겁먹고 이탈하기 때문이다(CLAUDE.md 링크 규칙).
+   그런데 이런 사이트는 대개 우리 쪽에서도 안 열려서 "확인 못 함" 13건 속에
+   묻혀 있었다. 열림 여부와 상관없는 문제이므로 따로 먼저 보여준다. */
+const insecure = programs.filter((p) => /^http:\/\//i.test(p.link));
+
 for (const p of programs) {
   const r = await check(p.link);
   const row = { ...p, ...r };
@@ -121,10 +127,12 @@ function print(title, rows, hint) {
 }
 
 console.log(`총 ${programs.length}건 점검 (${new Date().toISOString().slice(0, 10)})`);
+print("⚠️ http:// — 열리든 말든 무조건 고쳐야 함", insecure,
+  "브라우저가 \"안전하지 않음\" 경고를 띄워 청소년이 겁먹고 나가요. https로 바꿔볼 것. 우리 쪽에서 확인이 안 되면 사람이 폰으로 열어보고 바꿔야 합니다.");
 print("고쳐야 함 — 링크가 안 열림", dead, "대체 주소를 찾아 갈아끼우고, 못 찾으면 status='pending'.");
 print("주소가 바뀜 — 확인 후 갈아끼우기", moved, "최종 도착지가 맞으면 그 주소로 교체.");
 print("확인 못 함 — 갈아끼우지 말 것", blocked, "기관 방화벽·응답 지연으로 우리 쪽에서만 안 열리는 경우. 브라우저로 직접 확인.");
 console.log(`\n## 정상 ${ok.length}건`);
 
 // 고쳐야 할 게 있으면 실패로 끝내 CI·스크립트에서 잡히게 한다.
-process.exit(dead.length > 0 ? 1 : 0);
+process.exit(dead.length + insecure.length > 0 ? 1 : 0);
