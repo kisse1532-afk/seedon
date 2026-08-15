@@ -37,8 +37,6 @@ const { url, key } = requireSupabase();
 
 const { readNoticeAttachment } = await import("./lib/hwpx.mjs");
 
-const { readNoticeAttachment } = await import("./lib/hwpx.mjs");
-
 const only = process.argv.slice(2).filter((a) => !a.startsWith("-"));
 
 const res = await fetch(
