@@ -89,6 +89,22 @@ const infoLinks = programs.filter((p) => p.link_kind === "info");
 const MONEY = /\d[\d,]*\s*(만원|만\s*\d*천원|억|원\b)/;
 const withMoney = programs.filter((p) => MONEY.test(`${p.description} ${p.apply_method ?? ""}`));
 
+/* ── 6. 확인 못 했다고 적어놓고 숫자가 들어간 카드 ────────────────────────
+   2026-08-15 저녁 로드 결정으로 "찾았으면 바로 게시"가 기본값이 됐다. 페이지를
+   못 열어도 올리되 **숫자만 뺀다**는 게 그 방침의 유일한 안전벨트다. 그래서
+   review_note에 "확인 못 함"이라고 적어놓고 정작 설명에는 금액이 들어가 있는
+   카드를 잡아낸다. 이게 그대로 나가면 청소년이 근거 없는 숫자를 보고 움직인다.
+
+   전화번호·주소의 숫자는 금액이 아니므로 제외하고, 우리가 규칙대로 환산해 쓴
+   중위소득 금액도 뺀다(CLAUDE.md 절대규칙 3). */
+const UNVERIFIED = /확인\s*못|확인이?\s*안|미확인|확인\s*필요|403|연결\s*실패|자바스크립트/;
+const OUR_OWN_MATH = /(324|649|974)\s*만원/g;
+const unverifiedWithMoney = programs.filter((p) => {
+  if (!UNVERIFIED.test(p.review_note || "")) return false;
+  const text = `${p.description} ${p.apply_method ?? ""}`.replace(OUR_OWN_MATH, " ");
+  return MONEY.test(text);
+});
+
 function report(title, rows, hint) {
   if (rows.length === 0) return;
   console.log(`\n## ${title} (${rows.length}건)`);
@@ -101,6 +117,8 @@ report("마감이 지났는데 게시 중", expired, fix ? "→ 아래에서 자
 report("청소년 대상이 아닐 수 있음", ageSuspect, "제목·설명에 대학생·성인만 보여요. 확인해서 아니면 내릴 것.");
 report("접수 방식 미입력 — 홈에 안 보임", noEnrollment, "상시/기간 중 무엇인지 확인해 채울 것.");
 report("링크가 기관 대문 — 딥링크로 교체 필요", infoLinks, "그 사업 페이지를 찾아 link를 바꾸고 link_kind='apply'로.");
+report("⚠️ 확인 못 했다면서 숫자가 적혀 있음 — 지금 빼야 함", unverifiedWithMoney,
+  "\"찾았으면 바로 올린다\"의 유일한 안전벨트가 이겁니다. 공식 페이지에서 그 숫자를 직접 보지 못했으면 지우고 \"그해 공고에서 확인하세요\"로 바꿀 것.");
 report("금액이 적힌 카드 — 공식 페이지에 그 숫자가 있는지 확인", withMoney, "근거 없는 금액은 없는 것보다 나빠요. 매년 1월 기준액 갱신 때도 이 목록을 봅니다.");
 
 if (fix && expired.length > 0) {
@@ -116,6 +134,6 @@ if (fix && expired.length > 0) {
   }
 }
 
-if (expired.length + ageSuspect.length + noEnrollment.length + infoLinks.length === 0) {
+if (expired.length + ageSuspect.length + noEnrollment.length + infoLinks.length + unverifiedWithMoney.length === 0) {
   console.log("\n손볼 게 없어요.");
 }
