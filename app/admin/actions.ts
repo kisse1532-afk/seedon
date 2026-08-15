@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 function parseTags(raw: FormDataEntryValue | null) {
   return String(raw || "")
@@ -106,14 +107,26 @@ export async function logout() {
   redirect("/admin/login");
 }
 
-export async function markHelpRequestContacted(formData: FormData) {
-  const id = String(formData.get("id"));
-  await supabase.from("help_requests").update({ status: "contacted" }).eq("id", id);
+/* 이름·연락처가 든 표는 서버 전용 키로만 다룬다. 공개 키로 쓰기가 열려 있으면
+   읽기도 같이 열어야 해서, 결국 누구나 명단을 볼 수 있게 된다. */
+async function setStatus(table: "help_requests" | "applications", id: string, status: string) {
+  if (!supabaseAdmin) return;
+  await supabaseAdmin.from(table).update({ status }).eq("id", id);
   revalidatePath("/admin");
 }
 
+export async function markHelpRequestContacted(formData: FormData) {
+  await setStatus("help_requests", String(formData.get("id")), "contacted");
+}
+
 export async function markHelpRequestCompleted(formData: FormData) {
-  const id = String(formData.get("id"));
-  await supabase.from("help_requests").update({ status: "completed" }).eq("id", id);
-  revalidatePath("/admin");
+  await setStatus("help_requests", String(formData.get("id")), "completed");
+}
+
+export async function markApplicationContacted(formData: FormData) {
+  await setStatus("applications", String(formData.get("id")), "contacted");
+}
+
+export async function markApplicationCompleted(formData: FormData) {
+  await setStatus("applications", String(formData.get("id")), "completed");
 }

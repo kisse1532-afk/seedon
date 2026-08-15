@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { categories } from "@/lib/data";
-import { fetchAllPrograms, fetchReports, fetchHelpRequests, fetchEventStats } from "@/lib/queries";
-import { deleteProgram, dismissReport, logout, markHelpRequestContacted, markHelpRequestCompleted } from "./actions";
+import { fetchAllPrograms, fetchReports } from "@/lib/queries";
+import { fetchHelpRequests, fetchEventStats, fetchApplications } from "@/lib/queries-admin";
+import { hasAdminKey } from "@/lib/supabase-admin";
+import { deleteProgram, dismissReport, logout, markHelpRequestContacted, markHelpRequestCompleted, markApplicationContacted, markApplicationCompleted } from "./actions";
 
 function isStale(dateStr?: string) {
   if (!dateStr) return false;
@@ -16,12 +18,16 @@ export default async function AdminPage({
 }) {
   const { status, category, q } = await searchParams;
 
-  const [programs, reports, helpRequests, eventStats] = await Promise.all([
+  const [programs, reports, helpRequests, eventStats, applications] = await Promise.all([
     fetchAllPrograms(),
     fetchReports(),
     fetchHelpRequests(),
     fetchEventStats(30),
+    fetchApplications(),
   ]);
+
+  const programTitle = new Map(programs.map((p) => [p.id, p.title]));
+  const pendingApplications = applications.filter((a) => a.status !== "contacted" && a.status !== "completed").length;
 
   const published = programs.filter((p) => p.status === "published").length;
 
@@ -91,10 +97,22 @@ export default async function AdminPage({
         </div>
       </div>
 
+      {!hasAdminKey && (
+        <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4">
+          <p className="text-sm font-bold text-amber-900">신청자 목록을 못 읽고 있어요</p>
+          <p className="text-xs leading-relaxed text-amber-800 mt-1">
+            신청자 이름·연락처는 아무나 못 보게 서버 전용 키로만 읽도록 해놨어요. 지금 그 키가 없어서
+            신청·도움요청 목록이 비어 보입니다. Vercel 환경변수에{" "}
+            <code className="bg-amber-100 px-1 rounded">SUPABASE_SERVICE_ROLE_KEY</code> 를 넣고 다시 배포하면 보여요.
+            (<code className="bg-amber-100 px-1 rounded">NEXT_PUBLIC_</code> 를 붙이면 안 됩니다 — 붙이면 브라우저로 새어나가요.)
+          </p>
+        </div>
+      )}
+
       <section className="space-y-3">
         <h2 className="text-sm font-semibold text-neutral-500">전환율 (최근 30일)</h2>
         <div className="rounded-2xl border border-neutral-200 bg-white p-5">
-          <div className="grid grid-cols-3 gap-3 text-center">
+          <div className="grid grid-cols-4 gap-3 text-center">
             <div>
               <div className="text-xl font-bold">{eventStats.cardClicks}</div>
               <div className="text-xs text-neutral-400 mt-1">카드 클릭</div>
@@ -114,6 +132,15 @@ export default async function AdminPage({
                 신청 클릭
                 {eventStats.applyRate !== null && (
                   <span className="text-emerald-600 ml-1">({eventStats.applyRate}%)</span>
+                )}
+              </div>
+            </div>
+            <div>
+              <div className="text-xl font-bold">{eventStats.submissions}</div>
+              <div className="text-xs text-neutral-400 mt-1">
+                폼 제출
+                {eventStats.submitRate !== null && (
+                  <span className="text-emerald-600 ml-1">({eventStats.submitRate}%)</span>
                 )}
               </div>
             </div>
@@ -374,6 +401,76 @@ export default async function AdminPage({
                   <input type="hidden" name="id" value={h.id} />
                   <button className="text-xs text-neutral-400 hover:text-emerald-600">완료</button>
                 </form>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 신청(관심 등록) 목록.
+          절대규칙 1에 따라 내부 화면이라도 낙인성 라벨은 달지 않는다 —
+          프로그램명과 신청 시각만 보여주고, 어떤 조건에 해당하는 사람인지는
+          집계하지도 표시하지도 않는다. */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-neutral-500">📮 신청 (관심 등록)</h2>
+          <span className="text-xs text-neutral-400">
+            전체 {applications.length}건
+            {pendingApplications > 0 && (
+              <span className="text-amber-600 font-semibold ml-1.5">· 확인 안 한 게 {pendingApplications}건</span>
+            )}
+          </span>
+        </div>
+        <div className="rounded-2xl border border-neutral-200 bg-white divide-y divide-neutral-100">
+          {applications.length === 0 && (
+            <p className="text-sm text-neutral-400 p-5 text-center">
+              {hasAdminKey
+                ? "아직 신청이 없어요."
+                : "서버 키가 없어서 못 읽고 있어요. 위 안내를 참고하세요."}
+            </p>
+          )}
+          {applications.map((a) => (
+            <div key={a.id} className="p-4 flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-medium text-sm">{a.applicant_name}</span>
+                  <span className="text-xs text-neutral-400">{a.applicant_contact}</span>
+                  <span
+                    className={`text-[10px] px-2 py-0.5 rounded-full ${
+                      a.status === "contacted"
+                        ? "bg-sky-100 text-sky-700"
+                        : a.status === "completed"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-amber-100 text-amber-700"
+                    }`}
+                  >
+                    {a.status === "contacted" ? "연락함" : a.status === "completed" ? "완료" : "대기중"}
+                  </span>
+                </div>
+                <p className="text-xs text-neutral-400 mt-0.5">
+                  {a.program_id ? programTitle.get(a.program_id) ?? a.program_id : "프로그램 미지정"}
+                  <span className="mx-1.5">·</span>
+                  {new Date(a.created_at).toLocaleString("ko-KR", {
+                    month: "numeric",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                {a.status !== "contacted" && a.status !== "completed" && (
+                  <form action={markApplicationContacted}>
+                    <input type="hidden" name="id" value={a.id} />
+                    <button className="text-xs text-sky-600 hover:underline">연락함</button>
+                  </form>
+                )}
+                {a.status !== "completed" && (
+                  <form action={markApplicationCompleted}>
+                    <input type="hidden" name="id" value={a.id} />
+                    <button className="text-xs text-neutral-400 hover:text-emerald-600">완료</button>
+                  </form>
+                )}
               </div>
             </div>
           ))}
