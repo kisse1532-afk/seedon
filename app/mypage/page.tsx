@@ -92,6 +92,14 @@ export default function MyPage() {
             <span>잘못된 정보 제보하기</span>
             <span className="text-sage-border">›</span>
           </Link>
+          <Link href="/terms" className="p-4 flex items-center justify-between text-body hover:text-primary-deep">
+            <span>이용약관</span>
+            <span className="text-sage-border">›</span>
+          </Link>
+          <Link href="/privacy" className="p-4 flex items-center justify-between text-body hover:text-primary-deep">
+            <span>개인정보 처리방침</span>
+            <span className="text-sage-border">›</span>
+          </Link>
           {loggedIn ? (
             <button
               onClick={handleLogout}

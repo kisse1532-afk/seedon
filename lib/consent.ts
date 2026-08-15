@@ -8,18 +8,17 @@ import { supabase } from "@/lib/supabase";
  * 나중에 무엇에 언제 동의했는지 확인할 수 없으면 받지 않은 것과 같다.
  */
 
-/**
- * 지금 화면에 걸려 있는 약관의 버전.
- *
- * 약관 내용을 고치면 이 날짜도 같이 올린다. 그래야 "이 사람은 옛 약관에만
- * 동의했다"는 걸 구분할 수 있고, 다시 받아야 할 사람을 찾을 수 있다.
- */
-export const POLICY_VERSION = "2026-08-15";
+// 버전은 약관 본문과 같은 곳(lib/policy.ts)에서 관리한다. 두 군데 두면
+// 내용은 바뀌었는데 버전은 그대로인 상태가 생긴다.
+export { POLICY_VERSION } from "@/lib/policy";
+import { POLICY_VERSION as VERSION } from "@/lib/policy";
 
 export type Consent = {
   terms: boolean;
   privacy: boolean;
   marketing: boolean;
+  /** 만 14세 이상임을 본인이 확인(절대규칙 4). 생년월일은 받지 않는다. */
+  age14: boolean;
 };
 
 /**
@@ -45,8 +44,9 @@ export async function saveConsent(consent: Consent): Promise<void> {
       agreed_terms: consent.terms,
       agreed_privacy: consent.privacy,
       agreed_marketing: consent.marketing,
+      confirmed_age_14: consent.age14,
       agreed_at: new Date().toISOString(),
-      policy_version: POLICY_VERSION,
+      policy_version: VERSION,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "user_id" }
