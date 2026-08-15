@@ -1,0 +1,112 @@
+/**
+ * 등록된 프로그램이 지금도 맞는 정보인지 점검한다.
+ *
+ * 왜 필요한가: 공모전·대회를 등록하기 시작하면 마감이 짧고 계속 쏟아져서,
+ * 사람이 눈으로 관리하면 지난 공모전이 그대로 남는다. 로드 지적(2026-08-15)
+ * "그건 에이전트 코딩을 열심히 하면 되는 거 아니야?" — 맞는 말이라 자동화한다.
+ *
+ * 쓰는 법:
+ *   node scripts/check-programs.mjs           # 점검만
+ *   node scripts/check-programs.mjs --fix     # 마감 지난 것 자동 정리까지
+ *
+ * 필요한 환경변수:
+ *   NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY
+ *   --fix를 쓰려면 쓰기 권한이 있는 키(SUPABASE_SERVICE_ROLE_KEY)가 필요하다.
+ */
+
+if ((process.env.HTTPS_PROXY || process.env.https_proxy) && !process.env.NODE_USE_ENV_PROXY) {
+  const { spawnSync } = await import("node:child_process");
+  const r = spawnSync(process.execPath, [...process.argv.slice(1)], {
+    stdio: "inherit",
+    env: { ...process.env, NODE_USE_ENV_PROXY: "1", NODE_NO_WARNINGS: "1" },
+  });
+  process.exit(r.status ?? 1);
+}
+
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const readKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const writeKey = process.env.SUPABASE_SERVICE_ROLE_KEY || readKey;
+if (!url || !readKey) {
+  console.error("NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY 가 필요해요.");
+  process.exit(1);
+}
+const fix = process.argv.includes("--fix");
+const today = new Date().toISOString().slice(0, 10);
+
+async function api(path, init = {}) {
+  const key = init.method && init.method !== "GET" ? writeKey : readKey;
+  const r = await fetch(`${url}/rest/v1/${path}`, {
+    ...init,
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+      ...(init.headers || {}),
+    },
+  });
+  if (!r.ok) throw new Error(`${r.status} ${await r.text()}`);
+  return r.status === 204 ? null : r.json();
+}
+
+const programs = await api("programs?select=*&status=eq.published");
+
+/* ── 1. 마감이 지났는데 아직 게시 중인 것 ────────────────────────────────
+   홈 목록은 쿼리에서 이미 걸러내지만, 상태가 published로 남아 있으면
+   관리자 화면에서 "게시중"으로 잡혀 실제와 어긋난다. reopen_note를 채워
+   "다음 회차 안내"로 바꿔준다. */
+const expired = programs.filter(
+  (p) => p.apply_deadline && p.apply_deadline < today && !p.reopen_note
+);
+
+/* ── 2. 청소년이 아닌 대상이 섞여 들어온 것 ──────────────────────────────
+   공모전 사이트에는 대학생·일반 대상이 같이 올라온다. 제목·설명에 청소년이
+   아닌 대상만 적혀 있으면 잡아낸다. 확실히 걸러내는 게 아니라 "사람이 봐야 할
+   것"을 줄여주는 용도다 — 애매한 건 사람이 판단해야 한다. */
+const ADULT_ONLY = /대학생|대학원|성인|직장인|만\s*19세\s*이상|19세\s*이상|청년\s*\(?만?\s*19/;
+// "중3~대학생"처럼 청소년이 함께 들어가는 표기가 많아서, 학년 표기(중1·고2 등)와
+// 나이 범위 아래끝(만 9~24세)까지 청소년 신호로 본다. 이걸 빼면 멀쩡한 사업이
+// 계속 걸려 사람이 매번 헛걸음한다.
+const YOUTH =
+  /청소년|중학생|고등학생|초중고|중·고|중고생|중\s*[1-3]|고\s*[1-3]|만\s*[9]~|만\s*1[0-8]|1[4-8]세/;
+const ageSuspect = programs.filter((p) => {
+  const text = `${p.title} ${p.description}`;
+  return ADULT_ONLY.test(text) && !YOUTH.test(text);
+});
+
+/* ── 3. 접수 방식이 비어 홈 목록에서 아예 빠지는 것 ─────────────────────── */
+const noEnrollment = programs.filter(
+  (p) => !p.enrollment_status && !p.apply_deadline && !p.reopen_note
+);
+
+/* ── 4. 링크가 기관 대문이라 딥링크로 바꿔야 하는 것 ─────────────────────── */
+const infoLinks = programs.filter((p) => p.link_kind === "info");
+
+function report(title, rows, hint) {
+  if (rows.length === 0) return;
+  console.log(`\n## ${title} (${rows.length}건)`);
+  if (hint) console.log(`   ${hint}`);
+  for (const p of rows) console.log(`   - ${p.id} · ${p.title}`);
+}
+
+console.log(`게시 중 ${programs.length}건 점검 (${today})`);
+report("마감이 지났는데 게시 중", expired, fix ? "→ 아래에서 자동 정리합니다." : "--fix 를 붙이면 자동 정리합니다.");
+report("청소년 대상이 아닐 수 있음", ageSuspect, "제목·설명에 대학생·성인만 보여요. 확인해서 아니면 내릴 것.");
+report("접수 방식 미입력 — 홈에 안 보임", noEnrollment, "상시/기간 중 무엇인지 확인해 채울 것.");
+report("링크가 기관 대문 — 딥링크로 교체 필요", infoLinks, "그 사업 페이지를 찾아 link를 바꾸고 link_kind='apply'로.");
+
+if (fix && expired.length > 0) {
+  for (const p of expired) {
+    await api(`programs?id=eq.${encodeURIComponent(p.id)}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        reopen_note: "올해 접수 마감 · 다음 모집 공고 확인",
+        review_note: `${p.review_note ? p.review_note + " / " : ""}${today} 마감일(${p.apply_deadline}) 경과 자동 확인 — 다음 회차 안내로 전환`,
+      }),
+    });
+    console.log(`   정리함: ${p.id}`);
+  }
+}
+
+if (expired.length + ageSuspect.length + noEnrollment.length + infoLinks.length === 0) {
+  console.log("\n손볼 게 없어요.");
+}

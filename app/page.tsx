@@ -152,7 +152,9 @@ export default async function HomePage() {
               어떤 게 필요해요?
             </h2>
             <p className="mt-1 text-xs text-meta sm:text-[13px]">
-              6가지로 나눠뒀어요. 눌러서 둘러보세요.
+              {/* 카테고리를 늘렸는데 이 숫자가 6으로 남아 있어 화면이 거짓말을
+                  하고 있었다. 목록에서 직접 세게 해서 다시 어긋나지 않게 한다. */}
+              {categories.length}가지로 나눠뒀어요. 눌러서 둘러보세요.
             </p>
           </div>
           <Link
@@ -163,7 +165,9 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-6 sm:gap-3">
+        {/* 7개라 폰에서 3칸으로 두면 마지막 줄에 하나만 남아 깨져 보인다.
+            4칸으로 두면 4+3으로 떨어지고, 넓은 화면에서는 한 줄에 다 들어간다. */}
+        <div className="grid grid-cols-4 gap-2 sm:grid-cols-7 sm:gap-3">
           {categories.map((c) => (
             <Link
               key={c.slug}

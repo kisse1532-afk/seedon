@@ -4,7 +4,8 @@ export type Category =
   | "housing"
   | "living"
   | "career"
-  | "culture";
+  | "culture"
+  | "contest";
 
 export const categories: { slug: Category; label: string; emoji: string }[] = [
   { slug: "education", label: "교육", emoji: "📚" },
@@ -13,6 +14,10 @@ export const categories: { slug: Category; label: string; emoji: string }[] = [
   { slug: "living", label: "경제·생활비", emoji: "💳" },
   { slug: "career", label: "진로·취업", emoji: "🧭" },
   { slug: "culture", label: "문화체험", emoji: "🎨" },
+  // 2026-08-15 신설. 지금까지 등록된 게 전부 "힘들 때 받는 것"이라, 문구를
+  // 아무리 다듬어도 "여기는 사정 어려운 애들 오는 데"라는 인상이 남는다.
+  // 해볼 만한 기회가 같이 있어야 그냥 "청소년이 쓰는 데"가 된다.
+  { slug: "contest", label: "공모전·대회", emoji: "🏆" },
 ];
 
 export type OrgType = "public" | "nonprofit";
