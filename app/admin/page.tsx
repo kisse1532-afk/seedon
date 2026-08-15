@@ -253,6 +253,20 @@ export default async function AdminPage({
                             확인 필요
                           </span>
                         )}
+                        {/* 링크가 기관 대문이면 청소년이 거기서 프로그램을 다시
+                            찾아야 한다. 딥링크로 바꿔야 할 대상이라 목록에서
+                            바로 보이게 한다(2026-08-15). */}
+                        {p.link_kind === "info" && (
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-50 text-orange-600">
+                            링크=기관 대문
+                          </span>
+                        )}
+                        {/* 접수 방식(상시/기간)이 비어 있으면 홈 목록에 아예 안 뜬다 */}
+                        {!p.enrollment_status && !p.apply_deadline && !p.reopen_note && (
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-50 text-red-500">
+                            접수방식 미입력 · 홈 노출 안 됨
+                          </span>
+                        )}
                       </div>
                       <p className="text-xs text-neutral-400 truncate">
                         {p.org} · 확인일 {p.last_verified_at}
