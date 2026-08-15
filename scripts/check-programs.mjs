@@ -95,10 +95,42 @@ const withMoney = programs.filter((p) => MONEY.test(`${p.description} ${p.apply_
    중위소득 금액도 뺀다(CLAUDE.md 절대규칙 3). */
 const UNVERIFIED = /확인\s*못|확인이?\s*안|미확인|확인\s*필요|403|연결\s*실패|자바스크립트/;
 const OUR_OWN_MATH = /(324|649|974)\s*만원/g;
+
+/* 나중에 근거를 찾아낸 카드는 빼야 한다. review_note는 계속 덧붙이는 기록이라
+   "처음엔 못 열었다 → 나중에 첨부 공고문에서 확인했다"가 한 칸에 같이 남는다.
+   앞부분만 보고 잡으면 이미 해결된 카드가 매일 다시 뜨고, 그러면 이 목록을
+   아무도 안 믿게 된다(경기도 생활장학금이 실제로 그렇게 걸렸다). */
+const VERIFIED_LATER = /원문\s*확인|공고문에서\s*확인|직접\s*확인|공식\s*페이지\s*직접|에서\s*직접\s*본|확인함/;
+
 const unverifiedWithMoney = programs.filter((p) => {
-  if (!UNVERIFIED.test(p.review_note || "")) return false;
+  const note = p.review_note || "";
+  if (!UNVERIFIED.test(note)) return false;
+  if (VERIFIED_LATER.test(note)) return false;
   const text = `${p.description} ${p.apply_method ?? ""}`.replace(OUR_OWN_MATH, " ");
   return MONEY.test(text);
+});
+
+/* ── 7. 내부 메모가 청소년 화면에 그대로 나간 것 ──────────────────────────
+   "개인 직접신청 여부 추가 확인 필요", "학교 추천 기반으로 추정" 같은 문구가
+   apply_method에 그대로 남아 청소년에게 노출되고 있었다(2026-08-15에 2건 적발).
+   이건 우리끼리 쓰는 메모지 안내가 아니다. 확인이 덜 됐다는 사실은
+   review_note에 적고, 화면에는 청소년이 할 수 있는 행동만 남겨야 한다. */
+const INTERNAL_NOTE = /확인\s*필요|추가\s*확인|확인\s*불가|추정|미확인|확인해야\s*함/;
+const leakedNote = programs.filter(
+  (p) => INTERNAL_NOTE.test(p.apply_method || "") || INTERNAL_NOTE.test(p.description || "")
+);
+
+/* ── 8. 신청 방법이 청소년에게 하는 말이 아닌 것 ──────────────────────────
+   절대규칙 3은 "~해요"체로 쓰라고 정하고 있다. 판별은 문장 끝으로 한다 —
+   "…온라인 신청", "…면접심사 진행"처럼 명사로 끝나면 기관 문서를 옮겨온 것이고,
+   "…말해보세요", "…하면 돼요"로 끝나면 청소년에게 하는 말이다.
+
+   이 한 줄이 로드가 세운 게시 기준("청소년이 오늘 할 수 있는 행동이 있어야
+   한다")과도 맞물린다. 행동을 적으면 문장이 저절로 "~해요"로 끝나기 때문이다.
+   실제로 37건에 적용했을 때 잘못 걸린 것도, 놓친 것도 없었다. */
+const officialTone = programs.filter((p) => {
+  const m = (p.apply_method || "").trim();
+  return m.length > 0 && !/(요|다)\s*[.!]?$/.test(m);
 });
 
 function report(title, rows, hint) {
@@ -113,6 +145,10 @@ report("마감이 지났는데 게시 중", expired, fix ? "→ 아래에서 자
 report("청소년 대상이 아닐 수 있음", ageSuspect, "제목·설명에 대학생·성인만 보여요. 확인해서 아니면 내릴 것.");
 report("접수 방식 미입력 — 홈에 안 보임", noEnrollment, "상시/기간 중 무엇인지 확인해 채울 것.");
 report("링크가 기관 대문 — 딥링크로 교체 필요", infoLinks, "그 사업 페이지를 찾아 link를 바꾸고 link_kind='apply'로.");
+report("🚨 내부 메모가 청소년 화면에 나가고 있음 — 지금 빼야 함", leakedNote,
+  "\"확인 필요\"·\"추정\" 같은 말은 우리끼리 쓰는 메모예요. 화면에는 청소년이 할 행동만 남기고, 확인이 덜 된 사실은 review_note에 적을 것.");
+report("신청 방법이 청소년에게 하는 말이 아님 — \"~해요\"로 고칠 것", officialTone,
+  "\"…온라인 신청\"처럼 명사로 끝나면 기관 문서를 옮겨온 거예요. 청소년이 할 행동을 적으면 문장이 저절로 \"~해요\"로 끝납니다(절대규칙 3 + 게시 기준).");
 report("⚠️ 확인 못 했다면서 숫자가 적혀 있음 — 지금 빼야 함", unverifiedWithMoney,
   "\"찾았으면 바로 올린다\"의 유일한 안전벨트가 이겁니다. 공식 페이지에서 그 숫자를 직접 보지 못했으면 지우고 \"그해 공고에서 확인하세요\"로 바꿀 것.");
 report("금액이 적힌 카드 — 공식 페이지에 그 숫자가 있는지 확인", withMoney, "근거 없는 금액은 없는 것보다 나빠요. 매년 1월 기준액 갱신 때도 이 목록을 봅니다.");
@@ -130,6 +166,7 @@ if (fix && expired.length > 0) {
   }
 }
 
-if (expired.length + ageSuspect.length + noEnrollment.length + infoLinks.length + unverifiedWithMoney.length === 0) {
+if (expired.length + ageSuspect.length + noEnrollment.length + infoLinks.length +
+    unverifiedWithMoney.length + leakedNote.length + officialTone.length === 0) {
   console.log("\n손볼 게 없어요.");
 }
