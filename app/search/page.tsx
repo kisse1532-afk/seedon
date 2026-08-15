@@ -3,6 +3,7 @@ import { fetchAllPrograms } from "@/lib/queries";
 import TrackedLink from "@/app/_components/TrackedLink";
 import BookmarkButton from "@/app/_components/BookmarkButton";
 import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
+import CategoryIcon from "@/app/_components/CategoryIcon";
 import { categories } from "@/lib/data";
 import { matchCategory } from "@/lib/recommend";
 
@@ -58,9 +59,14 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       )}
 
       {matchedCategory && (
-        <p className="rounded-lg border border-sage-border bg-white px-4 py-3 text-sm text-neutral-600">
-          적어주신 내용을 보고 <b className="text-seed-700">{matchedCategory.emoji} {matchedCategory.label}</b> 쪽으로 찾아봤어요.
-          딱 맞지 않으면 아래 카테고리도 둘러보세요.
+        <p className="flex items-start gap-2.5 rounded-card border border-sage-border bg-white px-4 py-3.5 text-sm leading-relaxed text-body">
+          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-mint text-primary-deep">
+            <CategoryIcon slug={matchedCategory.slug} className="h-3.5 w-3.5" />
+          </span>
+          <span>
+            적어주신 내용을 보고 <b className="text-primary-deep">{matchedCategory.label}</b> 쪽으로 찾아봤어요.
+            딱 맞지 않으면 아래 카테고리도 둘러보세요.
+          </span>
         </p>
       )}
 
