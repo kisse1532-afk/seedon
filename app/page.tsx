@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { categories, getDeadlineStamp } from "@/lib/data";
+import { categories, emergencyContacts, getDeadlineStamp } from "@/lib/data";
 import PhoneLink from "@/app/_components/PhoneLink";
 import CategoryIcon from "@/app/_components/CategoryIcon";
 import { fetchCategoryCounts, fetchOpenPrograms } from "@/lib/queries";
@@ -16,16 +16,6 @@ const situations: { label: string; slug: Category }[] = [
   { label: "지낼 곳이 필요해요", slug: "housing" },
   { label: "얘기할 사람이 필요해요", slug: "counseling" },
   { label: "진로가 고민이에요", slug: "career" },
-];
-
-// 긴급 연락 3종. head/tail로 나눈 건 "1577-0199"에서 국번만 크게 보이게
-// 하려는 것 — 세 칸 폭이 같아야 해서 뒷자리는 작게 붙인다.
-// 설명을 두 줄로 나눠 두는 건 칸이 옆으로 퍼지지 않게 하려는 것 —
-// 한 줄로 흘리면 칸 폭이 글자 길이만큼 벌어져 세 칸이 멀어진다.
-const sosLines = [
-  { number: "1388", head: "1388", tail: "", name: "청소년전화", desc: ["무슨 얘기든", "24시간"] },
-  { number: "1577-0199", head: "1577", tail: "-0199", name: "마음이 힘들 때", desc: ["정신건강", "위기상담"] },
-  { number: "117", head: "117", tail: "", name: "학교폭력", desc: ["신고하고", "상담받기"] },
 ];
 
 // 왼쪽 도장의 색. 마감이 가까운 것만 따뜻한 색으로 튀게 하고,
@@ -300,11 +290,13 @@ export default async function HomePage() {
       {/* 긴급 연락 — 1388 하나만 두면 "그 번호가 내 상황이 아닌" 청소년은
           갈 곳이 없다. 세 번호를 나란히 두고, 번호마다 "이럴 때 거는 데"를
           붙여야 실제로 고를 수 있다. */}
-      {/* 번호는 제목 아래에 두고 전체를 가운데로 모은다. 넓은 화면에서 세 칸을
+      {/* 번호는 제목 아래에 두고 전체를 가운데로 모은다. 넓은 화면에서 칸을
           폭에 맞춰 끝까지 늘리면 번호끼리 멀어져 한 덩어리로 안 읽히므로 최대
           폭을 잡되, 그 값이 너무 작으면(366/430px) 이번엔 칸이 배경 안에서
-          쪼그라들어 보인다(2026.08.15 로드 지적). 640px까지 열고 칸 자체를
-          키워서, 한 덩어리로 읽히면서도 배경에 눌리지 않게 맞췄다. */}
+          쪼그라들어 보인다(2026.08.15 로드 지적). 칸 자체를 키우고 최대 폭을
+          열어서, 한 덩어리로 읽히면서도 배경에 눌리지 않게 맞췄다.
+          네 칸을 폰에서 한 줄에 넣으면 칸이 너무 좁아 번호가 안 읽히므로
+          폰은 2×2, 넓은 화면은 한 줄 4칸으로 나눈다. */}
       <section className="rounded-card border border-sos-line bg-sos-tile/45 px-4 py-7 text-center sm:px-6 sm:py-9">
         <h2 className="mb-1 text-[19px] font-extrabold tracking-tight text-sos-ink sm:text-[23px]">
           힘들 땐 전화해도 돼요
@@ -312,8 +304,8 @@ export default async function HomePage() {
         <p className="mb-6 text-[13px] text-sos-sub sm:text-[15px]">
           전부 무료예요. 이름 안 밝혀도 되고요.
         </p>
-        <div className="mx-auto grid max-w-[560px] grid-cols-3 gap-2.5 sm:gap-3.5">
-          {sosLines.map((s) => (
+        <div className="mx-auto grid max-w-[420px] grid-cols-2 gap-2.5 sm:max-w-[720px] sm:grid-cols-4 sm:gap-3.5">
+          {emergencyContacts.map((s) => (
             <PhoneLink
               key={s.number}
               number={s.number}
