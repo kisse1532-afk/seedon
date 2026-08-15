@@ -83,6 +83,15 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Pretendard, -apple-system, "Apple SD Gothic Neo",
-    "Malgun Gothic", "맑은 고딕", sans-serif;
+  /* "Pretendard Variable"이 앞에 와야 layout.tsx에서 불러온 웹폰트가 잡힌다.
+     그 뒤는 웹폰트를 못 받았을 때의 대비책. */
+  font-family: "Pretendard Variable", Pretendard, -apple-system,
+    "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif;
+  /* 한글은 글자 사이가 넓어 보여 제목이 흩어진다. 살짝 좁혀 덩어리로 읽히게. */
+  word-break: keep-all;
+}
+
+/* 숫자를 폭이 일정한 형태로 — D-7과 D-107이 세로로 흔들리지 않게 */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
