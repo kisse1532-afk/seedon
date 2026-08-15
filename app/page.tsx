@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { categories, emergencyContacts, getDeadlineStamp } from "@/lib/data";
+import { categories, emergencyContacts } from "@/lib/data";
 import PhoneLink from "@/app/_components/PhoneLink";
 import CategoryIcon from "@/app/_components/CategoryIcon";
-import { fetchCategoryCounts, fetchOpenPrograms } from "@/lib/queries";
-import TrackedLink from "@/app/_components/TrackedLink";
+import { fetchAlwaysOpenPrograms, fetchCategoryCounts, fetchDeadlinePrograms } from "@/lib/queries";
+import ProgramRow from "@/app/_components/ProgramRow";
 import type { Category } from "@/lib/data";
 
 // 홈은 매 요청마다 DB를 다시 읽는다. 이게 없으면 빌드 시점 데이터로 고정되어,
@@ -17,14 +17,6 @@ const situations: { label: string; slug: Category }[] = [
   { label: "얘기할 사람이 필요해요", slug: "counseling" },
   { label: "진로가 고민이에요", slug: "career" },
 ];
-
-// 왼쪽 도장의 색. 마감이 가까운 것만 따뜻한 색으로 튀게 하고,
-// 상시는 눈에 덜 띄게 눌러 목록에 리듬을 준다.
-const stampTone = {
-  soon: "bg-sos-tile border-sos-line text-sos-num",
-  normal: "bg-mint border-mint text-primary-deep",
-  always: "bg-transparent border-sage-line text-meta",
-} as const;
 
 const trustPoints = [
   {
@@ -55,9 +47,10 @@ const trustPoints = [
 ];
 
 export default async function HomePage() {
-  const [counts, open] = await Promise.all([
+  const [counts, deadline, always] = await Promise.all([
     fetchCategoryCounts(),
-    fetchOpenPrograms(5),
+    fetchDeadlinePrograms(6),
+    fetchAlwaysOpenPrograms(8),
   ]);
 
   const today = new Date();
@@ -191,15 +184,43 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 지금 신청할 수 있는 프로그램 — 마감 임박순 */}
+      {/* 신청 기간이 정해진 것 — 날짜를 놓치면 끝이라 위에 둔다 */}
+      {deadline.length > 0 && (
+        <section>
+          <div className="mb-4 flex items-end justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-extrabold tracking-tight text-ink sm:text-xl">
+                이건 신청 기간이 있어요
+              </h2>
+              <p className="mt-1 text-xs text-meta sm:text-[13px]">
+                {todayLabel} 기준 · 날짜 지나면 자동으로 내려가요
+              </p>
+            </div>
+            <Link
+              href="/search"
+              className="shrink-0 text-xs font-semibold text-seed-700 hover:underline sm:text-[13px]"
+            >
+              전체 →
+            </Link>
+          </div>
+
+          <div className="overflow-hidden rounded-card border border-sage-border bg-white">
+            {deadline.map((p) => (
+              <ProgramRow key={p.id} program={p} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 아무 때나 되는 것 — 마음이 준비됐을 때 하면 되는 것들 */}
       <section>
         <div className="mb-4 flex items-end justify-between gap-3">
           <div>
             <h2 className="text-lg font-extrabold tracking-tight text-ink sm:text-xl">
-              지금 신청할 수 있어요
+              이건 아무 때나 돼요
             </h2>
             <p className="mt-1 text-xs text-meta sm:text-[13px]">
-              {todayLabel} 기준 · 마감된 건 자동으로 내려가요
+              마감 없이 연중 열려 있어요
             </p>
           </div>
           <Link
@@ -211,79 +232,14 @@ export default async function HomePage() {
         </div>
 
         <div className="overflow-hidden rounded-card border border-sage-border bg-white">
-          {open.length === 0 && (
+          {always.length === 0 && (
             <p className="py-12 text-center text-sm text-meta">
               아직 등록된 프로그램이 없어요. 곧 추가될 예정이에요.
             </p>
           )}
-          {open.map((p) => {
-            const stamp = getDeadlineStamp(p);
-            return (
-              <TrackedLink
-                key={p.id}
-                href={`/apply/${p.id}`}
-                event="category_card_click"
-                programId={p.id}
-                category={p.category}
-                className="group grid grid-cols-[58px_1fr] items-center gap-3.5 border-b border-sage-line px-3.5 py-3.5 transition last:border-b-0 hover:bg-mint/40 sm:grid-cols-[74px_1fr_auto] sm:gap-4 sm:px-5 sm:py-4"
-              >
-                {/* 왼쪽 도장 — 마감이 가까울수록 눈에 띄게 */}
-                <span
-                  className={`flex flex-col items-center justify-center rounded-xl border py-1.5 ${stampTone[stamp.tone]}`}
-                >
-                  <span className="text-[13px] font-extrabold tabular-nums leading-tight sm:text-[14px]">
-                    {stamp.label}
-                  </span>
-                  <span className="mt-0.5 text-[9px] leading-none opacity-75 sm:text-[10px]">
-                    {stamp.caption}
-                  </span>
-                </span>
-
-                <span className="min-w-0">
-                  <span className="flex flex-wrap items-center gap-1.5 text-[14px] font-bold leading-snug text-ink sm:text-[15.5px]">
-                    {p.title}
-                    {p.org_type && (
-                      <span
-                        className={`rounded-md px-1.5 py-0.5 text-[10px] font-bold ${
-                          p.org_type === "public"
-                            ? "bg-mint text-primary-deep"
-                            : "bg-brand-border/60 text-ink-60"
-                        }`}
-                      >
-                        {p.org_type === "public" ? "공공" : "비영리"}
-                      </span>
-                    )}
-                  </span>
-                  <span className="mt-1 block truncate text-[11.5px] text-meta sm:text-xs">
-                    {p.org}
-                  </span>
-                  {/* 넓은 화면에서는 한 줄 요약까지 — 오른쪽 버튼을 걷어낸 자리가
-                      비어 보이지 않게 하고, 제목만으로는 뭔지 모를 때 판단을 돕는다. */}
-                  <span className="mt-1.5 hidden truncate text-xs leading-relaxed text-ink-60 sm:block">
-                    {p.description}
-                  </span>
-                </span>
-
-                {/* 행 전체가 링크라 여기에 버튼을 또 두면 같은 버튼이 다섯 줄 내내
-                    반복돼 목록이 무거워진다. 화살표만 두고, 마우스를 올렸을 때만
-                    브랜드색으로 살아나게 한다. */}
-                <span className="hidden shrink-0 items-center justify-center text-sage-border transition group-hover:translate-x-0.5 group-hover:text-primary-deep sm:flex">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-[18px] w-[18px]"
-                    aria-hidden
-                  >
-                    <path d="m9 5 7 7-7 7" />
-                  </svg>
-                </span>
-              </TrackedLink>
-            );
-          })}
+          {always.map((p) => (
+            <ProgramRow key={p.id} program={p} variant="always" />
+          ))}
         </div>
       </section>
 
