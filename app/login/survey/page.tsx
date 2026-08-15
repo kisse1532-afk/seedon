@@ -25,7 +25,7 @@ export default function LoginSurveyPage() {
           <br />
           어떻게 알게 되셨나요?
         </h1>
-        <p className="text-xs text-neutral-400 mt-1">더 필요한 곳에 씨드온을 알리는 데 도움이 돼요.</p>
+        <p className="text-xs text-meta mt-1">더 필요한 곳에 씨드온을 알리는 데 도움이 돼요.</p>
       </div>
 
       <div className="space-y-2">
@@ -34,7 +34,7 @@ export default function LoginSurveyPage() {
             key={opt}
             onClick={() => setSelected(opt)}
             className={`w-full text-left text-sm rounded-xl border px-4 py-3 transition ${
-              selected === opt ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-neutral-200 bg-white hover:border-neutral-300"
+              selected === opt ? "border-primary bg-mint text-primary-deep" : "border-sage-border bg-white hover:border-sage-border"
             }`}
           >
             {opt}
@@ -46,7 +46,7 @@ export default function LoginSurveyPage() {
         disabled={!selected}
         onClick={() => router.push("/login/complete")}
         className={`w-full rounded-full text-sm font-medium py-3 transition ${
-          selected ? "bg-emerald-600 text-white hover:bg-emerald-700" : "bg-neutral-100 text-neutral-400 cursor-not-allowed"
+          selected ? "bg-primary-deep text-white hover:brightness-110" : "bg-cream text-meta cursor-not-allowed"
         }`}
       >
         다음

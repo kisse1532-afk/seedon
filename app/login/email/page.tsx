@@ -46,22 +46,36 @@ export default function EmailLoginPage() {
   return (
     <div className="max-w-sm mx-auto py-10 space-y-6">
       <div className="text-center">
-        <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-sky-400 to-emerald-500 flex items-center justify-center text-2xl mb-3">
-          ✉️
+        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-mint text-primary-deep">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-6 w-6"
+            aria-hidden
+          >
+            <rect x="3.2" y="5.5" width="17.6" height="13" rx="2.2" />
+            <path d="m3.8 7 8.2 6 8.2-6" />
+          </svg>
         </div>
-        <h1 className="text-lg font-bold">{mode === "signup" ? "이메일로 가입하기" : "이메일로 로그인"}</h1>
+        <h1 className="text-lg font-extrabold tracking-tight text-ink">
+          {mode === "signup" ? "이메일로 가입하기" : "이메일로 로그인"}
+        </h1>
       </div>
 
-      <div className="flex rounded-full border border-neutral-200 p-1 bg-neutral-50">
+      <div className="flex rounded-full border border-sage-border p-1 bg-neutral-50">
         <button
           onClick={() => setMode("signup")}
-          className={`flex-1 text-sm py-2 rounded-full transition ${mode === "signup" ? "bg-white shadow-sm font-medium" : "text-neutral-400"}`}
+          className={`flex-1 text-sm py-2 rounded-full transition ${mode === "signup" ? "bg-white shadow-sm font-medium" : "text-meta"}`}
         >
           회원가입
         </button>
         <button
           onClick={() => setMode("signin")}
-          className={`flex-1 text-sm py-2 rounded-full transition ${mode === "signin" ? "bg-white shadow-sm font-medium" : "text-neutral-400"}`}
+          className={`flex-1 text-sm py-2 rounded-full transition ${mode === "signin" ? "bg-white shadow-sm font-medium" : "text-meta"}`}
         >
           로그인
         </button>
@@ -74,7 +88,7 @@ export default function EmailLoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="이메일"
-          className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+          className="w-full rounded-xl border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
         <input
           type="password"
@@ -83,21 +97,21 @@ export default function EmailLoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="비밀번호 (6자 이상)"
-          className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+          className="w-full rounded-xl border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
         {error && <p className="text-xs text-red-500">{error}</p>}
         {message && <p className="text-xs text-emerald-600">{message}</p>}
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-gradient-to-r from-sky-500 to-emerald-600 text-white text-sm font-medium py-3 hover:brightness-105 transition disabled:opacity-60"
+          className="w-full rounded-full bg-primary-deep text-white text-sm font-medium py-3 hover:brightness-110 transition disabled:opacity-60"
         >
           {loading ? "처리 중..." : mode === "signup" ? "가입하기" : "로그인"}
         </button>
       </form>
 
       <p className="text-center">
-        <Link href="/login" className="text-xs text-neutral-400 hover:text-neutral-600">
+        <Link href="/login" className="text-xs text-meta hover:text-body">
           ← 다른 방법으로 시작하기
         </Link>
       </p>

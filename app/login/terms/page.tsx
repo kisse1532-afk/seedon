@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SeedonSymbol } from "@/app/_components/Logo";
 
 export default function LoginTermsPage() {
   const router = useRouter();
@@ -21,12 +22,14 @@ export default function LoginTermsPage() {
   return (
     <div className="max-w-sm mx-auto py-10 space-y-6">
       <div className="text-center">
-        <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-sky-400 to-emerald-500 flex items-center justify-center text-2xl mb-3">🌱</div>
-        <h1 className="text-lg font-bold">약관에 동의해주세요</h1>
-        <p className="text-sm text-neutral-500 mt-1">씨드온을 시작하려면 아래 약관에 동의해야 해요.</p>
+        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-mint">
+          <SeedonSymbol height={22} />
+        </div>
+        <h1 className="text-lg font-extrabold tracking-tight text-ink">약관에 동의해주세요</h1>
+        <p className="text-sm text-ink-60 mt-1">씨드온을 시작하려면 아래 약관에 동의해야 해요.</p>
       </div>
 
-      <div className="rounded-2xl border border-neutral-200 bg-white divide-y divide-neutral-100">
+      <div className="rounded-2xl border border-sage-border bg-white divide-y divide-neutral-100">
         <label className="flex items-center gap-3 p-4 cursor-pointer">
           <input
             type="checkbox"
@@ -43,7 +46,7 @@ export default function LoginTermsPage() {
               이용약관 동의 <span className="text-emerald-600">(필수)</span>
             </span>
           </span>
-          <span className="text-neutral-300">›</span>
+          <span className="text-sage-border">›</span>
         </label>
         <label className="flex items-center justify-between gap-3 p-4 cursor-pointer">
           <span className="flex items-center gap-3">
@@ -52,12 +55,12 @@ export default function LoginTermsPage() {
               개인정보 수집 및 이용동의 <span className="text-emerald-600">(필수)</span>
             </span>
           </span>
-          <span className="text-neutral-300">›</span>
+          <span className="text-sage-border">›</span>
         </label>
         <label className="flex items-center gap-3 p-4 cursor-pointer">
           <input type="checkbox" checked={marketing} onChange={(e) => setMarketing(e.target.checked)} className="w-4 h-4 rounded" />
           <span className="text-sm">
-            맞춤 정보·마케팅 수신동의 <span className="text-neutral-400">(선택)</span>
+            맞춤 정보·마케팅 수신동의 <span className="text-meta">(선택)</span>
           </span>
         </label>
       </div>
@@ -66,7 +69,7 @@ export default function LoginTermsPage() {
         disabled={!allRequired}
         onClick={() => router.push("/login/survey")}
         className={`w-full rounded-full text-sm font-medium py-3 transition ${
-          allRequired ? "bg-emerald-600 text-white hover:bg-emerald-700" : "bg-neutral-100 text-neutral-400 cursor-not-allowed"
+          allRequired ? "bg-primary-deep text-white hover:brightness-110" : "bg-cream text-meta cursor-not-allowed"
         }`}
       >
         동의하고 계속하기
