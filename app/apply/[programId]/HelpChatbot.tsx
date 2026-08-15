@@ -25,7 +25,7 @@ export default function HelpChatbot({
   const [view, setView] = useState<ViewState>("menu");
 
   const BotBubble = ({ children }: { children: React.ReactNode }) => (
-    <div className="rounded-2xl rounded-tl-sm bg-neutral-100 px-4 py-2.5 text-sm text-neutral-700 max-w-[90%]">
+    <div className="rounded-2xl rounded-tl-sm bg-cream px-4 py-2.5 text-sm text-body max-w-[90%]">
       {children}
     </div>
   );
@@ -39,7 +39,7 @@ export default function HelpChatbot({
   }) => (
     <button
       onClick={onClick}
-      className="w-full text-left text-sm rounded-xl border border-neutral-200 bg-white px-4 py-2.5 hover:bg-neutral-50"
+      className="w-full text-left text-sm rounded-xl border border-sage-border bg-white px-4 py-2.5 hover:bg-cream"
     >
       {label}
     </button>
@@ -48,36 +48,55 @@ export default function HelpChatbot({
   const BackRow = () => (
     <button
       onClick={() => setView("menu")}
-      className="text-xs text-neutral-400 hover:text-neutral-600"
+      className="text-xs text-meta hover:text-ink"
     >
       ← 다른 게 궁금해요
     </button>
   );
 
   return (
-    <div className="rounded-2xl border border-amber-200 bg-amber-50 overflow-hidden">
+    // 바탕색(sos-tile)이 페이지 배경인 Cream과 너무 가까워 블록이 안 보였다.
+    // 말을 거는 자리라 눈에 띄어야 하므로 테두리를 진한 쪽(sos-num)으로 올리고
+    // 아이콘 원을 붙였다.
+    <div className="overflow-hidden rounded-card border border-sos-num/30 bg-sos-tile">
       {!open ? (
         <button
           onClick={() => setOpen(true)}
-          className="w-full flex items-center justify-between px-5 py-4 text-left"
+          className="flex w-full items-center gap-3 px-5 py-4 text-left transition hover:brightness-[0.98]"
         >
-          <span>
-            <span className="block font-medium text-sm text-amber-900">
-              🙋 혼자 신청하기 어려우신가요?
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-sos-num">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-[18px] w-[18px]"
+              aria-hidden
+            >
+              <path d="M9.4 9.2a2.7 2.7 0 1 1 3.6 2.5c-.7.3-1 .9-1 1.6v.4" />
+              <path d="M12 17.4h.01" />
+              <circle cx="12" cy="12" r="8.4" />
+            </svg>
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-bold text-sos-ink">
+              혼자 신청하기 어려우신가요?
             </span>
-            <span className="block text-xs text-amber-700 mt-0.5">
+            <span className="mt-0.5 block text-xs text-sos-sub">
               눌러서 씨드온 챗봇에게 바로 물어보세요
             </span>
           </span>
-          <span className="text-amber-400 text-lg">›</span>
+          <span className="text-lg text-sos-num/60">›</span>
         </button>
       ) : (
         <div className="p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-amber-900">씨드온 챗봇</span>
+            <span className="text-xs font-medium text-sos-ink">씨드온 챗봇</span>
             <button
               onClick={() => setOpen(false)}
-              className="text-xs text-neutral-400 hover:text-neutral-600"
+              className="text-xs text-meta hover:text-ink"
             >
               닫기 ✕
             </button>
@@ -137,26 +156,26 @@ export default function HelpChatbot({
                 괜찮아, 그럴 수 있어. 둘 중 편한 방법을 골라줘.
               </BotBubble>
               <div className="space-y-2">
-                <div className="rounded-xl border border-amber-200 bg-white p-3 space-y-1.5">
-                  <p className="text-sm font-medium text-amber-900">📞 지금 바로 전화로 물어보기</p>
-                  <p className="text-xs text-neutral-500">
+                <div className="rounded-xl border border-sos-line bg-white p-3 space-y-1.5">
+                  <p className="text-sm font-medium text-sos-ink">지금 바로 전화로 물어보기</p>
+                  <p className="text-xs text-ink-60">
                     청소년 상담 1388(국번없이, 24시간·무료)로 전화하면 지금 바로 대화할 수 있어요.
                   </p>
                   <PhoneLink
                     number="1388"
-                    className="inline-block text-xs bg-amber-500 text-white rounded-full px-4 py-1.5 hover:bg-amber-600"
+                    className="inline-block text-xs bg-sos-tile0 text-white rounded-full px-4 py-1.5 hover:brightness-110"
                   >
                     1388 전화하기
                   </PhoneLink>
                 </div>
-                <div className="rounded-xl border border-amber-200 bg-white p-3 space-y-1.5">
-                  <p className="text-sm font-medium text-amber-900">📝 씨드온 직원이 연락드릴게요</p>
-                  <p className="text-xs text-neutral-500">
+                <div className="rounded-xl border border-sos-line bg-white p-3 space-y-1.5">
+                  <p className="text-sm font-medium text-sos-ink">씨드온 직원이 연락드릴게요</p>
+                  <p className="text-xs text-ink-60">
                     이름과 연락처를 남기면, 편한 시간에 맞춰 직접 연락드리고 신청을 도와드려요.
                   </p>
                   <button
                     onClick={() => setView("reserve")}
-                    className="text-xs border border-amber-400 text-amber-700 rounded-full px-4 py-1.5 hover:bg-amber-50"
+                    className="text-xs border border-sos-num/50 text-sos-sub rounded-full px-4 py-1.5 hover:bg-sos-tile"
                   >
                     연락받을 시간 남기기
                   </button>
@@ -175,28 +194,28 @@ export default function HelpChatbot({
                   type="text"
                   required
                   placeholder="이름"
-                  className="w-full rounded-xl border border-amber-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  className="w-full rounded-xl border border-sos-line bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sos-num/40"
                 />
                 <input
                   name="contact"
                   type="tel"
                   required
                   placeholder="연락받을 번호 (010-0000-0000)"
-                  className="w-full rounded-xl border border-amber-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  className="w-full rounded-xl border border-sos-line bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sos-num/40"
                 />
                 <textarea
                   name="message"
                   rows={2}
                   placeholder="언제가 편한지, 어떤 부분이 어려운지 알려주면 더 빨리 도와줄 수 있어 (선택)"
-                  className="w-full rounded-xl border border-amber-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  className="w-full rounded-xl border border-sos-line bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sos-num/40"
                 />
                 <button
                   type="submit"
-                  className="w-full rounded-full bg-amber-500 text-white text-sm font-medium py-2.5 hover:bg-amber-600"
+                  className="w-full rounded-full bg-sos-tile0 text-white text-sm font-medium py-2.5 hover:brightness-110"
                 >
                   연락 요청 보내기
                 </button>
-                <p className="text-[10px] text-amber-700/70 text-center">
+                <p className="text-[10px] text-sos-meta text-center">
                   남겨주신 정보는 연락 목적으로만 쓰고, 처리가 끝나면 일정 기간 뒤 삭제해요.
                 </p>
               </form>
