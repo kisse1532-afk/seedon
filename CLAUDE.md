@@ -65,6 +65,19 @@
 - Vercel 프로젝트 ID: prj_YzCpQbREKL2Lagz3kQByEP6QDIvt / 팀 ID: team_vgXtix70gk816WMIqyI7vVLg
 - Supabase 프로젝트 ID: ssxxqiwlywcgmgkdgmtz
 
+## 환경변수 (2026.08.15 신설)
+
+| 이름 | 어디에 쓰나 | 없으면 |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | 프로그램 목록 등 공개 데이터 | 코드에 박힌 기본값으로 동작 |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 위와 같음 | 코드에 박힌 기본값으로 동작 |
+| **`SUPABASE_SERVICE_ROLE_KEY`** | **신청자·도움요청 조회 (관리자 화면)** | **신청자 목록이 비어 보임** |
+
+- `SUPABASE_SERVICE_ROLE_KEY`에는 Supabase의 **Secret key(`sb_secret_...`)** 를 넣는다. 변수 이름이 `SERVICE_ROLE`이지만 값은 새 방식 secret 키를 쓴다 — 옛 `service_role` JWT는 유출 시 JWT 시크릿 전체를 갈아야 해서 `anon` 키까지 같이 죽는다. 새 방식은 그 키만 폐기하면 된다.
+- **절대 `NEXT_PUBLIC_`을 붙이지 말 것.** 붙이는 순간 브라우저 번들에 실려 나가고, 그러면 누구나 신청자 명단을 읽을 수 있다.
+- Vercel 환경변수는 **넣기만 하면 반영되지 않는다.** 저장 후 재배포해야 한다.
+- 키를 화면 캡처로 주고받지 말 것. 2026.08.15에 실제로 노출되어 새로 발급받았다.
+
 ## 배포 방식 (2026.08.12 확정)
 - 작업은 `claude/seedon-status-diagnosis-1urtj4` 브랜치(또는 기능별 새 브랜치)에서 진행하고 커밋마다 `git push`
 - `main`으로의 직접 push는 브랜치 보호로 막혀 있으므로, GitHub PR을 만들어(`mcp__github__create_pull_request`) 머지(`mcp__github__merge_pull_request`)하는 방식으로 반영
