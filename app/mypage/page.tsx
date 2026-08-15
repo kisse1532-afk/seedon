@@ -1,85 +1,116 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import { loadBookmarks, onBookmarksChange } from "@/lib/bookmarks";
 
 export default function MyPage() {
-  const [pushOn, setPushOn] = useState(true);
-  const [marketingOn, setMarketingOn] = useState(false);
+  const router = useRouter();
+  const [email, setEmail] = useState<string | null>(null);
+  const [bookmarkCount, setBookmarkCount] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function load() {
+      const { data } = await supabase.auth.getUser();
+      const ids = await loadBookmarks();
+      if (!alive) return;
+      setEmail(data.user?.email ?? null);
+      setBookmarkCount(ids.length);
+      setLoaded(true);
+    }
+    load();
+
+    // 다른 화면에서 북마크를 켜고 끄면 여기 숫자도 같이 바뀌어야 한다.
+    const off = onBookmarksChange(() => {
+      loadBookmarks().then((ids) => alive && setBookmarkCount(ids.length));
+    });
+    return () => {
+      alive = false;
+      off();
+    };
+  }, []);
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  }
+
+  const loggedIn = Boolean(email);
+  /** 이메일 앞부분만 보여준다. 화면에 주소를 통째로 띄울 이유가 없다. */
+  const nickname = email ? email.split("@")[0] : null;
 
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-3">
-        <div className="w-14 h-14 rounded-full bg-cream flex items-center justify-center text-2xl">🙂</div>
-        <div>
-          <p className="font-semibold">게스트님</p>
-          <p className="text-xs text-meta">로그인하면 이름이 표시돼요</p>
+        <div className="w-14 h-14 rounded-full bg-cream flex items-center justify-center text-2xl">
+          {loggedIn ? "🌱" : "🙂"}
+        </div>
+        <div className="min-w-0">
+          <p className="font-semibold truncate">{loggedIn ? `${nickname}님` : "게스트님"}</p>
+          <p className="text-xs text-meta">
+            {loggedIn ? "저장한 프로그램이 계정에 보관돼요" : "로그인하면 저장한 게 폰을 바꿔도 남아요"}
+          </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 text-center">
-        <div className="rounded-2xl border border-sage-border bg-white p-4">
-          <div className="text-lg font-bold">0</div>
-          <div className="text-xs text-meta mt-1">관심 프로그램</div>
-        </div>
-        <div className="rounded-2xl border border-sage-border bg-white p-4">
-          <div className="text-lg font-bold">0</div>
-          <div className="text-xs text-meta mt-1">신청 내역</div>
-        </div>
-        <div className="rounded-2xl border border-sage-border bg-white p-4">
-          <div className="text-lg font-bold">0</div>
-          <div className="text-xs text-meta mt-1">1:1 문의</div>
-        </div>
-      </div>
+      {!loggedIn && loaded && (
+        <Link
+          href="/login"
+          className="block rounded-2xl bg-primary-deep px-5 py-4 text-center text-sm font-bold text-white hover:brightness-110"
+        >
+          로그인하고 시작하기
+        </Link>
+      )}
 
-      <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-ink-60">알림</h2>
-        <div className="rounded-2xl border border-sage-border bg-white divide-y divide-neutral-100">
-          <div className="flex items-center justify-between p-4">
-            <span className="text-sm">푸시 알림</span>
-            <button
-              onClick={() => setPushOn((v) => !v)}
-              className={`w-11 h-6 rounded-full transition relative ${pushOn ? "bg-primary" : "bg-sage-border"}`}
-            >
-              <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition ${pushOn ? "left-5" : "left-0.5"}`} />
-            </button>
-          </div>
-          <div className="flex items-center justify-between p-4">
-            <span className="text-sm">맞춤 정보·마케팅 수신 동의</span>
-            <button
-              onClick={() => setMarketingOn((v) => !v)}
-              className={`w-11 h-6 rounded-full transition relative ${marketingOn ? "bg-primary" : "bg-sage-border"}`}
-            >
-              <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition ${marketingOn ? "left-5" : "left-0.5"}`} />
-            </button>
-          </div>
-        </div>
-      </section>
+      <div className="grid grid-cols-2 gap-3 text-center">
+        <Link href="/bookmarks" className="rounded-2xl border border-sage-border bg-white p-4 hover:border-primary/40">
+          <div className="text-lg font-bold">{loaded ? bookmarkCount : "–"}</div>
+          <div className="text-xs text-meta mt-1">저장한 프로그램</div>
+        </Link>
+        <Link href="/search" className="rounded-2xl border border-sage-border bg-white p-4 hover:border-primary/40">
+          <div className="text-lg font-bold">더보기</div>
+          <div className="text-xs text-meta mt-1">전체 프로그램</div>
+        </Link>
+      </div>
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold text-ink-60">계정</h2>
         <div className="rounded-2xl border border-sage-border bg-white divide-y divide-neutral-100 text-sm">
-          <div className="p-4 flex items-center justify-between text-body">
-            <span>서비스 이용약관</span>
-            <span className="text-sage-border">›</span>
-          </div>
-          <div className="p-4 flex items-center justify-between text-body">
-            <span>개인정보 처리방침</span>
-            <span className="text-sage-border">›</span>
-          </div>
-          <Link href="/login" className="p-4 flex items-center justify-between text-body hover:text-primary-deep">
-            <span>로그아웃</span>
+          {loggedIn && (
+            <div className="p-4 flex items-center justify-between">
+              <span className="text-meta">로그인한 계정</span>
+              <span className="text-body truncate max-w-[60%]">{email}</span>
+            </div>
+          )}
+          <Link href="/report" className="p-4 flex items-center justify-between text-body hover:text-primary-deep">
+            <span>잘못된 정보 제보하기</span>
             <span className="text-sage-border">›</span>
           </Link>
-          <div className="p-4 flex items-center justify-between text-meta">
-            <span>서비스 탈퇴</span>
-            <span className="text-sage-border">›</span>
-          </div>
+          {loggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="w-full p-4 flex items-center justify-between text-body hover:text-primary-deep"
+            >
+              <span>로그아웃</span>
+              <span className="text-sage-border">›</span>
+            </button>
+          ) : (
+            <Link href="/login" className="p-4 flex items-center justify-between text-body hover:text-primary-deep">
+              <span>로그인</span>
+              <span className="text-sage-border">›</span>
+            </Link>
+          )}
         </div>
       </section>
 
-      <p className="text-[11px] text-meta text-center pt-2">
-        마이페이지는 현재 화면 구성만 준비된 상태예요. 실제 로그인 연동은 다음 단계에서 진행돼요.
+      <p className="text-[11px] leading-relaxed text-meta text-center pt-2">
+        신청 내역과 맞춤 추천은 준비 중이에요.
       </p>
     </div>
   );
