@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getBookmarks, onBookmarksChange } from "@/lib/bookmarks";
+import { loadBookmarks, onBookmarksChange } from "@/lib/bookmarks";
 import { fetchProgram } from "@/lib/queries";
 import type { Program } from "@/lib/data";
 import BookmarkButton from "@/app/_components/BookmarkButton";
@@ -14,7 +14,7 @@ export default function BookmarksPage() {
 
   useEffect(() => {
     async function load() {
-      const ids = getBookmarks();
+      const ids = await loadBookmarks();
       const results = await Promise.all(ids.map((id) => fetchProgram(id)));
       setPrograms(results.filter((p): p is Program => Boolean(p)));
       setLoaded(true);

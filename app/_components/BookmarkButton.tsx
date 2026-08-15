@@ -19,7 +19,11 @@ export default function BookmarkButton({
   return (
     <button
       type="button"
-      onClick={() => setBookmarked(toggleBookmark(programId))}
+      onClick={async () => {
+        // 눌린 느낌이 바로 나야 해서 화면부터 뒤집고, 저장은 뒤따라간다.
+        setBookmarked((v) => !v);
+        setBookmarked(await toggleBookmark(programId));
+      }}
       aria-label={bookmarked ? "북마크 해제" : "북마크에 저장"}
       aria-pressed={bookmarked}
       className={className ?? "text-neutral-300 hover:text-primary-deep"}
