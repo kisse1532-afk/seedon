@@ -29,6 +29,26 @@ export default async function AdminPage({
   const programTitle = new Map(programs.map((p) => [p.id, p.title]));
   const pendingApplications = applications.filter((a) => a.status !== "contacted" && a.status !== "completed").length;
 
+  /* 로드가 폰으로 봐야 하는 것들.
+     기관 사이트 상당수가 데이터센터 IP를 막아서 우리 서버에서는 안 열리는데
+     사람 폰에서는 멀쩡히 열린다. 그래서 "우리가 못 하는 확인"이 계속 쌓이는데,
+     그동안 그 목록이 점검 스크립트 출력에만 있어서 로드는 볼 수가 없었다.
+     평일에 한 번 열어서 링크만 눌러보면 끝나도록 여기 모아둔다. */
+  const needsPhoneCheck = [
+    ...programs
+      .filter((p) => p.status === "published" && p.link_kind === "info")
+      .map((p) => ({ p, why: "기관 대문만 연결돼 있어요. 그 사업 페이지 주소가 필요해요" })),
+    ...programs
+      .filter(
+        (p) =>
+          p.status === "published" &&
+          !p.enrollment_status &&
+          !p.apply_deadline &&
+          !p.reopen_note
+      )
+      .map((p) => ({ p, why: "지금 접수 중인지 몰라서 홈에 안 뜨고 있어요" })),
+  ];
+
   const published = programs.filter((p) => p.status === "published").length;
 
   // --- 프로그램 관리 필터링 ---
@@ -107,6 +127,49 @@ export default async function AdminPage({
             (<code className="bg-amber-100 px-1 rounded">NEXT_PUBLIC_</code> 를 붙이면 안 됩니다 — 붙이면 브라우저로 새어나가요.)
           </p>
         </div>
+      )}
+
+      {needsPhoneCheck.length > 0 && (
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-neutral-500">📱 폰으로 봐주세요</h2>
+            <span className="text-xs text-neutral-400">{needsPhoneCheck.length}건</span>
+          </div>
+          <div className="rounded-2xl border border-sky-200 bg-sky-50/60 p-4">
+            <p className="text-xs leading-relaxed text-sky-900">
+              기관 사이트 상당수가 데이터센터 IP를 막아서 <b>서버에서는 안 열리는데 폰에서는 멀쩡히 열려요.</b>{" "}
+              그래서 여기 있는 건 사람이 봐야 확인돼요. 링크를 눌러 확인한 다음 알려주시면 반영할게요.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-neutral-200 bg-white divide-y divide-neutral-100">
+            {needsPhoneCheck.map(({ p, why }) => (
+              <div key={`${p.id}-${why}`} className="flex items-start justify-between gap-3 p-4">
+                <div className="min-w-0">
+                  <div className="text-sm font-medium">{p.title}</div>
+                  <p className="mt-0.5 text-xs text-neutral-500">{why}</p>
+                </div>
+                <div className="flex shrink-0 items-center gap-3">
+                  {p.link && (
+                    <a
+                      href={p.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-lg bg-sky-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-sky-700"
+                    >
+                      열어보기 ↗
+                    </a>
+                  )}
+                  <Link
+                    href={`/admin/programs/${p.id}/edit`}
+                    className="text-xs text-neutral-400 hover:text-neutral-700"
+                  >
+                    고치기
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       <section className="space-y-3">
