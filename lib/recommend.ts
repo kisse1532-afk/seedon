@@ -22,6 +22,18 @@ const KEYWORDS: Record<Category, string[]> = {
   living: ["생활비", "밥", "끼니", "돈", "용돈", "형편", "가난", "경제적"],
   career: ["진로", "취업", "직업", "꿈", "미래", "알바", "일자리"],
   culture: ["문화", "영화", "공연", "여행", "체험", "취미", "놀이"],
+  contest: [
+    "공모전",
+    "대회",
+    "경진",
+    "콘테스트",
+    "출품",
+    "응모",
+    "수상",
+    "상금",
+    "도전",
+    "참가",
+  ],
 };
 
 export function matchCategory(text: string): Category | null {
