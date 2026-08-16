@@ -27,9 +27,9 @@ export default async function ApplyCompletePage({
       </div>
       <h1 className="text-lg font-extrabold tracking-tight text-ink">관심 등록 완료했어요</h1>
       <p className="text-sm leading-relaxed text-ink-60">
-        {program ? `"${program.title}"` : "이 프로그램"} 관련 소식이 있으면
-        씨드온이 챙겨드릴게요. 실제 신청은 이전 페이지에 안내된 공식 경로로
-        직접 진행해주셔야 해요.
+        {program ? `"${program.title}"` : "이 프로그램"} 모집이 다시 열리면
+        씨드온 운영자가 적어주신 번호로 직접 연락드릴게요. 실제 신청은 이전
+        페이지에 안내된 방법대로 직접 하셔야 해요.
       </p>
       <Link
         href="/"

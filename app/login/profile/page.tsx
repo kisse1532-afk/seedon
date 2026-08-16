@@ -146,10 +146,10 @@ export default function LoginProfilePage() {
 
         <div className="space-y-2">
           <label htmlFor="nickname" className="block text-sm font-bold text-ink">
-            뭐라고 부를까요? <span className="text-meta">(선택)</span>
+            이름 또는 닉네임 <span className="text-meta">(선택)</span>
           </label>
           <p className="text-xs leading-relaxed text-meta">
-            후기를 남길 때 이 이름으로 보여요. 진짜 이름 말고 편한 걸로 적어주세요.
+            화면에서 부를 때랑 후기 남길 때 이 이름으로 보여요. 진짜 이름이 아니어도 돼요.
           </p>
           <input
             id="nickname"

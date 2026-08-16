@@ -9,6 +9,7 @@ import { loadMyApplications, type MyApplication } from "@/lib/applications";
 import { fetchProgramsByIds } from "@/lib/queries";
 import type { Program } from "@/lib/data";
 import MyInfo from "./MyInfo";
+import { loadMyProfile } from "@/lib/consent";
 
 /** 관심 등록 처리 상태를 청소년이 읽을 수 있는 말로. 행정용어를 그대로 쓰지 않는다. */
 const STATUS_LABEL: Record<string, string> = {
@@ -23,6 +24,7 @@ export default function MyPage() {
   const [bookmarkCount, setBookmarkCount] = useState(0);
   const [applications, setApplications] = useState<MyApplication[]>([]);
   const [programs, setPrograms] = useState<Record<string, Program>>({});
+  const [profileName, setProfileName] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -32,6 +34,7 @@ export default function MyPage() {
       const { data } = await supabase.auth.getUser();
       const ids = await loadBookmarks();
       const apps = await loadMyApplications();
+      const profile = await loadMyProfile();
 
       // 등록한 프로그램의 이름을 보여주려면 카드 정보가 필요하다. id만 보여주면
       // 자기가 뭘 등록했는지 알 수 없다.
@@ -39,6 +42,7 @@ export default function MyPage() {
 
       if (!alive) return;
       setEmail(data.user?.email ?? null);
+      setProfileName(profile?.nickname ?? null);
       setBookmarkCount(ids.length);
       setApplications(apps);
       setPrograms(Object.fromEntries(found.map((p) => [p.id, p])));
@@ -66,8 +70,10 @@ export default function MyPage() {
   }
 
   const loggedIn = Boolean(email);
-  /** 이메일 앞부분만 보여준다. 화면에 주소를 통째로 띄울 이유가 없다. */
-  const nickname = email ? email.split("@")[0] : null;
+  /* 적어준 이름이 있으면 그걸 부른다. 없을 때만 이메일 앞부분으로 대신한다 —
+     아이디처럼 보이는 문자열로 부르면 자기 계정 같지가 않다(2026-08-16 로드 지적).
+     이메일 주소를 통째로 띄우지는 않는다. */
+  const displayName = profileName ?? (email ? email.split("@")[0] : null);
 
   return (
     <div className="space-y-8">
@@ -76,7 +82,7 @@ export default function MyPage() {
           {loggedIn ? "🌱" : "🙂"}
         </div>
         <div className="min-w-0">
-          <p className="font-semibold truncate">{loggedIn ? `${nickname}님` : "게스트님"}</p>
+          <p className="font-semibold truncate">{loggedIn ? `${displayName}님` : "게스트님"}</p>
           <p className="text-xs text-meta">
             {loggedIn ? "저장한 프로그램이 계정에 보관돼요" : "로그인하면 저장한 게 폰을 바꿔도 남아요"}
           </p>

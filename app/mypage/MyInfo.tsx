@@ -75,7 +75,7 @@ export default function MyInfo() {
     await refresh();
     setEditing(false);
     setBusy(false);
-    setMessage("별명과 지역을 지웠어요.");
+    setMessage("이름과 지역을 지웠어요.");
   }
 
   async function toggleMarketing() {
@@ -162,7 +162,7 @@ export default function MyInfo() {
               </select>
             </div>
             <div className="p-4 space-y-2">
-              <span className="text-meta">부르는 이름</span>
+              <span className="text-meta">이름 또는 닉네임</span>
               <input
                 type="text"
                 maxLength={20}
@@ -195,7 +195,7 @@ export default function MyInfo() {
                 disabled={busy}
                 className="ml-auto rounded-full px-3 py-2 text-xs text-meta transition hover:text-red-600 disabled:opacity-60"
               >
-                별명·지역 지우기
+                이름·지역 지우기
               </button>
             </div>
           </>
@@ -208,7 +208,7 @@ export default function MyInfo() {
               </span>
             </div>
             <div className="p-4 flex items-center justify-between">
-              <span className="text-meta">부르는 이름</span>
+              <span className="text-meta">이름 또는 닉네임</span>
               <span className={profile.nickname ? "text-body" : "text-meta"}>
                 {profile.nickname ?? "안 적었어요"}
               </span>
@@ -224,7 +224,7 @@ export default function MyInfo() {
           <span className="min-w-0">
             <span className="block text-meta">새 프로그램 소식 받기</span>
             <span className="mt-0.5 block text-[11px] leading-relaxed text-meta">
-              안 받아도 씨드온을 쓰는 데는 아무 지장 없어요
+              아직 보내는 기능은 준비 중이에요. 안 받아도 아무 지장 없어요
             </span>
           </span>
           {/* 스위치 모양. 지금 켜졌는지 꺼졌는지가 한눈에 보여야 한다. */}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { loadReviews, submitReview, type Review } from "@/lib/reviews";
+import { loadMyProfile } from "@/lib/consent";
 
 /**
  * 이 프로그램을 해본 사람들의 한마디 + 남기는 칸.
@@ -15,10 +16,13 @@ export default function Reviews({ programId }: { programId: string }) {
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // 마이페이지에 적어둔 이름을 미리 채운다. 매번 다시 적게 하면 받아둔 의미가 없다.
+  const [myName, setMyName] = useState("");
 
   useEffect(() => {
     let alive = true;
     loadReviews(programId).then((r) => alive && setReviews(r));
+    loadMyProfile().then((p) => alive && p?.nickname && setMyName(p.nickname));
     return () => {
       alive = false;
     };
@@ -100,7 +104,8 @@ export default function Reviews({ programId }: { programId: string }) {
             name="nickname"
             type="text"
             maxLength={20}
-            placeholder="부르고 싶은 이름 (안 적어도 돼요)"
+            defaultValue={myName}
+            placeholder="이름 또는 닉네임 (안 적어도 돼요)"
             className="w-full rounded-control border border-sage-border px-3.5 py-2.5 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-neutral-400"
           />
 
