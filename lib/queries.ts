@@ -29,6 +29,20 @@ export async function fetchProgram(id: string): Promise<Program | undefined> {
   return data as Program;
 }
 
+/**
+ * 여러 프로그램을 한 번에 가져온다.
+ *
+ * 북마크·신청 내역 화면은 id 목록만 갖고 있어서, 예전에는 id마다 fetchProgram을
+ * 한 번씩 불렀다. 20개를 저장해둔 사람은 화면을 열 때마다 조회가 20번 나가서
+ * 목록이 뜨는 데 눈에 띄게 오래 걸렸다. 한 번에 가져온다.
+ */
+export async function fetchProgramsByIds(ids: string[]): Promise<Program[]> {
+  if (ids.length === 0) return [];
+  const { data, error } = await supabase.from("programs").select("*").in("id", ids);
+  if (error || !data) return [];
+  return data as Program[];
+}
+
 // --- 관리자용 쿼리 (전체 상태 조회) ---
 export async function fetchAllPrograms() {
   const { data, error } = await supabase
