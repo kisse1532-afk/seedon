@@ -1,0 +1,212 @@
+<title>자는 동안 한 일</title>
+<style>
+  :root{
+    --ground:#faf6ee; --surface:#fff; --mint:#e6f8ef; --line:#e7dfd0; --line-soft:#f0e9db;
+    --ink:#2a2a24; --body:#576351; --meta:#9dac92;
+    --primary:#2bbe8c; --primary-deep:#17916a;
+    --alert:#c2702a; --alert-tile:#fff4e9; --alert-line:#f5dfc6;
+    --stop:#b4443a; --stop-tile:#fdf0ee; --stop-line:#f2d9d4;
+    --shadow:0 1px 2px rgba(42,42,36,.04), 0 12px 32px -20px rgba(42,42,36,.3);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+      --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+      --primary:#47d5a3; --primary-deep:#6fe0b6;
+      --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+      --stop:#f08b80; --stop-tile:#301c1a; --stop-line:#4a2b26;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+    --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+    --primary:#47d5a3; --primary-deep:#6fe0b6;
+    --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+    --stop:#f08b80; --stop-tile:#301c1a; --stop-line:#4a2b26;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--body);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard Variable",
+                Pretendard,"Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+    font-size:15px;line-height:1.72;-webkit-font-smoothing:antialiased;
+    word-break:keep-all;overflow-wrap:break-word}
+  .page{max-width:880px;margin:0 auto;padding:44px 22px 80px;display:flex;flex-direction:column;gap:38px}
+
+  .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.16em;color:var(--meta)}
+  h1{margin:10px 0 0;font-size:clamp(25px,4.6vw,34px);line-height:1.28;letter-spacing:-.03em;
+     font-weight:800;color:var(--ink);text-wrap:balance}
+  .lede{margin:14px 0 0;font-size:15.5px;max-width:60ch}
+  .lede b{color:var(--ink)}
+
+  h2{margin:0 0 4px;font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+  .sub{margin:0 0 18px;font-size:13px;color:var(--meta)}
+  section{display:flex;flex-direction:column}
+
+  /* 로드가 할 일 — 맨 위 */
+  .todo{background:var(--alert-tile);border:1px solid var(--alert-line);border-radius:18px;padding:22px}
+  .todo .k{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--alert);display:block;margin-bottom:12px}
+  .todo ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:16px;counter-reset:t}
+  .todo li{counter-increment:t;padding-left:32px;position:relative;font-size:14px}
+  .todo li::before{content:counter(t);position:absolute;left:0;top:0;width:22px;height:22px;
+    border-radius:50%;background:var(--alert);color:var(--ground);display:flex;align-items:center;
+    justify-content:center;font-size:12px;font-weight:800}
+  .todo li b{display:block;color:var(--ink);font-size:15px;font-weight:800;letter-spacing:-.01em;margin-bottom:2px}
+  .todo code{background:var(--surface);border:1px solid var(--line);border-radius:5px;
+    padding:1px 6px;font-size:12.5px;word-break:break-all}
+
+  /* 만든 것 */
+  .built{background:var(--mint);border:1px solid var(--primary);border-radius:18px;padding:22px}
+  .built .k{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--primary-deep);display:block;margin-bottom:8px}
+  .built .h{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:8px}
+  .built p{margin:0 0 12px;font-size:14px;max-width:62ch}
+  .built p:last-child{margin-bottom:0}
+  .built b{color:var(--ink)}
+  .check{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:14px}
+  .check .r{display:grid;grid-template-columns:1fr auto;gap:12px;padding:10px 14px;
+    border-bottom:1px solid var(--line-soft);font-size:13px;align-items:baseline}
+  .check .r:last-child{border-bottom:none}
+  .check .r span:last-child{color:var(--primary-deep);font-weight:700;font-size:12px;white-space:nowrap}
+
+  /* 막힌 것 */
+  .blocked{background:var(--stop-tile);border:1px solid var(--stop-line);border-radius:18px;padding:22px}
+  .blocked .k{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--stop);display:block;margin-bottom:8px}
+  .blocked .h{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:8px}
+  .blocked p{margin:0 0 10px;font-size:14px;max-width:62ch}
+  .blocked p:last-child{margin-bottom:0}
+  .blocked b{color:var(--ink)}
+
+  /* 문서 목록 */
+  .docs{display:flex;flex-direction:column;gap:10px}
+  .doc{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:15px 17px;
+       box-shadow:var(--shadow)}
+  .doc .t{font-size:14.5px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .doc p{margin:3px 0 0;font-size:13px}
+  .doc a{color:var(--primary-deep);font-weight:700;font-size:12.5px;word-break:break-all}
+
+  footer{font-size:11.5px;color:var(--meta);border-top:1px solid var(--line);padding-top:16px}
+</style>
+
+<div class="page">
+
+  <header>
+    <span class="eyebrow">2026.08.16 밤 · 실장 보고</span>
+    <h1>자는 동안 원스톱 1단계를 붙였고,<br>배포까지 넣었어</h1>
+    <p class="lede">
+      <b>지금부터 이름·연락처를 한 번만 쓰면 다음 신청부터 채워진 채로 뜬다.</b>
+      관심 등록 폼과 도움 요청 폼 둘 다. 폰 화면으로 직접 확인했고 main에 머지해서
+      배포까지 돌렸다. <b>막힌 건 하나 — 내 권한 파일은 내가 못 고친다.</b>
+    </p>
+  </header>
+
+  <section>
+    <h2>먼저, 로드가 할 일</h2>
+    <p class="sub">위에서부터 하면 된다. 1번이 제일 짧고 제일 중요하다.</p>
+    <div class="todo">
+      <span class="k">아침에</span>
+      <ol>
+        <li>
+          <b>권한 파일 바꾸기 — 1분</b>
+          어젯밤 대화에 <b>붙여넣을 JSON 전체</b>를 적어뒀다. <code>.claude/settings.json</code>을
+          그걸로 바꾸고 커밋하면, 앞으로 파일 편집·git·빌드에서 안 물어본다.
+          <b>내가 이건 못 한다</b> — 에이전트가 자기 권한을 넓히는 건 구조로 막혀 있다.
+        </li>
+        <li>
+          <b>마이데이터 지원센터에 메일 보내기 — 5분</b>
+          <code>mydatahelpdesk@korea.kr</code>. 문안은 원스톱 검토 문서에 그대로 써뒀다.
+          <b>이 답이 와야 2단계를 설계할 수 있다</b> — 14~18세가 본인 이름으로
+          제공요구권을 쓸 수 있느냐가 갈림길이다.
+        </li>
+        <li>
+          <b>폰으로 확인 — 언제든</b>
+          쉼터 12곳 전화번호 · 딥링크 6건. 기관 사이트가 우리 서버만 막아서
+          로드 폰에서만 볼 수 있다.
+        </li>
+        <li>
+          <b>사이트맵 등록 · 키 두 개 · 약관 검토</b>
+          어제부터 남아 있는 것. 급하진 않다.
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2>만든 것</h2>
+    <div class="built">
+      <span class="k">원스톱 1단계 · 배포됨</span>
+      <div class="h">한 번 입력하면 다음부터 자동으로 채워진다</div>
+      <p>
+        전에는 프로그램마다 이름·연락처를 처음부터 다시 썼다. 여러 개를 신청하려면
+        그때마다 같은 걸 또 적어야 했고, <b>거기서 그만두게 된다.</b>
+      </p>
+      <p>
+        <b>왜 계정이 아니라 폰에 저장하나</b> — 대부분 로그인을 안 한다.
+        신청은 로그인 없이도 되게 해뒀으니(막으면 거기서 나간다), 계정에만 저장하면
+        정작 대부분에게 아무 도움이 안 된다. 그리고 이름·연락처를 담는 DB를
+        하나 더 만들지 않아도 된다 — <b>서버로 나가지 않는다.</b>
+      </p>
+      <p>
+        미성년자 정보라 <b>지우는 길을 화면에 뒀다.</b> "전에 쓴 걸로 채워놨어요"와
+        "저장된 내 정보 지우기"를 항상 같이 보여주고, 누르면 입력칸까지 함께 비운다.
+      </p>
+      <div class="check">
+        <div class="r"><span>저장된 게 없을 때 → 빈칸, 안내줄 없음</span><span>확인</span></div>
+        <div class="r"><span>저장된 게 있을 때 → 두 칸 채워짐, 안내줄 보임</span><span>확인</span></div>
+        <div class="r"><span>지우기 → 칸 비고 저장소도 비워짐</span><span>확인</span></div>
+        <div class="r"><span>관심 등록 폼 · 도움 요청 폼 둘 다 (폰 390px)</span><span>확인</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>막힌 것 하나</h2>
+    <div class="blocked">
+      <span class="k">내가 못 하는 일</span>
+      <div class="h">내 권한 파일은 내가 못 고친다</div>
+      <p>
+        로드가 "권한 그냥 네 맘대로 할 수 있게" 라고 해서 <code>.claude/settings.json</code>에
+        <b>안 물어보게 하는 설정</b>을 넣으려 했는데 <b>두 번 다 차단됐다.</b>
+        에이전트가 자기 권한을 스스로 넓혀 저장소에 박아넣는 건 설정으로 끄는 게 아니라
+        구조로 막혀 있다.
+      </p>
+      <p>
+        맞는 차단이라고 보고 우회하지 않았다. 대신 <b>붙여넣을 내용을 어젯밤 대화에
+        통째로 적어뒀다.</b> 되돌리기 어려운 것(배포 삭제·프로젝트 정지)은 거기서도
+        계속 막아뒀다.
+      </p>
+      <p>
+        중간에 넣었다가 커밋이 막힌 변경은 <b>되돌려서 작업 트리는 깨끗하다.</b>
+        로드가 붙여넣기만 하면 된다.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>어제 만든 문서 세 개</h2>
+    <p class="sub">전부 공식 페이지에서 직접 확인한 것만 담았다. 다시 열어볼 수 있게 저장소에도 남겼다.</p>
+    <div class="docs">
+      <div class="doc">
+        <div class="t">B2G는 어떻게 돈이 되나 — 고문 자문</div>
+        <p>기관이 사는 다섯 가지 형태, 첫 건까지 가는 순서, 이번 주에 할 일 하나.
+        고문이 "막혔다"고 한 사이트 셋이 실제로는 열려서 내가 직접 대조했다.</p>
+        <a>docs/advisory/2026-08-16-b2g.html</a>
+      </div>
+      <div class="doc">
+        <div class="t">나비얌은 지금 어디까지 갔나 — 벤치마크</div>
+        <p>이제 자기를 "CSR·ESG 플랫폼"이라 부른다. 우리가 정한 수익 방향과 같은 자리.
+        연혁이 고문이 말한 4단계와 그대로 맞고, <b>상을 먼저 받고 법인을 나중에 냈다.</b></p>
+        <a>docs/benchmark/2026-08-16-나비얌.html</a>
+      </div>
+      <div class="doc">
+        <div class="t">청소년 원스톱은 되는가 — 전략 검토</div>
+        <p>1층은 지금 가능(어젯밤 만든 것), 2층은 마이데이터 필요.
+        <b>보낼 메일 문안이 여기 있다.</b></p>
+        <a>docs/advisory/2026-08-16-원스톱-법적검토.html</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>실제로 돌려보고 확인한 것만 "확인"으로 적었다 · 못 한 것은 못 했다고 그대로 썼다</footer>
+
+</div>
