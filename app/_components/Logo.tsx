@@ -37,15 +37,24 @@ export function SeedonSymbol({
   const c = TONE[tone];
   return (
     <svg
-      viewBox="0 0 96 64"
+      viewBox="0 -3 99 67"
       height={height}
-      width={(height * 96) / 64}
+      width={(height * 99) / 67}
       className={className}
       role="img"
       aria-label="씨드온"
     >
       <rect x="2" y="20" width="76" height="44" rx="22" fill={c.body} />
-      <path d="M68 21 A24 24 0 0 1 92 2 A24 24 0 0 1 68 21 Z" fill={c.leaf} />
+      {/* 잎을 원본보다 위·오른쪽으로 3만큼 띄운다 (2026-08-16 로드 결정 B안).
+          원본은 잎 끝이 토글 모서리에 닿아 있는데, 작게 줄면 둘이 뭉쳐서
+          "겹쳐 보인다". 카톡 카드에서 실제로 그렇게 보였다.
+          앱과 카드가 어긋나지 않게 양쪽 모두 같은 값을 쓴다
+          (여기와 app/opengraph-image.tsx). 한쪽만 바꾸지 말 것. */}
+      <path
+        d="M68 21 A24 24 0 0 1 92 2 A24 24 0 0 1 68 21 Z"
+        transform="translate(3,-3)"
+        fill={c.leaf}
+      />
       <circle cx="56" cy="42" r="15" fill={c.knob} />
     </svg>
   );
