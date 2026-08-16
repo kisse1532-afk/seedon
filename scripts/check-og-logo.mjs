@@ -49,6 +49,17 @@ const MIN_GAP_PX = 4;
 
 const SPROUT = [114, 207, 94]; // 잎
 const PRIMARY = [43, 190, 140]; // 토글
+const PRIMARY_DEEP = [23, 145, 106]; // 글자 "씨드온"
+
+/**
+ * 로고 위아래와 글자 위아래가 이보다 더 어긋나면 삐뚤어 보인다.
+ *
+ * 이건 **줄이기 전 원본(1200px)에서 잰다.** 카드 크기로 줄이고 나면 13px
+ * 어긋난 것도 4px로 뭉개져서 통과해버린다(2026-08-16 실측). 간격은 "폰에서
+ * 붙어 보이나"가 문제라 줄여서 재고, 정렬은 "디자인이 맞나"가 문제라 원본에서
+ * 잰다 — 두 검사의 기준 크기가 다른 게 맞다.
+ */
+const MAX_ALIGN_OFF = 3;
 
 // ── PNG 읽기 (라이브러리 없이) ────────────────────────────────────────────
 function decodePng(buf) {
@@ -285,9 +296,51 @@ console.log(
 );
 console.log(`사이에 낀 배경색 픽셀: ${creamBetween}개  (0이면 초록끼리 붙어 보여요)`);
 
-if (gap >= need && creamBetween > 0) {
+const gapOk = gap >= need && creamBetween > 0;
+if (gapOk) {
   console.log("\n✅ 폰에서 잎과 토글이 따로 보여요.");
 } else {
   console.log("\n❌ 폰에서 한 덩어리로 보여요. lib/og-card.tsx의 LEAF_SHIFT를 더 벌리세요.");
-  process.exit(1);
 }
+
+// ── 로고와 글자 "씨드온"의 위아래가 맞는지 ──────────────────────────────
+// 로드 요청(2026-08-16)으로 글자를 키워 로고 윗선(잎 꼭대기)~밑선(토글 바닥)에
+// 맞춰뒀다. 로고 크기를 바꾸면 여기가 조용히 어긋나므로 같이 잰다.
+// 원본에서 로고 줄만 훑는다. 아래 큰 문구도 글자와 같은 색이라 섞이면 안 된다.
+const strip = Math.round(full.h * 0.45);
+const pick = (col) => {
+  const pts = [];
+  for (let y = 0; y < strip; y++) {
+    for (let x = 0; x < full.w; x++) {
+      const i = (y * full.w + x) * full.channels;
+      if (near(full.data[i], full.data[i + 1], full.data[i + 2], col)) pts.push([x, y]);
+    }
+  }
+  return pts;
+};
+const leafFull = biggestBlob(pick(SPROUT));
+const pillFull = biggestBlob(pick(PRIMARY));
+const word = pick(PRIMARY_DEEP).filter(([, y]) => y <= Math.max(...pillFull.map(([, yy]) => yy)));
+
+let alignOk = true;
+if (!word.length || !leafFull.length || !pillFull.length) {
+  console.log("\n(로고나 글자를 못 찾아 정렬은 못 쟀어요)");
+} else {
+  const pillBottom = Math.max(...pillFull.map(([, y]) => y));
+  const logoTop = Math.min(...leafFull.map(([, y]) => y));
+  const wordTop = Math.min(...word.map(([, y]) => y));
+  const wordBottom = Math.max(...word.map(([, y]) => y));
+  const offTop = wordTop - logoTop;
+  const offBottom = wordBottom - pillBottom;
+  alignOk = Math.abs(offTop) <= MAX_ALIGN_OFF && Math.abs(offBottom) <= MAX_ALIGN_OFF;
+
+  console.log(`\n로고 위 ${logoTop} · 아래 ${pillBottom}   글자 위 ${wordTop} · 아래 ${wordBottom}`);
+  console.log(`윗선 어긋남 ${offTop}px · 밑선 어긋남 ${offBottom}px  (허용 ${MAX_ALIGN_OFF}px)`);
+  console.log(
+    alignOk
+      ? "✅ 로고와 글자 높이가 맞아요."
+      : "❌ 글자가 로고와 안 맞아요. lib/og-card.tsx의 WORDMARK_SIZE(높이)·WORDMARK_NUDGE(위아래 위치)를 조정하세요."
+  );
+}
+
+if (!gapOk || !alignOk) process.exit(1);

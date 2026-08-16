@@ -24,9 +24,9 @@ export const OG_ALT = "씨드온 — 몰라서 못 받는 지원을 찾아주는
  * Next가 기본으로 붙여주는 `?해시`는 카톡이 무시하는 것으로 보인다 — 내용을
  * 두 번 바꾸고 카카오 캐시 초기화까지 했는데도 예전 그림이 계속 떴다
  * (2026-08-16 로드 확인). 그래서 주소의 **경로 자체**가 바뀌게 만들었다.
- * `/og/v4/card.png` → `/og/v5/card.png`가 되면 카톡에게는 처음 보는 그림이다.
+ * `/og/v5/card.png` → `/og/v6/card.png`가 되면 카톡에게는 처음 보는 그림이다.
  */
-export const OG_VERSION = "v5";
+export const OG_VERSION = "v6";
 export const OG_IMAGE_PATH = `/og/${OG_VERSION}/card.png`;
 
 // 브랜드 v1.0 토큰 (public/brand/tokens.css와 같은 값)
@@ -73,10 +73,29 @@ const LEAF =
  * 화면 안 로고(app/_components/Logo.tsx)는 원본 좌표 그대로 둔다. 이 예외는
  * 줄여서 보여주는 미리보기 그림에만 필요하다.
  */
-const LOGO_W = 136; // 토글 높이가 글자 "씨드온"(76px)과 비슷해지는 크기
-const VIEWBOX = { x: 0, y: -12, w: 110, h: 76 };
+const LOGO_W = 124; // 보이는 크기는 그대로 두고 viewBox의 빈 여백만 걷어낸 값
+// 그린 것에 딱 맞춘 상자. 여백이 있으면 글자와 높이를 맞출 때 기준이 흔들린다.
+// (잎 y -5~14, 토글 y 20~64, 가로 2~100)
+const VIEWBOX = { x: 0, y: -6, w: 102, h: 71 };
 const LOGO_H = Math.round((LOGO_W * VIEWBOX.h) / VIEWBOX.w);
 const LEAF_SHIFT = "translate(8,-7)";
+
+/**
+ * 글자 "씨드온" 크기.
+ *
+ * 로고의 윗선(잎 꼭대기)과 밑선(토글 바닥)에 글자 위아래가 맞도록 잡은 값이다
+ * (2026-08-16 로드 요청). 로고 크기를 바꾸면 이 값도 같이 맞춰야 한다 —
+ * scripts/check-og-logo.mjs가 두 높이를 같이 재서 보여준다.
+ */
+const WORDMARK_SIZE = 93;
+
+/**
+ * 글자를 위로 끌어올리는 양.
+ *
+ * 가운데 정렬만으로는 안 맞는다 — 한글 글자는 글자상자 안에서 아래쪽에 치우쳐
+ * 앉기 때문에, 상자를 가운데 맞추면 글자는 6px쯤 처져 보인다.
+ */
+const WORDMARK_NUDGE = -13;
 
 export function ogCard(): ReactElement {
   return (
@@ -103,7 +122,16 @@ export function ogCard(): ReactElement {
           <path d={LEAF} transform={LEAF_SHIFT} fill={SPROUT} />
           <circle cx="56" cy="42" r="15" fill={CREAM} />
         </svg>
-        <span style={{ fontSize: 76, fontWeight: 800, color: PRIMARY_DEEP }}>씨드온</span>
+        <span
+          style={{
+            fontSize: WORDMARK_SIZE,
+            fontWeight: 800,
+            color: PRIMARY_DEEP,
+            marginTop: WORDMARK_NUDGE,
+          }}
+        >
+          씨드온
+        </span>
       </div>
 
       <div
