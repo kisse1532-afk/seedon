@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { takeNext } from "@/lib/next-destination";
+import { loadMyProfile } from "@/lib/consent";
+import { needsOnboarding } from "@/lib/role";
 
 export default function EmailLoginPage() {
   const router = useRouter();
@@ -68,6 +70,14 @@ export default function EmailLoginPage() {
       if (error) {
         if (error.message.toLowerCase().includes("email not confirmed")) setNeedsConfirm(true);
         setError(toKorean(error.message));
+        return;
+      }
+      // 처음엔 회원 정보를 가입 흐름 안에만 넣었더니, 이미 계정이 있는 사람은
+      // 로그인해도 그 화면을 영영 못 만났다(2026-08-16 로드 확인). 로그인할 때마다
+      // 확인해서 안 채웠으면 채우게 한다.
+      const profile = await loadMyProfile();
+      if (needsOnboarding(profile)) {
+        router.push("/login/role");
         return;
       }
       // 북마크를 보려다 로그인한 사람은 북마크로 돌려보낸다.

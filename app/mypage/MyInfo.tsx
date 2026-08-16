@@ -10,6 +10,7 @@ import {
   type StoredProfile,
 } from "@/lib/consent";
 import { REGIONS } from "@/lib/regions";
+import { needsOnboarding } from "@/lib/role";
 import { POLICY_CONTACT } from "@/lib/policy";
 
 /**
@@ -53,9 +54,10 @@ export default function MyInfo() {
   }
 
   async function handleSave() {
-    if (!profile?.birth_year) return;
+    if (!profile) return;
     setBusy(true);
     await saveMemberProfile({
+      // 어른은 몇 년생인지를 받지 않았다. 그대로 두고 선택 항목만 고친다.
       birthYear: profile.birth_year,
       birthdayPassed: profile.birthday_passed,
       nickname,
@@ -88,17 +90,17 @@ export default function MyInfo() {
 
   // 이 화면이 생기기 전에 가입한 사람은 정보가 없다. 없는 걸 없다고 말하고
   // 채울 길을 준다 — 빈 칸만 보여주면 고장난 줄 안다.
-  if (!profile?.birth_year) {
+  if (needsOnboarding(profile)) {
     return (
       <section className="space-y-3">
         <h2 className="text-sm font-semibold text-ink-60">내 정보</h2>
         <div className="rounded-2xl border border-sage-border bg-white p-5 space-y-3">
           <p className="text-sm leading-relaxed text-body">
-            아직 받은 정보가 없어요. 몇 년생인지랑 사는 지역을 알려주면 딱 맞는 지원을
-            찾아드릴 수 있어요.
+            아직 받은 정보가 없어요. 청소년 본인인지 곁에 있는 어른인지만 알려주면
+            그에 맞게 보여드릴 수 있어요. 1분이면 돼요.
           </p>
           <Link
-            href="/login/profile"
+            href="/login/role"
             className="inline-block rounded-full bg-primary-deep px-4 py-2 text-xs font-bold text-white transition hover:brightness-110"
           >
             알려주기
@@ -107,6 +109,9 @@ export default function MyInfo() {
       </section>
     );
   }
+
+  // needsOnboarding이 위에서 걸러줬지만 타입 검사기는 그걸 모른다.
+  if (!profile) return null;
 
   return (
     <section className="space-y-3">
@@ -124,9 +129,20 @@ export default function MyInfo() {
 
       <div className="rounded-2xl border border-sage-border bg-white divide-y divide-neutral-100 text-sm">
         <div className="p-4 flex items-center justify-between">
-          <span className="text-meta">몇 년생</span>
-          <span className="text-body">{profile.birth_year}년생</span>
+          <span className="text-meta">어떻게 쓰고 있나</span>
+          <span className="text-body">
+            {profile.role === "adult" ? (profile.adult_kind ?? "곁에 있는 어른") : "청소년 본인"}
+          </span>
         </div>
+
+        {/* 몇 년생인지는 청소년에게만 받는다. 어른에게는 나이가 필요 없어서
+            아예 안 물어봤으므로 보여줄 것도 없다. */}
+        {profile.role === "youth" && profile.birth_year && (
+          <div className="p-4 flex items-center justify-between">
+            <span className="text-meta">몇 년생</span>
+            <span className="text-body">{profile.birth_year}년생</span>
+          </div>
+        )}
 
         {editing ? (
           <>
