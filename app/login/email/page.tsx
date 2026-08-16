@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { takeNext } from "@/lib/next-destination";
 
 export default function EmailLoginPage() {
   const router = useRouter();
@@ -69,7 +70,8 @@ export default function EmailLoginPage() {
         setError(toKorean(error.message));
         return;
       }
-      router.push("/mypage");
+      // 북마크를 보려다 로그인한 사람은 북마크로 돌려보낸다.
+      router.push(takeNext("/mypage"));
     }
   }
 

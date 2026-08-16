@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { mergeLocalBookmarksIntoAccount } from "@/lib/bookmarks";
 import { flushPendingConsent } from "@/lib/consent";
+import { takeNext } from "@/lib/next-destination";
 
 export default function LoginCompletePage() {
   const [movedCount, setMovedCount] = useState(0);
+  // 가입 전에 가려던 곳이 있으면 그리로 보낸다. 없으면 마이페이지.
+  const [next, setNext] = useState("/mypage");
 
   /* 로그인 전에 저장해둔 관심 프로그램을 계정으로 옮긴다.
      이게 없으면 "로그인했더니 저장해둔 게 사라졌다"가 되고, 청소년 입장에서는
@@ -25,6 +28,7 @@ export default function LoginCompletePage() {
     // 동의를 체크한 시점에는 아직 세션이 없을 수 있어 브라우저에 맡겨둔다.
     // 여기까지 왔으면 로그인이 끝난 것이므로 계정에 올린다.
     flushPendingConsent();
+    setNext(takeNext("/mypage"));
   }, []);
 
   return (
@@ -40,10 +44,10 @@ export default function LoginCompletePage() {
         )}
       </div>
       <Link
-        href="/mypage"
+        href={next}
         className="inline-block w-full rounded-full bg-primary-deep text-white text-sm font-medium py-3 hover:brightness-110"
       >
-        마이페이지로 가기
+        {next === "/mypage" ? "마이페이지로 가기" : "이어서 하기"}
       </Link>
       <Link href="/" className="block text-xs text-meta hover:text-body">
         홈으로

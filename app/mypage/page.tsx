@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { loadBookmarks, onBookmarksChange } from "@/lib/bookmarks";
+import { loadBookmarks, onBookmarksChange, clearLocalBookmarks } from "@/lib/bookmarks";
 import { loadMyApplications, type MyApplication } from "@/lib/applications";
 import { fetchProgramsByIds } from "@/lib/queries";
 import type { Program } from "@/lib/data";
@@ -56,6 +56,9 @@ export default function MyPage() {
   }, []);
 
   async function handleLogout() {
+    // 세션이 끊기면 계정 목록을 다시 못 읽으므로 브라우저에 남은 복사본을 먼저 비운다.
+    // 안 그러면 로그아웃했는데도 저장해둔 게 계속 보인다.
+    clearLocalBookmarks();
     await supabase.auth.signOut();
     router.push("/");
     router.refresh();
