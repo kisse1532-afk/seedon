@@ -5,7 +5,7 @@ import BookmarkButton from "@/app/_components/BookmarkButton";
 import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
 import CategoryIcon from "@/app/_components/CategoryIcon";
 import { categories } from "@/lib/data";
-import { matchCategory } from "@/lib/recommend";
+import { matchCategory, rankPrograms } from "@/lib/recommend";
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
@@ -31,7 +31,18 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   // 단어로 안 걸리면(= 문장을 적었을 가능성) 키워드 매칭으로 카테고리를 찾아준다.
   const matched = query && textMatches.length === 0 ? matchCategory(query) : null;
   const matchedCategory = matched ? categories.find((c) => c.slug === matched) : undefined;
-  const results = matched ? published.filter((p) => p.category === matched) : textMatches;
+
+  /* 순서를 맞춤추천과 같은 방식으로 매긴다.
+     전에는 카테고리 안을 등록순 그대로 늘어놨더니 "학원비가 부담돼요"를 친
+     청소년이 맨 위에서 "2026년 접수 마감"부터 보게 됐다(2026-08-16 확인).
+     지금 신청할 수 있는 것이 위로 와야 한다.
+
+     로그인 상태는 서버에서 알 수 없으므로 저장해둔 것·사는 지역은 반영하지
+     않는다. 그건 로그인해야 쓰는 맞춤추천 쪽 몫이다. */
+  const pool = matched ? published.filter((p) => p.category === matched) : textMatches;
+  const results = query
+    ? rankPrograms(query, pool, { limit: pool.length }).items.map((r) => r.program)
+    : [];
 
   return (
     <div className="space-y-6">
