@@ -5,9 +5,36 @@ import BottomNav from "@/app/_components/BottomNav";
 import Logo from "@/app/_components/Logo";
 import PhoneLink from "@/app/_components/PhoneLink";
 
+const SITE = "https://seedon.vercel.app";
+const TITLE = "씨드온 — 몰라서 못 받는 지원 찾기";
+const DESC =
+  "교육·심리상담·주거·생활비·진로·문화체험·공모전. 청소년이 실제로 신청할 수 있는 지원제도를 쉬운 말로 정리해뒀어요.";
+
 export const metadata: Metadata = {
-  title: "씨드온 | SeedOn",
+  metadataBase: new URL(SITE),
+  title: { default: "씨드온 | SeedOn", template: "%s | 씨드온" },
   description: "이미 존재하지만 닿지 않는 지원을, 눈치 보지 않고 쓸 수 있게.",
+
+  /* 카톡·문자·SNS 미리보기.
+     청소년이 씨드온을 알게 되는 경로는 대개 "선생님이 카톡으로 링크를 보내주는
+     것"인데, 지금까지 미리보기가 없어서 주소 한 줄만 떴다. 받는 쪽에서 이게
+     뭔지 알 수 없으면 안 누른다. 그림은 app/opengraph-image.tsx가 그린다.
+
+     낙인이 되지 않게 문구를 고른다 — "지원이 필요한 청소년"처럼 받는 사람을
+     규정하는 말을 쓰지 않고, 무엇이 있는지만 말한다(절대규칙 1). */
+  openGraph: {
+    type: "website",
+    siteName: "씨드온",
+    locale: "ko_KR",
+    url: SITE,
+    title: TITLE,
+    description: DESC,
+  },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESC },
+
+  /* 검색에 잡히게. 다만 관리자·로그인 화면은 robots.ts에서 따로 막는다. */
+  robots: { index: true, follow: true },
+  alternates: { canonical: SITE },
   // 브랜드 에셋 v1.0 — public/brand/
   icons: {
     icon: [
