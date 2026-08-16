@@ -204,9 +204,14 @@ export default function MyPage() {
         </div>
       </section>
 
-      <p className="text-[11px] leading-relaxed text-meta text-center pt-2">
-        맞춤 추천은 준비 중이에요.
-      </p>
+      {/* "준비 중이에요"라고 적혀 있었는데 /recommend는 이미 만들어져 있고
+          하단 탭에도 나와 있다. 안 됐다고 적어두면 되는 기능을 안 써보고 지나간다. */}
+      <Link
+        href="/recommend"
+        className="block pt-2 text-center text-[11px] leading-relaxed text-primary-deep hover:underline"
+      >
+        지금 어떤 상황인지 적으면 맞춤 추천도 받아볼 수 있어요 →
+      </Link>
     </div>
   );
 }

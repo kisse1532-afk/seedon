@@ -31,9 +31,13 @@ export default function LoginPage() {
         </div>
         <h1 className="text-lg font-extrabold tracking-tight text-ink">씨드온 시작하기</h1>
         <p className="text-sm text-ink-60 mt-2 leading-relaxed">
+          {/* "받아볼 수 있어요"라고 적어놨는데 보내는 기능이 없다.
+              가입 첫 화면에서 한 약속이라 로그인 직후 "왜 아무것도 안 오지"가 된다.
+              실제로 있는 건 /recommend에서 본인이 적으면 찾아주는 것이라
+              받는 말투를 찾는 말투로 바꾼다. */}
           로그인하면 관심 프로그램을 저장하고
           <br />
-          맞춤 지원 정보를 받아볼 수 있어요.
+          내 상황에 맞는 걸 찾아볼 수 있어요.
         </p>
       </div>
 
