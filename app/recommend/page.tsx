@@ -15,7 +15,7 @@ export default function RecommendPage() {
           rows={5}
           required
           placeholder="예: 학원비가 부담돼서 성적이 자꾸 떨어져요"
-          className="w-full rounded-control border border-sage-border p-4 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-neutral-400"
+          className="w-full rounded-control border border-sage-border p-4 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-meta"
         />
         <button
           type="submit"

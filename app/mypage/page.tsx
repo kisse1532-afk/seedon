@@ -9,6 +9,7 @@ import { loadMyApplications, type MyApplication } from "@/lib/applications";
 import { fetchProgramsByIds } from "@/lib/queries";
 import type { Program } from "@/lib/data";
 import MyInfo from "./MyInfo";
+import { SeedonSymbol } from "@/app/_components/Logo";
 import { loadMyProfile } from "@/lib/consent";
 
 /** 관심 등록 처리 상태를 청소년이 읽을 수 있는 말로. 행정용어를 그대로 쓰지 않는다. */
@@ -78,8 +79,26 @@ export default function MyPage() {
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-3">
-        <div className="w-14 h-14 rounded-full bg-cream flex items-center justify-center text-2xl">
-          {loggedIn ? "🌱" : "🙂"}
+        {/* 🌱 이모지 자리에 우리 심볼을 쓴다. 이모지는 기기마다 그림이 달라서
+            같은 화면이 안드로이드·아이폰에서 다르게 보인다(BRAND.md 로고 규칙).
+            로그인 화면은 이미 고쳐져 있었는데 여기만 남아 있었다. */}
+        <div className="w-14 h-14 rounded-full bg-mint flex items-center justify-center">
+          {loggedIn ? (
+            <SeedonSymbol height={22} />
+          ) : (
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              className="h-6 w-6 text-meta"
+              aria-hidden
+            >
+              <circle cx="12" cy="8.4" r="3.6" />
+              <path d="M5.4 19.2a6.6 6.6 0 0 1 13.2 0" />
+            </svg>
+          )}
         </div>
         <div className="min-w-0">
           <p className="font-semibold truncate">{loggedIn ? `${displayName}님` : "게스트님"}</p>
@@ -120,7 +139,7 @@ export default function MyPage() {
               여기에 모여요.
             </p>
           ) : (
-            <ul className="divide-y divide-neutral-100 rounded-2xl border border-sage-border bg-white">
+            <ul className="divide-y divide-sage-line rounded-2xl border border-sage-border bg-white">
               {applications.map((a) => {
                 const program = programs[a.program_id];
                 return (
@@ -149,7 +168,7 @@ export default function MyPage() {
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold text-ink-60">계정</h2>
-        <div className="rounded-2xl border border-sage-border bg-white divide-y divide-neutral-100 text-sm">
+        <div className="rounded-2xl border border-sage-border bg-white divide-y divide-sage-line text-sm">
           {loggedIn && (
             <div className="p-4 flex items-center justify-between">
               <span className="text-meta">로그인한 계정</span>

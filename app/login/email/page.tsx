@@ -122,7 +122,7 @@ export default function EmailLoginPage() {
         </h1>
       </div>
 
-      <div className="flex rounded-full border border-sage-border p-1 bg-neutral-50">
+      <div className="flex rounded-full border border-sage-border p-1 bg-cream">
         <button
           onClick={() => setMode("signup")}
           className={`flex-1 text-sm py-2 rounded-full transition ${mode === "signup" ? "bg-white shadow-sm font-medium" : "text-meta"}`}
@@ -156,7 +156,7 @@ export default function EmailLoginPage() {
           className="w-full rounded-xl border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
         {error && <p className="text-xs leading-relaxed text-red-500">{error}</p>}
-        {message && <p className="text-xs leading-relaxed text-emerald-600">{message}</p>}
+        {message && <p className="text-xs leading-relaxed text-primary-deep">{message}</p>}
         {needsConfirm && (
           <button
             type="button"

@@ -47,7 +47,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-600">
+        <Link href="/" className="text-sm text-meta hover:text-body">
           ← 홈으로
         </Link>
         <h1 className="text-xl font-bold mt-2">검색 결과</h1>
@@ -64,7 +64,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       </form>
 
       {!query && (
-        <p className="text-sm text-neutral-400 py-8 text-center">
+        <p className="text-sm text-meta py-8 text-center">
           단어로 검색해도 되고, 문장으로 적어도 맞는 지원을 찾아드려요.
         </p>
       )}
@@ -84,7 +84,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       {query && (
         <div className="grid gap-3">
           {results.length === 0 && (
-            <p className="text-sm text-neutral-400 py-8 text-center">
+            <p className="text-sm text-meta py-8 text-center">
               &quot;{query}&quot;에 대한 결과가 없어요. 다른 말로 적어보거나, 카테고리에서 둘러보세요.
             </p>
           )}
@@ -92,7 +92,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             <div key={p.id} className="relative rounded-lg border border-sage-border bg-white p-5 flex flex-col gap-2">
               <BookmarkButton
                 programId={p.id}
-                className="absolute top-4 right-4 text-neutral-300 hover:text-primary-deep"
+                className="absolute top-4 right-4 text-meta hover:text-primary-deep"
               />
               <div className="flex items-start justify-between gap-2 pr-8">
                 <div>
@@ -100,10 +100,10 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                     <h3 className="font-semibold">{p.title}</h3>
                     <EnrollmentBadge program={p} />
                   </div>
-                  <p className="text-xs text-neutral-400">{p.org}</p>
+                  <p className="text-xs text-meta">{p.org}</p>
                 </div>
               </div>
-              <p className="text-sm text-neutral-600">{p.description}</p>
+              <p className="text-sm text-body">{p.description}</p>
               <div className="flex items-center justify-end mt-2">
                 <TrackedLink
                   href={`/apply/${p.id}`}

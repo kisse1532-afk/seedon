@@ -63,7 +63,7 @@ export default function LoginProfilePage() {
       {/* 몇 년생 — 필수 */}
       <div className="space-y-2 rounded-2xl border border-sage-border bg-white p-5">
         <label htmlFor="birthYear" className="block text-sm font-bold text-ink">
-          몇 년생이에요? <span className="text-emerald-600">(필수)</span>
+          몇 년생이에요? <span className="text-primary-deep">(필수)</span>
         </label>
         <p className="text-xs leading-relaxed text-meta">
           씨드온은 만 {MIN_AGE}세부터 쓸 수 있어서 확인이 필요해요. 태어난 날짜까지는 안 물어봐요.
@@ -158,7 +158,7 @@ export default function LoginProfilePage() {
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             placeholder="안 적어도 돼요"
-            className="w-full rounded-control border border-sage-border px-4 py-3 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-neutral-400"
+            className="w-full rounded-control border border-sage-border px-4 py-3 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-meta"
           />
         </div>
       </div>

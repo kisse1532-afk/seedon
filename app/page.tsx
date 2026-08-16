@@ -142,7 +142,7 @@ export default async function HomePage() {
               name="q"
               placeholder="어떤 상황인지 적어보세요"
               aria-label="지원 프로그램 검색"
-              className="min-w-0 flex-1 bg-transparent text-sm text-body focus:outline-none placeholder:text-neutral-400 sm:text-[15px]"
+              className="min-w-0 flex-1 bg-transparent text-sm text-body focus:outline-none placeholder:text-meta sm:text-[15px]"
             />
             <button
               type="submit"
