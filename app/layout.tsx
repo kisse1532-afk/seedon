@@ -26,7 +26,6 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "씨드온",
     locale: "ko_KR",
-    url: SITE,
     title: TITLE,
     description: DESC,
   },
@@ -34,7 +33,14 @@ export const metadata: Metadata = {
 
   /* 검색에 잡히게. 다만 관리자·로그인 화면은 robots.ts에서 따로 막는다. */
   robots: { index: true, follow: true },
-  alternates: { canonical: SITE },
+
+  /* url·canonical을 여기(공통)에 박으면 안 된다. 모든 페이지가 자기를 "홈"이라고
+     말하게 되어 두 가지가 깨진다(2026-08-16 실측):
+       ① 카톡이 카드를 주소별로 캐시하는데 전부 같은 주소로 보여 하나만 남는다.
+          프로그램 링크를 보내도 홈 카드가 뜨고, 주소에 ?를 붙여도 안 바뀐다
+       ② 검색엔진이 38개 프로그램 페이지를 전부 홈의 복사본으로 보고 안 담는다.
+          사이트맵을 만들어둔 게 무력해진다
+     각 페이지가 자기 주소를 말하게 둔다. */
   // 브랜드 에셋 v1.0 — public/brand/
   icons: {
     icon: [

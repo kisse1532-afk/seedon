@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { categories, type Category } from "@/lib/data";
@@ -7,6 +8,29 @@ import BookmarkButton from "@/app/_components/BookmarkButton";
 import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
 import CategoryIcon from "@/app/_components/CategoryIcon";
 import SosBanner from "@/app/_components/SosBanner";
+
+/** 카테고리 링크를 보냈을 때도 자기 이름을 말하게 한다(홈 카드가 뜨지 않게). */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const category = categories.find((c) => c.slug === slug);
+  if (!category) return {};
+
+  const path = `/category/${category.slug}`;
+  const title = `${category.label} 지원 찾기`;
+  const desc = `청소년이 신청할 수 있는 ${category.label} 지원을 모아뒀어요. 어디서 어떻게 신청하는지 쉬운 말로 정리해뒀어요.`;
+
+  return {
+    title,
+    description: desc,
+    alternates: { canonical: path },
+    openGraph: { type: "website", title, description: desc, url: path },
+    twitter: { card: "summary_large_image", title, description: desc },
+  };
+}
 
 export default async function CategoryPage({
   params,

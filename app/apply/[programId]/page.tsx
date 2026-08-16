@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fetchProgram } from "@/lib/queries";
@@ -11,6 +12,42 @@ import HelpChatbot from "./HelpChatbot";
 import InterestForm from "./InterestForm";
 import Reviews from "./Reviews";
 import TrackPageView from "@/app/_components/TrackPageView";
+
+/**
+ * 이 카드를 카톡으로 보냈을 때 뜨는 정보.
+ *
+ * 없으면 어떤 프로그램 링크를 보내도 홈 카드가 뜬다 — 받는 청소년은 무엇에 대한
+ * 링크인지 알 수 없다. 선생님이 "이거 봐봐" 하고 보내주는 게 주 경로라 이게 중요하다.
+ * canonical도 여기서 자기 주소를 말해야 검색엔진이 홈의 복사본으로 보지 않는다.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ programId: string }>;
+}): Promise<Metadata> {
+  const { programId } = await params;
+  const program = await fetchProgram(programId);
+  if (!program) return {};
+
+  const path = `/apply/${program.id}`;
+  // 설명은 카드에 두 줄쯤 보이므로 앞부분만. 중간에서 끊기면 말이 이상해진다.
+  const desc = program.description.length > 110
+    ? program.description.slice(0, 108).trimEnd() + "…"
+    : program.description;
+
+  return {
+    title: program.title,
+    description: desc,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "article",
+      title: `${program.title} — ${program.org}`,
+      description: desc,
+      url: path,
+    },
+    twitter: { card: "summary_large_image", title: program.title, description: desc },
+  };
+}
 
 export default async function ApplyPage({
   params,
