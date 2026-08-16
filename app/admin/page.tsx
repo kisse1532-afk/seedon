@@ -175,6 +175,12 @@ export default async function AdminPage({
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold text-neutral-500">전환율 (최근 30일)</h2>
+        {/* 숫자가 갑자기 작아진 이유를 화면에서 알 수 있어야 한다. 설명 없이
+            줄어들면 고장난 줄 안다. */}
+        <p className="text-[11px] leading-relaxed text-neutral-400">
+          {eventStats.measuringSince.slice(0, 10)}부터 센 숫자예요. 그 전 기록은 화면이
+          그려질 때마다 찍혀서 검색봇·링크 미리보기까지 섞여 있어 빼고 셉니다(기록은 지우지 않았어요).
+        </p>
         <div className="rounded-2xl border border-neutral-200 bg-white p-5">
           <div className="grid grid-cols-4 gap-3 text-center">
             <div>
