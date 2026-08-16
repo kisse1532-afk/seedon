@@ -496,7 +496,20 @@ export default async function AdminPage({
                     {h.status === "pending" ? "대기중" : "연락함"}
                   </span>
                 </div>
-                <p className="text-xs text-neutral-400">프로그램: {h.program_id}</p>
+                {/* 신청자 목록에는 프로그램 이름과 접수 시각이 나오는데 도움요청만
+                    id를 그대로 찍고 시각이 없었다. 그러면 로드가 "무슨 건이 얼마나
+                    기다렸는지"를 목록에서 판단할 수 없어 오래 방치될 위험이 있다
+                    (2026-08-16 CS팀 지적). 신청자 목록과 같은 방식으로 맞춘다. */}
+                <p className="text-xs text-neutral-400">
+                  {h.program_id ? programTitle.get(h.program_id) ?? h.program_id : "프로그램 미지정"}
+                  <span className="mx-1.5">·</span>
+                  {new Date(h.created_at).toLocaleString("ko-KR", {
+                    month: "numeric",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
                 {h.message && (
                   <p className="text-sm text-neutral-700 break-words mt-1">{h.message}</p>
                 )}
