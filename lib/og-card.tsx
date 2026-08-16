@@ -61,8 +61,12 @@ const LEAF =
 /**
  * 로고 크기와 잎 간격.
  *
- * 이 셋은 같이 움직인다. 로고를 줄이면 잎-토글 간격도 같은 비율로 줄어서, 카톡
+ * 이 둘은 같이 움직인다. 로고를 줄이면 잎-토글 간격도 같은 비율로 줄어서, 카톡
  * 카드 크기(폭 370px)에서 다시 붙어 보이게 된다. **하나만 고치지 말 것.**
+ *
+ * 한때 잎 둘레에 크림색 띠(stroke)를 둘러 경계를 만들려 했는데, 그림 만드는
+ * 도구가 SVG stroke를 안 그린다 — 두께를 0.01로 하든 10으로 하든 결과가 같았다
+ * (2026-08-16 실측). 그래서 지웠다. 갈라져 보이게 하는 건 오직 잎 위치다.
  * 고쳤으면 `node scripts/check-og-logo.mjs`로 실제 카드 크기에서 다시 재볼 것 —
  * 눈으로 보고 판단해서 네 번 틀렸다(2026-08-16).
  *
@@ -72,8 +76,7 @@ const LEAF =
 const LOGO_W = 136; // 토글 높이가 글자 "씨드온"(76px)과 비슷해지는 크기
 const VIEWBOX = { x: 0, y: -12, w: 110, h: 76 };
 const LOGO_H = Math.round((LOGO_W * VIEWBOX.h) / VIEWBOX.w);
-const LEAF_SHIFT = "translate(9.5,-8.5)";
-const LEAF_HALO = 4.8; // 잎 둘레 크림색 띠 두께 (viewBox 단위)
+const LEAF_SHIFT = "translate(8,-7)";
 
 export function ogCard(): ReactElement {
   return (
@@ -97,19 +100,6 @@ export function ogCard(): ReactElement {
           viewBox={`${VIEWBOX.x} ${VIEWBOX.y} ${VIEWBOX.w} ${VIEWBOX.h}`}
         >
           <rect x="2" y="20" width="76" height="44" rx="22" fill={PRIMARY} />
-          {/* 잎 밑에 크림색을 한 겹 더 깔아 토글과 사이에 밝은 띠를 만든다.
-              이게 없으면 두 색(#2BBE8C·#72CF5E)이 둘 다 초록이라, 카톡 카드
-              크기(폭 370px)로 줄어들 때 경계가 뭉개져 한 덩어리로 보인다.
-              간격을 벌리는 것만으로는 안 됐다 — 실제로 5.8px 떨어져 있는데도
-              로드가 "겹친다"고 네 번 지적했다. */}
-          <path
-            d={LEAF}
-            transform={LEAF_SHIFT}
-            fill={CREAM}
-            stroke={CREAM}
-            strokeWidth={LEAF_HALO}
-            strokeLinejoin="round"
-          />
           <path d={LEAF} transform={LEAF_SHIFT} fill={SPROUT} />
           <circle cx="56" cy="42" r="15" fill={CREAM} />
         </svg>

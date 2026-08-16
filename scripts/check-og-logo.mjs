@@ -31,8 +31,21 @@ if ((process.env.HTTPS_PROXY || process.env.https_proxy) && !process.env.NODE_US
 
 /** 카톡이 실제로 보여주는 카드 폭. 이 숫자가 이 검사의 핵심이다. */
 const CARD_W = 370;
-/** 이만큼은 떨어져 있어야 폰에서 두 덩어리로 보인다 (2026-08-16 실측 기준). */
-const MIN_GAP = 8;
+/**
+ * 잎-토글 간격 기준. **토글 가로폭의 몇 배**로 잰다.
+ *
+ * 처음엔 "8픽셀 이상"이라는 고정값을 썼는데, 그건 로고가 가로 228일 때 잡은
+ * 숫자였다. 로고를 136으로 줄이니 토글도 같이 작아져서, 비율로는 더 벌어졌는데
+ * 픽셀로는 기준 미달로 나왔다 — 기준이 로고 크기를 따라가야 한다.
+ *
+ * 근거가 된 실측(2026-08-16, 카드 폭 370px 기준):
+ *   로고 228 · 토글폭 54px · 간격 5.8px (0.11배) → 로드가 "겹친다"
+ *   로고 228 · 토글폭 54px · 간격 9.4px (0.17배) → 괜찮음
+ *   로고 136 · 토글폭 29px · 간격 6.7px (0.23배) → 괜찮음
+ */
+const MIN_GAP_RATIO = 0.15;
+/** 아주 작은 로고에서 비율만으로 통과하는 걸 막는 최소선. */
+const MIN_GAP_PX = 4;
 
 const SPROUT = [114, 207, 94]; // 잎
 const PRIMARY = [43, 190, 140]; // 토글
@@ -194,16 +207,53 @@ for (let y = 0; y < card.h; y++) {
   }
 }
 
+/**
+ * 서로 붙어 있는 픽셀끼리 묶어서 가장 큰 덩어리만 남긴다.
+ *
+ * 색만 보고 고르면 글자 가장자리의 어중간한 픽셀까지 섞여 들어온다. 실제로
+ * 토글 가로폭이 42px여야 하는데 109px로 나왔다(2026-08-16). 그 상태로는
+ * 거리도 폭도 못 믿는다.
+ */
+function biggestBlob(points) {
+  const key = ([x, y]) => `${x},${y}`;
+  const left = new Map(points.map((p) => [key(p), p]));
+  let best = [];
+  while (left.size) {
+    const [firstKey] = left.keys();
+    const queue = [left.get(firstKey)];
+    left.delete(firstKey);
+    const blob = [];
+    while (queue.length) {
+      const p = queue.pop();
+      blob.push(p);
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const k = `${p[0] + dx},${p[1] + dy}`;
+          if (left.has(k)) {
+            queue.push(left.get(k));
+            left.delete(k);
+          }
+        }
+      }
+    }
+    if (blob.length > best.length) best = blob;
+  }
+  return best;
+}
+
 if (!leaf.length || !pill.length) {
   console.error(`로고를 못 찾았어요 (잎 ${leaf.length}px, 토글 ${pill.length}px).`);
   console.error("브랜드 색이 바뀌었으면 이 파일 위쪽 SPROUT·PRIMARY 값도 같이 고쳐야 해요.");
   process.exit(1);
 }
 
+const leafBlob = biggestBlob(leaf);
+const pillBlob = biggestBlob(pill);
+
 let best = Infinity;
 let at = null;
-for (const [lx, ly] of leaf) {
-  for (const [px, py] of pill) {
+for (const [lx, ly] of leafBlob) {
+  for (const [px, py] of pillBlob) {
     const d = (lx - px) ** 2 + (ly - py) ** 2;
     if (d < best) {
       best = d;
@@ -223,11 +273,19 @@ for (let s = 1; s < steps; s++) {
   if (card.data[i] > 230 && card.data[i + 1] > 222 && card.data[i + 2] > 205) creamBetween++;
 }
 
-console.log(`잎 ${leaf.length}px · 토글 ${pill.length}px`);
-console.log(`잎-토글 최단 거리: ${gap.toFixed(2)}px  (필요: ${MIN_GAP}px 이상)`);
+// 기준은 토글 가로폭에 비례한다 — 로고를 줄이면 기준도 같이 줄어야 한다
+const xs = pillBlob.map(([x]) => x);
+const pillWidth = Math.max(...xs) - Math.min(...xs) + 1;
+const need = Math.max(MIN_GAP_PX, pillWidth * MIN_GAP_RATIO);
+
+console.log(`잎 ${leafBlob.length}px · 토글 ${pillBlob.length}px (토글 가로 ${pillWidth}px)`);
+console.log(
+  `잎-토글 최단 거리: ${gap.toFixed(2)}px  ` +
+    `(필요: ${need.toFixed(1)}px = 토글폭의 ${MIN_GAP_RATIO}배)`
+);
 console.log(`사이에 낀 배경색 픽셀: ${creamBetween}개  (0이면 초록끼리 붙어 보여요)`);
 
-if (gap >= MIN_GAP && creamBetween > 0) {
+if (gap >= need && creamBetween > 0) {
   console.log("\n✅ 폰에서 잎과 토글이 따로 보여요.");
 } else {
   console.log("\n❌ 폰에서 한 덩어리로 보여요. lib/og-card.tsx의 LEAF_SHIFT를 더 벌리세요.");
