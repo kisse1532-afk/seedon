@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { categories, emergencyContacts } from "@/lib/data";
 import PhoneLink from "@/app/_components/PhoneLink";
@@ -9,6 +10,13 @@ import type { Category } from "@/lib/data";
 // 홈은 매 요청마다 DB를 다시 읽는다. 이게 없으면 빌드 시점 데이터로 고정되어,
 // 리서치팀이 프로그램을 등록해도 재배포 전까지 카테고리 개수·목록이 안 바뀐다.
 export const dynamic = "force-dynamic";
+
+/* 주소는 페이지마다 자기 것을 말한다(공통 설정에 박으면 모든 페이지가 홈이 된다 —
+   layout.tsx 설명 참고). 홈은 여기서 자기 주소를 말한다. */
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: { url: "/" },
+};
 
 // 상황별 입구. 카테고리와 짝이 지어져 있어 아이콘을 그대로 빌려 쓴다.
 const situations: { label: string; slug: Category }[] = [
