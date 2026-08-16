@@ -60,13 +60,13 @@ export default async function Image() {
       >
         {/* 로고 — public/brand/logo/seedon-symbol-cream.svg와 같은 좌표.
             노브는 배경색과 같아야 하므로 CREAM (BRAND.md 로고 규칙). */}
-        <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
-          <svg width="129" height="87" viewBox="0 -3 99 67">
+        <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
+          <svg width="228" height="154" viewBox="0 -3 99 67">
             <rect x="2" y="20" width="76" height="44" rx="22" fill={PRIMARY} />
             <path d={LEAF} transform="translate(3,-3)" fill={SPROUT} />
             <circle cx="56" cy="42" r="15" fill={CREAM} />
           </svg>
-          <span style={{ fontSize: 50, fontWeight: 800, color: PRIMARY_DEEP }}>씨드온</span>
+          <span style={{ fontSize: 76, fontWeight: 800, color: PRIMARY_DEEP }}>씨드온</span>
         </div>
 
         <div
@@ -76,7 +76,7 @@ export default async function Image() {
             fontWeight: 800,
             color: INK,
             lineHeight: 1.28,
-            marginTop: 44,
+            marginTop: 34,
             letterSpacing: "-0.02em",
           }}
         >
