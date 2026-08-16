@@ -54,7 +54,30 @@ export type Program = {
   apply_deadline?: string;
   /** 값이 있으면 이번 회차 모집 종료. 홈의 "지금 신청할 수 있어요"에서 제외되고 이 문구가 배지로 표시된다. */
   reopen_note?: string;
+  /**
+   * 게시 상태. 목록 쿼리는 published만 가져오므로 대부분의 화면에서는 볼 일이 없지만,
+   * 북마크처럼 "예전에 저장해둔 것"을 다시 꺼내는 화면에서는 그 사이 내려간 카드가
+   * 섞여 나온다. 그때 멀쩡한 것처럼 보여주면 청소년이 헛걸음한다.
+   */
+  status?: "published" | "pending" | "rejected";
 };
+
+/**
+ * 저장해둔 카드를 다시 꺼낼 때, 지금도 신청할 수 있는지 알려주는 한마디.
+ * 신청 가능하면 null.
+ */
+export function getClosedNotice(
+  program: Pick<Program, "status" | "apply_deadline">,
+  today = new Date().toISOString().slice(0, 10)
+): string | null {
+  if (program.status && program.status !== "published") {
+    return "지금은 안내를 내려둔 프로그램이에요";
+  }
+  if (program.apply_deadline && program.apply_deadline < today) {
+    return "이번 모집은 끝났어요";
+  }
+  return null;
+}
 
 // 카드 배지에 쓸 접수상태 문구를 계산한다.
 // 마감일이 지난 프로그램은 조회 쿼리 단계에서 이미 걸러지므로, 여기서는
