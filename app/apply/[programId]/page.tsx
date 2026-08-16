@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fetchProgram } from "@/lib/queries";
-import { supabase } from "@/lib/supabase";
 import TrackedLink from "@/app/_components/TrackedLink";
 import BookmarkButton from "@/app/_components/BookmarkButton";
 import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
@@ -11,6 +10,7 @@ import ApplySteps from "./ApplySteps";
 import HelpChatbot from "./HelpChatbot";
 import InterestForm from "./InterestForm";
 import Reviews from "./Reviews";
+import TrackPageView from "@/app/_components/TrackPageView";
 
 export default async function ApplyPage({
   params,
@@ -20,12 +20,6 @@ export default async function ApplyPage({
   const { programId } = await params;
   const program = await fetchProgram(programId);
   if (!program) return notFound();
-
-  // 상세페이지 조회 이벤트 기록 (서버 렌더링 시점, 실패해도 페이지 렌더링엔 영향 없음)
-  supabase
-    .from("program_events")
-    .insert({ event_type: "apply_page_view", program_id: programId, category: program.category })
-    .then(() => {});
 
   const submitHelp = submitHelpRequest.bind(null, programId);
 
@@ -38,6 +32,8 @@ export default async function ApplyPage({
 
   return (
     <div className="max-w-md mx-auto space-y-6">
+      {/* 조회 기록은 브라우저에서 남긴다 — 봇·링크 미리보기까지 세지 않기 위해서 */}
+      <TrackPageView programId={program.id} category={program.category} />
       <Link
         href={`/category/${program.category}`}
         className="text-[13px] font-medium text-meta transition hover:text-ink"

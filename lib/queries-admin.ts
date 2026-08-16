@@ -85,8 +85,22 @@ export async function fetchApplications() {  if (!supabaseAdmin) return [];
 }
 
 
+/**
+ * 전환율을 이 시각 이후 것만 센다.
+ *
+ * 그 전 기록은 서버 렌더링마다 찍혀서 검색봇·링크 미리보기·우리가 점검하려고
+ * 연 것까지 섞여 있다(카드 클릭 22건에 상세 조회 64건이라는 말이 안 되는
+ * 숫자였다). 섞인 채로 세면 파일럿 판단을 그르친다.
+ *
+ * 지우지는 않는다 — 되돌리기 원칙상 데이터는 남기고 계산에서만 뺀다.
+ * 나중에 옛 기록이 필요하면 이 값을 내리면 된다.
+ */
+export const MEASURE_SINCE = "2026-08-16T07:30:00Z";
+
 export type EventStats = {
   windowDays: number;
+  /** 실제로 세기 시작한 시각. 화면에 그대로 보여줘서 숫자가 작은 이유를 알게 한다. */
+  measuringSince: string;
   cardClicks: number;
   pageViews: number;
   applyClicks: number;
@@ -97,8 +111,11 @@ export type EventStats = {
   topPrograms: { program_id: string; clicks: number }[];
 };
 
+/* 이벤트에 user_id가 붙으면서 이 표도 개인정보가 됐다("누가 무엇을 봤나").
+   공개 키 읽기 정책을 없앴으므로 집계는 서버 전용 키로만 한다. */
 async function countEvents(eventType: string, sinceIso: string) {
-  const { count } = await supabase
+  if (!supabaseAdmin) return 0;
+  const { count } = await supabaseAdmin
     .from("program_events")
     .select("*", { count: "exact", head: true })
     .eq("event_type", eventType)
@@ -107,7 +124,9 @@ async function countEvents(eventType: string, sinceIso: string) {
 }
 
 export async function fetchEventStats(windowDays = 30): Promise<EventStats> {
-  const since = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000).toISOString();
+  const windowStart = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000).toISOString();
+  // 측정 기준선보다 이전은 세지 않는다(위 MEASURE_SINCE 설명 참고).
+  const since = windowStart > MEASURE_SINCE ? windowStart : MEASURE_SINCE;
 
   const [cardClicks, pageViews, applyClicks] = await Promise.all([
     countEvents("category_card_click", since),
@@ -115,11 +134,13 @@ export async function fetchEventStats(windowDays = 30): Promise<EventStats> {
     countEvents("apply_link_click", since),
   ]);
 
-  const { data: applyClickRows } = await supabase
-    .from("program_events")
-    .select("program_id")
-    .eq("event_type", "apply_link_click")
-    .gte("created_at", since);
+  const { data: applyClickRows } = supabaseAdmin
+    ? await supabaseAdmin
+        .from("program_events")
+        .select("program_id")
+        .eq("event_type", "apply_link_click")
+        .gte("created_at", since)
+    : { data: null };
 
   const tally = new Map<string, number>();
   for (const row of applyClickRows || []) {
@@ -146,6 +167,7 @@ export async function fetchEventStats(windowDays = 30): Promise<EventStats> {
 
   return {
     windowDays,
+    measuringSince: since,
     cardClicks,
     pageViews,
     applyClicks,
