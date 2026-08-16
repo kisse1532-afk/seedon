@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { categories } from "@/lib/data";
 import { fetchAllPrograms, fetchReports } from "@/lib/queries";
-import { fetchHelpRequests, fetchEventStats, fetchApplications } from "@/lib/queries-admin";
+import { fetchHelpRequests, fetchEventStats, fetchApplications, fetchPendingReviews } from "@/lib/queries-admin";
 import { hasAdminKey } from "@/lib/supabase-admin";
-import { deleteProgram, dismissReport, logout, markHelpRequestContacted, markHelpRequestCompleted, markApplicationContacted, markApplicationCompleted } from "./actions";
+import { deleteProgram, dismissReport, logout, markHelpRequestContacted, markHelpRequestCompleted, markApplicationContacted, markApplicationCompleted, publishReview, rejectReview } from "./actions";
 
 function isStale(dateStr?: string) {
   if (!dateStr) return false;
@@ -18,12 +18,13 @@ export default async function AdminPage({
 }) {
   const { status, category, q } = await searchParams;
 
-  const [programs, reports, helpRequests, eventStats, applications] = await Promise.all([
+  const [programs, reports, helpRequests, eventStats, applications, pendingReviews] = await Promise.all([
     fetchAllPrograms(),
     fetchReports(),
     fetchHelpRequests(),
     fetchEventStats(30),
     fetchApplications(),
+    fetchPendingReviews(),
   ]);
 
   const programTitle = new Map(programs.map((p) => [p.id, p.title]));
@@ -416,6 +417,47 @@ export default async function AdminPage({
                   <input type="hidden" name="id" value={r.id} />
                   <button className="text-xs text-neutral-400 hover:text-red-500">
                     닫기
+                  </button>
+                </form>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 후기 승인. 승인 전에는 RLS가 아무에게도 안 보여주므로, 이 화면이 없으면
+          청소년이 남긴 글이 그대로 묻힌다. 받아만 두고 안 보는 건 안 받느니만 못하다. */}
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold text-neutral-500">
+          ✍️ 올라온 후기 {pendingReviews.length > 0 && `(${pendingReviews.length})`}
+        </h2>
+        <div className="rounded-2xl border border-neutral-200 bg-white divide-y divide-neutral-100">
+          {pendingReviews.length === 0 && (
+            <p className="text-sm text-neutral-400 p-5 text-center">
+              읽어볼 후기가 없어요.
+            </p>
+          )}
+          {pendingReviews.map((r) => (
+            <div key={r.id} className="p-4 space-y-2">
+              <p className="text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap">{r.body}</p>
+              <p className="text-xs text-neutral-400">
+                {r.nickname || "이름 없이"} · {r.program_id} · {r.created_at.slice(0, 10)}
+              </p>
+              <p className="text-[11px] text-neutral-400 leading-relaxed">
+                올리기 전에 확인: 누구인지 알 수 있는 내용(이름·학교·연락처)이 없는지,
+                낙인이 되는 표현이 없는지.
+              </p>
+              <div className="flex gap-2 pt-1">
+                <form action={publishReview}>
+                  <input type="hidden" name="id" value={r.id} />
+                  <button className="text-xs font-medium rounded-full bg-emerald-600 text-white px-3 py-1.5 hover:bg-emerald-700">
+                    올리기
+                  </button>
+                </form>
+                <form action={rejectReview}>
+                  <input type="hidden" name="id" value={r.id} />
+                  <button className="text-xs rounded-full border border-neutral-300 text-neutral-500 px-3 py-1.5 hover:text-neutral-700">
+                    안 올리기
                   </button>
                 </form>
               </div>

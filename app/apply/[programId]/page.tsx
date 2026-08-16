@@ -10,6 +10,7 @@ import { submitHelpRequest } from "./actions";
 import ApplySteps from "./ApplySteps";
 import HelpChatbot from "./HelpChatbot";
 import InterestForm from "./InterestForm";
+import Reviews from "./Reviews";
 
 export default async function ApplyPage({
   params,
@@ -141,6 +142,8 @@ export default async function ApplyPage({
         applySteps={program.apply_steps ?? null}
         submitHelp={submitHelp}
       />
+
+      <Reviews programId={program.id} />
 
       <InterestForm programId={program.id} />
     </div>
