@@ -98,7 +98,7 @@ export default function Reviews({ programId }: { programId: string }) {
             required
             maxLength={500}
             placeholder="어땠는지, 신청할 때 헷갈렸던 게 있었는지 편하게 적어주세요."
-            className="w-full rounded-control border border-sage-border p-3.5 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-neutral-400"
+            className="w-full rounded-control border border-sage-border p-3.5 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-meta"
           />
           <input
             name="nickname"
@@ -106,7 +106,7 @@ export default function Reviews({ programId }: { programId: string }) {
             maxLength={20}
             defaultValue={myName}
             placeholder="이름 또는 닉네임 (안 적어도 돼요)"
-            className="w-full rounded-control border border-sage-border px-3.5 py-2.5 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-neutral-400"
+            className="w-full rounded-control border border-sage-border px-3.5 py-2.5 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-meta"
           />
 
           {error && (

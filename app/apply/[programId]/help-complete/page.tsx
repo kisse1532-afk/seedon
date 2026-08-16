@@ -30,7 +30,7 @@ export default async function HelpCompletePage({
       </p>
       <Link
         href={`/apply/${programId}`}
-        className="inline-block rounded-full bg-neutral-100 text-neutral-600 text-sm px-6 py-2.5 hover:bg-neutral-200 mt-2"
+        className="inline-block rounded-full bg-mint text-body text-sm px-6 py-2.5 hover:bg-mint/70 mt-2"
       >
         프로그램으로 돌아가기
       </Link>

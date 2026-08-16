@@ -26,7 +26,7 @@ export default function BookmarkButton({
       }}
       aria-label={bookmarked ? "북마크 해제" : "북마크에 저장"}
       aria-pressed={bookmarked}
-      className={className ?? "text-neutral-300 hover:text-primary-deep"}
+      className={className ?? "text-meta hover:text-primary-deep"}
     >
       {bookmarked ? (
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-primary-deep">

@@ -85,7 +85,7 @@ export default function RootLayout({
         />
       </head>
       {/* overflow-x-hidden: 홈 히어로의 full-bleed(w-screen)가 스크롤바 폭만큼 넘치는 것 방지 */}
-      <body className="antialiased min-h-screen overflow-x-hidden bg-sage text-neutral-900">
+      <body className="antialiased min-h-screen overflow-x-hidden bg-sage text-body">
         <header className="bg-seed-950">
           <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between">
             <Link href="/" aria-label="씨드온 홈">

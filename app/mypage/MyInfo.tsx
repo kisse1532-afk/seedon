@@ -127,7 +127,7 @@ export default function MyInfo() {
         )}
       </div>
 
-      <div className="rounded-2xl border border-sage-border bg-white divide-y divide-neutral-100 text-sm">
+      <div className="rounded-2xl border border-sage-border bg-white divide-y divide-sage-line text-sm">
         <div className="p-4 flex items-center justify-between">
           <span className="text-meta">어떻게 쓰고 있나</span>
           <span className="text-body">
@@ -169,7 +169,7 @@ export default function MyInfo() {
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 placeholder="안 적어도 돼요"
-                className="w-full rounded-control border border-sage-border px-3 py-2.5 text-sm text-body focus:border-primary focus:outline-none placeholder:text-neutral-400"
+                className="w-full rounded-control border border-sage-border px-3 py-2.5 text-sm text-body focus:border-primary focus:outline-none placeholder:text-meta"
               />
             </div>
             <div className="p-4 flex flex-wrap gap-2">

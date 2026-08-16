@@ -36,7 +36,7 @@ export default function LoginTermsPage() {
         <p className="text-sm text-ink-60 mt-1">씨드온을 시작하려면 아래 약관에 동의해야 해요.</p>
       </div>
 
-      <div className="rounded-2xl border border-sage-border bg-white divide-y divide-neutral-100">
+      <div className="rounded-2xl border border-sage-border bg-white divide-y divide-sage-line">
         <label className="flex items-center gap-3 p-4 cursor-pointer">
           <input
             type="checkbox"
@@ -49,14 +49,14 @@ export default function LoginTermsPage() {
         <label className="flex items-center gap-3 p-4 cursor-pointer">
           <input type="checkbox" checked={age14} onChange={(e) => setAge14(e.target.checked)} className="w-4 h-4 rounded" />
           <span className="text-sm">
-            만 14세 이상이에요 <span className="text-emerald-600">(필수)</span>
+            만 14세 이상이에요 <span className="text-primary-deep">(필수)</span>
           </span>
         </label>
         <label className="flex items-center justify-between gap-3 p-4 cursor-pointer">
           <span className="flex items-center gap-3">
             <input type="checkbox" checked={terms} onChange={(e) => setTerms(e.target.checked)} className="w-4 h-4 rounded" />
             <span className="text-sm">
-              이용약관 동의 <span className="text-emerald-600">(필수)</span>
+              이용약관 동의 <span className="text-primary-deep">(필수)</span>
             </span>
           </span>
           <Link href="/terms" target="_blank" className="shrink-0 text-xs text-meta underline hover:text-primary-deep">
@@ -67,7 +67,7 @@ export default function LoginTermsPage() {
           <span className="flex items-center gap-3">
             <input type="checkbox" checked={privacy} onChange={(e) => setPrivacy(e.target.checked)} className="w-4 h-4 rounded" />
             <span className="text-sm">
-              개인정보 수집 및 이용동의 <span className="text-emerald-600">(필수)</span>
+              개인정보 수집 및 이용동의 <span className="text-primary-deep">(필수)</span>
             </span>
           </span>
           <Link href="/privacy" target="_blank" className="shrink-0 text-xs text-meta underline hover:text-primary-deep">

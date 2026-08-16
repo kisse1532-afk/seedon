@@ -58,7 +58,7 @@ export default function BottomNav() {
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center gap-1 py-1 text-[10px] font-medium ${
-                active ? "text-ink" : "text-neutral-400"
+                active ? "text-ink" : "text-meta"
               }`}
             >
               <svg

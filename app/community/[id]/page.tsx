@@ -21,7 +21,7 @@ export default async function CommunityPostPage({ params }: { params: Promise<{ 
         <p className="text-[11px] text-meta">{post.created_at.slice(0, 10)} · 씨드온 운영팀</p>
       </div>
 
-      <div className="rounded-2xl border border-sage-border bg-white p-5 text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap">
+      <div className="rounded-2xl border border-sage-border bg-white p-5 text-sm text-body leading-relaxed whitespace-pre-wrap">
         {post.body}
       </div>
     </div>

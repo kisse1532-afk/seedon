@@ -76,7 +76,7 @@ export default function InterestForm({ programId }: { programId: string }) {
           name="name"
           type="text"
           required
-          className="w-full rounded-control border border-sage-border px-4 py-3 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-neutral-400"
+          className="w-full rounded-control border border-sage-border px-4 py-3 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-meta"
           placeholder="이름을 입력해주세요"
         />
       </div>
@@ -90,7 +90,7 @@ export default function InterestForm({ programId }: { programId: string }) {
           name="contact"
           type="tel"
           required
-          className="w-full rounded-control border border-sage-border px-4 py-3 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-neutral-400"
+          className="w-full rounded-control border border-sage-border px-4 py-3 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-meta"
           placeholder="010-0000-0000"
         />
       </div>

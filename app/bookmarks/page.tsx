@@ -124,7 +124,7 @@ export default function BookmarksPage() {
             <div
               key={p.id}
               className={`relative rounded-2xl border bg-white p-5 flex flex-col gap-2 ${
-                closed ? "border-neutral-200" : "border-sage-border"
+                closed ? "border-sage-border" : "border-sage-border"
               }`}
             >
               <BookmarkButton
@@ -138,7 +138,7 @@ export default function BookmarksPage() {
                 </div>
               </div>
               {closed && (
-                <p className="w-fit rounded-md bg-neutral-100 px-2 py-1 text-[11px] font-semibold text-meta">
+                <p className="w-fit rounded-md bg-mint px-2 py-1 text-[11px] font-semibold text-meta">
                   {closed}
                 </p>
               )}
