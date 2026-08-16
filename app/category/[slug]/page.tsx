@@ -141,16 +141,21 @@ export default async function CategoryPage({
               </div>
               <div className="flex items-center gap-3">
                 {p.link && (
-                  <a
+                  /* 이 링크가 평범한 <a>였다. 여기서 바로 기관 사이트로 나가면
+                     상세 페이지를 안 거치니 어느 지표에도 안 잡혀서, 청소년이
+                     어디로 빠졌는지 보이지 않는 이탈 경로가 됐다. */
+                  <TrackedLink
                     href={p.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    event="apply_link_click"
+                    programId={p.id}
+                    category={p.category}
+                    external
                     className="text-xs text-meta underline transition hover:text-ink"
                   >
                     {/* 기관 대문으로 가는 링크를 "공식 페이지"라고 부르면 이 프로그램
                         페이지로 가는 줄 알고 눌렀다가 헤맨다. 이름을 사실대로 쓴다. */}
                     {p.link_kind === "info" ? "기관 홈페이지" : "공식 페이지"}
-                  </a>
+                  </TrackedLink>
                 )}
                 <TrackedLink
                   href={`/apply/${p.id}`}
