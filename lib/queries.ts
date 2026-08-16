@@ -43,6 +43,13 @@ export async function fetchProgramsByIds(ids: string[]): Promise<Program[]> {
   return data as Program[];
 }
 
+/** 게시된 프로그램 전부. 추천처럼 카테고리를 가리지 않고 훑어야 하는 화면이 쓴다. */
+export async function fetchPublishedPrograms(): Promise<Program[]> {
+  const { data, error } = await supabase.from("programs").select("*").eq("status", "published");
+  if (error || !data) return [];
+  return data as Program[];
+}
+
 // --- 관리자용 쿼리 (전체 상태 조회) ---
 export async function fetchAllPrograms() {
   const { data, error } = await supabase

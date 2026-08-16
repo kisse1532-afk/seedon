@@ -2,28 +2,29 @@ import { findRecommendations } from "./actions";
 
 export default function RecommendPage() {
   return (
-    <div className="max-w-md mx-auto space-y-4">
-      <h1 className="text-lg font-bold">AI 맞춤추천</h1>
-      <p className="text-sm text-neutral-500">
-        지금 어떤 상황인지 편하게 적어주세요. 맞는 지원을 찾아드릴게요.
+    <div className="mx-auto max-w-md space-y-4">
+      <h1 className="text-xl font-extrabold tracking-tight text-ink">맞춤 추천</h1>
+      <p className="text-sm leading-relaxed text-ink-60">
+        지금 어떤 상황인지 편하게 적어주세요. 맞춤법도 안 맞아도 되고, 짧게 적어도 돼요.
       </p>
       <form action={findRecommendations} className="space-y-3">
         <textarea
           name="situation"
           rows={5}
           required
-          placeholder="예: 학원비가 부담돼서 성적이 자꾸 떨어져요..."
-          className="w-full rounded-2xl border border-neutral-300 p-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          placeholder="예: 학원비가 부담돼서 성적이 자꾸 떨어져요"
+          className="w-full rounded-control border border-sage-border p-4 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-neutral-400"
         />
         <button
           type="submit"
-          className="w-full rounded-full bg-emerald-600 text-white text-sm font-medium py-3 hover:bg-emerald-700"
+          className="w-full rounded-full bg-primary-deep py-3 text-sm font-bold text-white transition hover:brightness-110"
         >
           찾아보기
         </button>
       </form>
-      <p className="text-[11px] text-neutral-400 text-center">
-        키워드를 보고 관련 카테고리를 찾아드려요. 딱 맞지 않을 수 있으니, 카테고리 목록도 함께 둘러보세요.
+      <p className="text-center text-[11px] leading-relaxed text-meta">
+        적어주신 말에 걸리는 프로그램을 찾아 순서대로 보여드려요. 못 알아들어도
+        빈손으로 돌려보내지 않고, 지금 신청할 수 있는 것부터 보여드릴게요.
       </p>
     </div>
   );
