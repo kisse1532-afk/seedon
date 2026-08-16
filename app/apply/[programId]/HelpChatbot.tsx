@@ -163,7 +163,10 @@ export default function HelpChatbot({
                   </p>
                   <PhoneLink
                     number="1388"
-                    className="inline-block text-xs bg-sos-tile0 text-white rounded-full px-4 py-1.5 hover:brightness-110"
+                    /* bg-sos-tile0 이라는 색은 없다(sos-tile 오타). Tailwind는 없는 색 이름을
+                       조용히 무시하므로 배경이 안 칠해지고 흰 글씨만 남아, 흰 카드 위에서
+                       버튼이 사실상 안 보였다. 도움이 제일 급한 순간에 눌 버튼이 안 보인 것. */
+                    className="inline-block text-xs bg-sos-num text-white rounded-full px-4 py-1.5 hover:brightness-110"
                   >
                     1388 전화하기
                   </PhoneLink>
@@ -211,7 +214,7 @@ export default function HelpChatbot({
                 />
                 <button
                   type="submit"
-                  className="w-full rounded-full bg-sos-tile0 text-white text-sm font-medium py-2.5 hover:brightness-110"
+                  className="w-full rounded-full bg-sos-num text-white text-sm font-medium py-2.5 hover:brightness-110"
                 >
                   연락 요청 보내기
                 </button>
