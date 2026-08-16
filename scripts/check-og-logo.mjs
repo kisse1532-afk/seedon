@@ -12,7 +12,7 @@
  *   node scripts/check-og-logo.mjs http://localhost:3000 # 로컬 확인
  *   node scripts/check-og-logo.mjs ./어떤그림.png
  *
- * app/opengraph-image.tsx의 로고 좌표(LEAF_SHIFT 등)를 건드렸으면 반드시 이걸
+ * lib/og-card.tsx의 로고 좌표(LEAF_SHIFT 등)를 건드렸으면 반드시 이걸
  * 돌려볼 것. 눈으로 보고 판단하지 말 것 — 실제로 네 번 틀렸다.
  */
 import { inflateSync } from "node:zlib";
@@ -142,9 +142,32 @@ const near = (r, g, b, [R, G, B], t = 26) =>
 const arg = process.argv[2] || "https://seedon.vercel.app";
 let buf;
 if (arg.startsWith("http")) {
-  const url = arg.endsWith(".png") || arg.includes("opengraph-image")
-    ? arg
-    : `${arg.replace(/\/$/, "")}/opengraph-image`;
+  // 그림 주소를 직접 주지 않았으면, 그 페이지의 og:image를 읽어서 쓴다.
+  // 카톡이 실제로 가져가는 그림이 무엇인지가 이 검사의 요점이므로, 주소를
+  // 여기 박아두지 않는다(판 번호가 올라가면 자동으로 따라간다).
+  let url = arg;
+  if (!/\.png($|\?)/.test(arg) && !arg.includes("opengraph-image")) {
+    const pageRes = await fetch(arg);
+    if (!pageRes.ok) {
+      console.error(`페이지를 못 가져왔어요 (HTTP ${pageRes.status})`);
+      process.exit(1);
+    }
+    const found = (await pageRes.text()).match(
+      /<meta\s+property="og:image"\s+content="([^"]+)"/
+    );
+    if (!found) {
+      console.error("그 페이지에 og:image 태그가 없어요.");
+      process.exit(1);
+    }
+    url = found[1];
+    // 로컬 서버로 확인할 때, 태그에는 실서비스 주소가 박혀 나온다(metadataBase).
+    // 그대로 따라가면 아직 배포 안 된 주소라 404가 난다 — 로컬 주소로 바꿔준다.
+    const asked = new URL(arg);
+    if (asked.hostname === "localhost" || asked.hostname === "127.0.0.1") {
+      url = new URL(new URL(url).pathname, asked.origin).href;
+    }
+    console.log(`페이지가 말하는 그림: ${url}`);
+  }
   console.log(`가져오는 곳: ${url}`);
   const res = await fetch(url);
   if (!res.ok) {
@@ -207,6 +230,6 @@ console.log(`사이에 낀 배경색 픽셀: ${creamBetween}개  (0이면 초록
 if (gap >= MIN_GAP && creamBetween > 0) {
   console.log("\n✅ 폰에서 잎과 토글이 따로 보여요.");
 } else {
-  console.log("\n❌ 폰에서 한 덩어리로 보여요. app/opengraph-image.tsx의 LEAF_SHIFT를 더 벌리세요.");
+  console.log("\n❌ 폰에서 한 덩어리로 보여요. lib/og-card.tsx의 LEAF_SHIFT를 더 벌리세요.");
   process.exit(1);
 }

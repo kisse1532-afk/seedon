@@ -6,6 +6,7 @@ import CategoryIcon from "@/app/_components/CategoryIcon";
 import { fetchAlwaysOpenPrograms, fetchCategoryCounts, fetchDeadlinePrograms } from "@/lib/queries";
 import ProgramRow from "@/app/_components/ProgramRow";
 import type { Category } from "@/lib/data";
+import { OG_IMAGE_PATH, OG_ALT } from "@/lib/og-card";
 
 // 홈은 매 요청마다 DB를 다시 읽는다. 이게 없으면 빌드 시점 데이터로 고정되어,
 // 리서치팀이 프로그램을 등록해도 재배포 전까지 카테고리 개수·목록이 안 바뀐다.
@@ -28,6 +29,7 @@ export const metadata: Metadata = {
     title: "씨드온 — 몰라서 못 받는 지원 찾기",
     description:
       "교육·심리상담·주거·생활비·진로·문화체험·공모전. 청소년이 실제로 신청할 수 있는 지원제도를 쉬운 말로 정리해뒀어요.",
+    images: [{ url: OG_IMAGE_PATH, width: 1200, height: 630, alt: OG_ALT }],
   },
 };
 

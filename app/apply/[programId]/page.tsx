@@ -12,6 +12,7 @@ import HelpChatbot from "./HelpChatbot";
 import InterestForm from "./InterestForm";
 import Reviews from "./Reviews";
 import TrackPageView from "@/app/_components/TrackPageView";
+import { OG_IMAGE_PATH, OG_ALT } from "@/lib/og-card";
 
 /**
  * 이 카드를 카톡으로 보냈을 때 뜨는 정보.
@@ -44,6 +45,7 @@ export async function generateMetadata({
       title: `${program.title} — ${program.org}`,
       description: desc,
       url: path,
+      images: [{ url: OG_IMAGE_PATH, width: 1200, height: 630, alt: OG_ALT }],
     },
     twitter: { card: "summary_large_image", title: program.title, description: desc },
   };
