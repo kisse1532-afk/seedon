@@ -55,6 +55,95 @@ export async function saveConsent(consent: Consent): Promise<void> {
   if (typeof window !== "undefined") localStorage.removeItem(PENDING_KEY);
 }
 
+/**
+ * 회원 정보.
+ *
+ * 개인정보보호법 최소수집 원칙에 맞춰 목적이 분명한 것만 받는다.
+ * - 몇 년생: 만 14세 확인(법정대리인 동의 기준)과 나이 조건 프로그램 안내 — 필수
+ * - 별명·사는 지역: 안 적어도 서비스를 쓸 수 있다 — 선택
+ *
+ * 실명·주민번호·주소·학교명·연락처는 받지 않는다. 소득이나 급식카드 여부는
+ * 절대규칙 2에 따라 앞으로도 받지 않는다.
+ */
+export type MemberProfile = {
+  birthYear: number;
+  birthdayPassed: boolean | null;
+  nickname: string;
+  region: string;
+};
+
+export async function saveMemberProfile(profile: MemberProfile): Promise<boolean> {
+  const { data } = await supabase.auth.getUser();
+  const userId = data.user?.id;
+  if (!userId) return false;
+
+  const { error } = await supabase.from("user_profiles").upsert(
+    {
+      user_id: userId,
+      birth_year: profile.birthYear,
+      birthday_passed: profile.birthdayPassed,
+      // 선택 항목은 안 적으면 빈 값이 아니라 "없음"으로 둔다. 빈 문자열을 넣으면
+      // "적었는데 지웠다"와 "처음부터 안 적었다"를 구분할 수 없다.
+      nickname: profile.nickname.trim() || null,
+      region: profile.region || null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id" }
+  );
+  return !error;
+}
+
+export type StoredProfile = {
+  birth_year: number | null;
+  birthday_passed: boolean | null;
+  nickname: string | null;
+  region: string | null;
+  agreed_marketing: boolean;
+  agreed_at: string | null;
+  policy_version: string | null;
+};
+
+/** 내 정보 보기. 개인정보보호법상 열람권 — 무엇이 저장돼 있는지 본인이 볼 수 있어야 한다. */
+export async function loadMyProfile(): Promise<StoredProfile | null> {
+  const { data } = await supabase.auth.getUser();
+  if (!data.user) return null;
+
+  const { data: row, error } = await supabase
+    .from("user_profiles")
+    .select("birth_year, birthday_passed, nickname, region, agreed_marketing, agreed_at, policy_version")
+    .eq("user_id", data.user.id)
+    .maybeSingle();
+
+  if (error || !row) return null;
+  return row as StoredProfile;
+}
+
+/** 마케팅 수신 동의만 따로 끄고 켠다. 선택 항목이므로 언제든 바꿀 수 있어야 한다. */
+export async function setMarketingConsent(on: boolean): Promise<boolean> {
+  const { data } = await supabase.auth.getUser();
+  const userId = data.user?.id;
+  if (!userId) return false;
+
+  const { error } = await supabase
+    .from("user_profiles")
+    .update({ agreed_marketing: on, updated_at: new Date().toISOString() })
+    .eq("user_id", userId);
+  return !error;
+}
+
+/** 선택 항목만 지운다(정정·삭제권). 몇 년생인지는 나이 확인 근거라 남긴다. */
+export async function clearOptionalProfile(): Promise<boolean> {
+  const { data } = await supabase.auth.getUser();
+  const userId = data.user?.id;
+  if (!userId) return false;
+
+  const { error } = await supabase
+    .from("user_profiles")
+    .update({ nickname: null, region: null, updated_at: new Date().toISOString() })
+    .eq("user_id", userId);
+  return !error;
+}
+
 /** 가입 설문("어떻게 알게 됐나요?") 답변. 이것도 그동안 묻고 버리고 있었다. */
 export async function saveReferralSource(source: string): Promise<void> {
   const { data } = await supabase.auth.getUser();

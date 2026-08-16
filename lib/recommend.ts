@@ -1,4 +1,5 @@
 import { categories, type Category, type Program } from "@/lib/data";
+import { REGIONS, regionAliases } from "@/lib/regions";
 
 const CATEGORY_LABEL = Object.fromEntries(categories.map((c) => [c.slug, c.label])) as Record<
   Category,
@@ -126,9 +127,25 @@ export type Ranked = {
 export type RankOptions = {
   /** 로그인한 사람이 저장해둔 프로그램의 카테고리. 비슷한 걸 위로 올린다. */
   likedCategories?: Category[];
+  /**
+   * 사는 시/도. 지자체 프로그램은 지역이 다르면 아예 신청이 안 되므로,
+   * 우리 지역 것을 위로 올리고 다른 지역 것은 내린다.
+   */
+  region?: string;
   today?: string;
   limit?: number;
 };
+
+/**
+ * 이 프로그램이 특정 지역 전용인지, 그게 내 지역인지.
+ * 'none' = 지역을 안 가림, 'mine' = 내 지역, 'other' = 다른 지역
+ */
+function regionFit(text: string, region: string | undefined): "none" | "mine" | "other" {
+  const hits = REGIONS.filter((r) => regionAliases(r).some((a) => text.includes(a)));
+  if (hits.length === 0) return "none";
+  if (!region) return "none"; // 안 알려줬으면 가리지 않는다
+  return hits.includes(region as (typeof REGIONS)[number]) ? "mine" : "other";
+}
 
 /**
  * 프로그램에 점수를 매겨 순서를 만든다.
@@ -140,7 +157,12 @@ export type RankOptions = {
 export function rankPrograms(
   text: string,
   programs: Program[],
-  { likedCategories = [], today = new Date().toISOString().slice(0, 10), limit = 12 }: RankOptions = {}
+  {
+    likedCategories = [],
+    region,
+    today = new Date().toISOString().slice(0, 10),
+    limit = 12,
+  }: RankOptions = {}
 ): { items: Ranked[]; understood: boolean } {
   const normalized = text.toLowerCase();
   const catScores = scoreCategories(normalized);
@@ -186,7 +208,17 @@ export function rankPrograms(
       if (!reason) reason = "저장해둔 것과 비슷해요";
     }
 
-    // 4. 지금 신청할 수 있나. 마감이 지났으면 아예 뺀다.
+    // 4. 사는 지역. 다른 지역 전용 사업은 아무리 잘 맞아도 신청 자체가 안 되므로
+    //    크게 내린다. 잘 맞는데 못 하는 걸 위에 띄우는 게 제일 허탈하다.
+    const fit = regionFit(`${p.title} ${p.org} ${p.description}`, region);
+    if (fit === "mine") {
+      score += 8;
+      reason = `${region}에서 신청할 수 있어요`;
+    } else if (fit === "other") {
+      score -= 12;
+    }
+
+    // 5. 지금 신청할 수 있나. 마감이 지났으면 아예 뺀다.
     if (p.apply_deadline) {
       if (p.apply_deadline < today) return { program: p, score: -1, reason: null };
       const daysLeft = Math.ceil(

@@ -8,6 +8,7 @@ import { loadBookmarks, onBookmarksChange, clearLocalBookmarks } from "@/lib/boo
 import { loadMyApplications, type MyApplication } from "@/lib/applications";
 import { fetchProgramsByIds } from "@/lib/queries";
 import type { Program } from "@/lib/data";
+import MyInfo from "./MyInfo";
 
 /** 관심 등록 처리 상태를 청소년이 읽을 수 있는 말로. 행정용어를 그대로 쓰지 않는다. */
 const STATUS_LABEL: Record<string, string> = {
@@ -137,6 +138,8 @@ export default function MyPage() {
           )}
         </section>
       )}
+
+      {loggedIn && <MyInfo />}
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold text-ink-60">계정</h2>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { rankPrograms, type Ranked } from "@/lib/recommend";
 import { fetchProgramsByIds } from "@/lib/queries";
 import { loadBookmarks } from "@/lib/bookmarks";
+import { loadMyProfile } from "@/lib/consent";
 import type { Category, Program } from "@/lib/data";
 import TrackedLink from "@/app/_components/TrackedLink";
 import BookmarkButton from "@/app/_components/BookmarkButton";
@@ -19,11 +20,20 @@ import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
  */
 export default function ResultsList({ q, programs }: { q: string; programs: Program[] }) {
   const [likedCategories, setLikedCategories] = useState<Category[]>([]);
+  const [region, setRegion] = useState<string | undefined>(undefined);
   const [personalized, setPersonalized] = useState(false);
 
   useEffect(() => {
     let alive = true;
     async function load() {
+      // 사는 지역을 알려줬으면 그 지역 것을 위로 올린다. 다른 지역 전용 사업은
+      // 아무리 잘 맞아도 신청 자체가 안 되므로 내린다.
+      const profile = await loadMyProfile();
+      if (alive && profile?.region) {
+        setRegion(profile.region);
+        setPersonalized(true);
+      }
+
       const ids = await loadBookmarks();
       if (ids.length === 0) return;
       const saved = await fetchProgramsByIds(ids);
@@ -37,7 +47,7 @@ export default function ResultsList({ q, programs }: { q: string; programs: Prog
     };
   }, []);
 
-  const { items, understood } = rankPrograms(q, programs, { likedCategories });
+  const { items, understood } = rankPrograms(q, programs, { likedCategories, region });
 
   return (
     <>
@@ -57,7 +67,7 @@ export default function ResultsList({ q, programs }: { q: string; programs: Prog
 
       {personalized && understood && (
         <p className="text-xs leading-relaxed text-meta">
-          저장해둔 것과 비슷한 갈래를 조금 위로 올렸어요.
+          {region ? `${region}에서 신청할 수 있는 것과 ` : ""}저장해둔 것과 비슷한 걸 위로 올렸어요.
         </p>
       )}
 

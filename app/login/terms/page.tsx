@@ -96,7 +96,9 @@ export default function LoginTermsPage() {
           // 남긴 다음에 이동한다.
           setSaving(true);
           await saveConsent({ terms, privacy, marketing, age14 });
-          router.push("/login/survey");
+          // 동의 다음에 회원 정보를 받는다. 무엇을 받는지 동의하고 나서 받는
+          // 순서여야 한다 — 먼저 받아놓고 나중에 동의를 묻는 건 순서가 거꾸로다.
+          router.push("/login/profile");
         }}
         className={`w-full rounded-full text-sm font-medium py-3 transition ${
           allRequired ? "bg-primary-deep text-white hover:brightness-110" : "bg-cream text-meta cursor-not-allowed"
