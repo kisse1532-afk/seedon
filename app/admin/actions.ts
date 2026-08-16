@@ -123,6 +123,29 @@ export async function markHelpRequestCompleted(formData: FormData) {
   await setStatus("help_requests", String(formData.get("id")), "completed");
 }
 
+/* 후기 승인/반려.
+   status를 바꿀 수 있는 건 서버 전용 키뿐이다 — program_reviews에 UPDATE 정책을
+   아예 만들지 않아서, 공개 키로는 자기 글도 승인 상태로 못 바꾼다. */
+export async function publishReview(formData: FormData) {
+  if (!supabaseAdmin) return;
+  await supabaseAdmin
+    .from("program_reviews")
+    .update({ status: "published" })
+    .eq("id", String(formData.get("id")));
+  revalidatePath("/admin");
+  revalidatePath("/community");
+}
+
+export async function rejectReview(formData: FormData) {
+  if (!supabaseAdmin) return;
+  // 지우지 않고 상태만 바꾼다. 왜 안 올렸는지 나중에 확인할 수 있어야 한다.
+  await supabaseAdmin
+    .from("program_reviews")
+    .update({ status: "rejected" })
+    .eq("id", String(formData.get("id")));
+  revalidatePath("/admin");
+}
+
 export async function markApplicationContacted(formData: FormData) {
   await setStatus("applications", String(formData.get("id")), "contacted");
 }

@@ -33,6 +33,31 @@ export async function fetchHelpRequests() {
 }
 
 
+export type PendingReview = {
+  id: string;
+  program_id: string;
+  body: string;
+  nickname: string | null;
+  created_at: string;
+};
+
+/**
+ * 승인 대기 중인 후기.
+ *
+ * 승인 전에는 RLS가 아무에게도 안 보여주므로, 이 화면이 없으면 청소년이 남긴
+ * 글이 그대로 묻힌다. 받아만 두고 안 보는 건 안 받느니만 못하다.
+ */
+export async function fetchPendingReviews(): Promise<PendingReview[]> {
+  if (!supabaseAdmin) return [];
+  const { data, error } = await supabaseAdmin
+    .from("program_reviews")
+    .select("id, program_id, body, nickname, created_at")
+    .eq("status", "pending")
+    .order("created_at", { ascending: true });
+  if (error) return [];
+  return data as PendingReview[];
+}
+
 export type Application = {
   id: string;
   program_id: string | null;

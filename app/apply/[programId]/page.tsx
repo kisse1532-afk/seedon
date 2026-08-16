@@ -6,9 +6,11 @@ import TrackedLink from "@/app/_components/TrackedLink";
 import BookmarkButton from "@/app/_components/BookmarkButton";
 import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
 import PhoneLink from "@/app/_components/PhoneLink";
-import { submitApplication, submitHelpRequest } from "./actions";
+import { submitHelpRequest } from "./actions";
 import ApplySteps from "./ApplySteps";
 import HelpChatbot from "./HelpChatbot";
+import InterestForm from "./InterestForm";
+import Reviews from "./Reviews";
 
 export default async function ApplyPage({
   params,
@@ -25,7 +27,6 @@ export default async function ApplyPage({
     .insert({ event_type: "apply_page_view", program_id: programId, category: program.category })
     .then(() => {});
 
-  const submit = submitApplication.bind(null, programId);
   const submitHelp = submitHelpRequest.bind(null, programId);
 
   // 번호로 시작하는 값만 실제 전화번호로 본다. "1544-3412", "120 (다산콜센터)"는
@@ -142,55 +143,9 @@ export default async function ApplyPage({
         submitHelp={submitHelp}
       />
 
-      <form action={submit} className="space-y-4 rounded-card border border-sage-border bg-white p-5">
-        <div>
-          <h2 className="mb-1 text-sm font-bold text-ink">이 프로그램 관심 등록</h2>
-          <p className="text-xs leading-relaxed text-ink-60">
-            신청을 대신 처리해드리진 않지만, 남겨주시면 씨드온이 관련 소식이나
-            다음 단계 프로그램을 챙겨드려요.
-          </p>
-        </div>
+      <Reviews programId={program.id} />
 
-        <div className="space-y-1.5">
-          <label htmlFor="name" className="text-xs font-semibold text-ink-60">이름</label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            required
-            className="w-full rounded-control border border-sage-border px-4 py-3 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-neutral-400"
-            placeholder="이름을 입력해주세요"
-          />
-        </div>
-
-        <div className="space-y-1.5">
-          <label htmlFor="contact" className="text-xs font-semibold text-ink-60">연락처</label>
-          <input
-            id="contact"
-            name="contact"
-            type="tel"
-            required
-            className="w-full rounded-control border border-sage-border px-4 py-3 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-neutral-400"
-            placeholder="010-0000-0000"
-          />
-        </div>
-
-        {/* 이 버튼만 검정(neutral-800)이라 브랜드 밖으로 튀어 있었다.
-            신청 자체는 위 CTA에서 하고 여기는 부수 동작이므로, 눈에 덜 띄는
-            테두리 버튼으로 두되 색은 브랜드 안에서 쓴다. */}
-        <button
-          type="submit"
-          className="w-full rounded-control border border-primary-deep bg-white py-3.5 text-sm font-bold text-primary-deep transition hover:bg-mint"
-        >
-          관심 등록하기
-        </button>
-
-        <p className="text-center text-[11px] leading-relaxed text-meta">
-          입력하신 정보는 씨드온이 소식 전달 목적으로만 사용하고, 처리가 끝나면
-          일정 기간 뒤 삭제해요. 실제 신청은 위 &apos;이렇게 신청하세요&apos;
-          안내를 따라 직접 진행해주세요.
-        </p>
-      </form>
+      <InterestForm programId={program.id} />
     </div>
   );
 }

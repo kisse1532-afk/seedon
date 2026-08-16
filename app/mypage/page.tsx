@@ -5,11 +5,23 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { loadBookmarks, onBookmarksChange } from "@/lib/bookmarks";
+import { loadMyApplications, type MyApplication } from "@/lib/applications";
+import { fetchProgramsByIds } from "@/lib/queries";
+import type { Program } from "@/lib/data";
+
+/** 관심 등록 처리 상태를 청소년이 읽을 수 있는 말로. 행정용어를 그대로 쓰지 않는다. */
+const STATUS_LABEL: Record<string, string> = {
+  pending: "확인 중이에요",
+  contacted: "씨드온이 연락했어요",
+  completed: "마무리됐어요",
+};
 
 export default function MyPage() {
   const router = useRouter();
   const [email, setEmail] = useState<string | null>(null);
   const [bookmarkCount, setBookmarkCount] = useState(0);
+  const [applications, setApplications] = useState<MyApplication[]>([]);
+  const [programs, setPrograms] = useState<Record<string, Program>>({});
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -18,9 +30,17 @@ export default function MyPage() {
     async function load() {
       const { data } = await supabase.auth.getUser();
       const ids = await loadBookmarks();
+      const apps = await loadMyApplications();
+
+      // 등록한 프로그램의 이름을 보여주려면 카드 정보가 필요하다. id만 보여주면
+      // 자기가 뭘 등록했는지 알 수 없다.
+      const found = apps.length > 0 ? await fetchProgramsByIds(apps.map((a) => a.program_id)) : [];
+
       if (!alive) return;
       setEmail(data.user?.email ?? null);
       setBookmarkCount(ids.length);
+      setApplications(apps);
+      setPrograms(Object.fromEntries(found.map((p) => [p.id, p])));
       setLoaded(true);
     }
     load();
@@ -79,6 +99,42 @@ export default function MyPage() {
         </Link>
       </div>
 
+      {/* 관심 등록 내역. 로그인한 사람에게만 보인다 — 로그인 전 등록분은 계정에
+          붙어 있지 않아서 여기 나올 수가 없다. 없는 걸 있는 것처럼 보이게 하지 않는다. */}
+      {loggedIn && loaded && (
+        <section className="space-y-3">
+          <h2 className="text-sm font-semibold text-ink-60">관심 등록한 프로그램</h2>
+          {applications.length === 0 ? (
+            <p className="rounded-2xl border border-sage-border bg-white p-5 text-sm leading-relaxed text-meta">
+              아직 없어요. 마음에 드는 프로그램에서 &apos;관심 등록하기&apos;를 누르면
+              여기에 모여요.
+            </p>
+          ) : (
+            <ul className="divide-y divide-neutral-100 rounded-2xl border border-sage-border bg-white">
+              {applications.map((a) => {
+                const program = programs[a.program_id];
+                return (
+                  <li key={a.id} className="p-4">
+                    <Link href={`/apply/${a.program_id}`} className="block group">
+                      <p className="text-sm font-semibold text-ink group-hover:text-primary-deep">
+                        {/* 카드가 내려갔거나 지워졌을 수도 있다. 그때 화면이 비어
+                            보이지 않게 최소한 뭔가는 보여준다. */}
+                        {program?.title ?? "지금은 볼 수 없는 프로그램이에요"}
+                      </p>
+                      {program?.org && <p className="mt-0.5 text-xs text-meta">{program.org}</p>}
+                      <p className="mt-1.5 text-xs text-primary-deep">
+                        {STATUS_LABEL[a.status] ?? "확인 중이에요"}
+                        <span className="text-meta"> · {a.created_at.slice(0, 10)}</span>
+                      </p>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </section>
+      )}
+
       <section className="space-y-3">
         <h2 className="text-sm font-semibold text-ink-60">계정</h2>
         <div className="rounded-2xl border border-sage-border bg-white divide-y divide-neutral-100 text-sm">
@@ -118,7 +174,7 @@ export default function MyPage() {
       </section>
 
       <p className="text-[11px] leading-relaxed text-meta text-center pt-2">
-        신청 내역과 맞춤 추천은 준비 중이에요.
+        맞춤 추천은 준비 중이에요.
       </p>
     </div>
   );
