@@ -36,15 +36,15 @@ export default async function Image() {
           background: CREAM,
         }}
       >
-        {/* 로고 — 토글 스위치(Seed+On) + 새싹 잎 */}
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          <svg width="86" height="52" viewBox="0 0 86 52">
-            <rect x="1" y="1" width="84" height="50" rx="25" fill={PRIMARY} />
-            <circle cx="60" cy="26" r="17" fill={CREAM} />
-            <path
-              d="M63 9c7-6 17-6 17-6s0 10-6 15c-4 3-9 2-11-1-1-3 0-6 0-8Z"
-              fill={SPROUT}
-            />
+        {/* 로고 — public/brand/logo/seedon-symbol-cream.svg의 좌표를 그대로 쓴다.
+            처음엔 눈대중으로 그렸다가 잎이 토글 손잡이 위로 올라탔다(2026-08-16
+            로드 확인). 브랜드 에셋이 있는데 다시 그릴 이유가 없다.
+            노브는 배경색과 같아야 하므로 CREAM (BRAND.md 로고 규칙). */}
+        <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
+          <svg width="129" height="86" viewBox="0 0 96 64">
+            <rect x="2" y="20" width="76" height="44" rx="22" fill={PRIMARY} />
+            <path d="M68 21 A24 24 0 0 1 92 2 A24 24 0 0 1 68 21 Z" fill={SPROUT} />
+            <circle cx="56" cy="42" r="15" fill={CREAM} />
           </svg>
           <span style={{ fontSize: 50, fontWeight: 800, color: PRIMARY_DEEP }}>씨드온</span>
         </div>
