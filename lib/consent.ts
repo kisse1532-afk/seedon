@@ -66,7 +66,8 @@ export async function saveConsent(consent: Consent): Promise<void> {
  * 절대규칙 2에 따라 앞으로도 받지 않는다.
  */
 export type MemberProfile = {
-  birthYear: number;
+  /** 어른 계정은 몇 년생인지를 받지 않으므로 없을 수 있다. */
+  birthYear: number | null;
   birthdayPassed: boolean | null;
   nickname: string;
   region: string;
@@ -93,7 +94,27 @@ export async function saveMemberProfile(profile: MemberProfile): Promise<boolean
   return !error;
 }
 
+/** 청소년 본인인지 곁에 있는 어른인지. 파일럿 지표를 나눠 보려면 이게 있어야 한다. */
+export async function saveRole(role: "youth" | "adult", adultKind: string): Promise<boolean> {
+  const { data } = await supabase.auth.getUser();
+  const userId = data.user?.id;
+  if (!userId) return false;
+
+  const { error } = await supabase.from("user_profiles").upsert(
+    {
+      user_id: userId,
+      role,
+      adult_kind: role === "adult" ? adultKind || null : null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id" }
+  );
+  return !error;
+}
+
 export type StoredProfile = {
+  role: "youth" | "adult" | null;
+  adult_kind: string | null;
   birth_year: number | null;
   birthday_passed: boolean | null;
   nickname: string | null;
@@ -110,7 +131,9 @@ export async function loadMyProfile(): Promise<StoredProfile | null> {
 
   const { data: row, error } = await supabase
     .from("user_profiles")
-    .select("birth_year, birthday_passed, nickname, region, agreed_marketing, agreed_at, policy_version")
+    .select(
+      "role, adult_kind, birth_year, birthday_passed, nickname, region, agreed_marketing, agreed_at, policy_version"
+    )
     .eq("user_id", data.user.id)
     .maybeSingle();
 
