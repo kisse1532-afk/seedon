@@ -44,6 +44,16 @@ const LEAF =
   "L81.16 17.412L79.964 18.106L78.73 18.73L77.462 19.283L76.164 19.761" +
   "L74.841 20.163L73.497 20.488L72.136 20.735L70.763 20.902L69.383 20.991Z";
 
+/**
+ * 잎을 토글에서 얼마나 떼어놓을지.
+ *
+ * 화면 안에서는 원본 좌표(브랜드 SVG 그대로)로 두지만, 이 그림만은 예외로 더
+ * 띄운다. 카톡은 이 그림을 폭 370px로 줄여서 보여주는데, 그 크기에서 원본
+ * 간격은 1픽셀도 안 남는다. 여기 숫자를 바꾸면 `node scripts/check-og-logo.mjs`로
+ * 실제 카드 크기에서의 간격을 다시 재볼 것.
+ */
+const LEAF_SHIFT = "translate(7,-6)";
+
 export default async function Image() {
   return new ImageResponse(
     (
@@ -61,9 +71,22 @@ export default async function Image() {
         {/* 로고 — public/brand/logo/seedon-symbol-cream.svg와 같은 좌표.
             노브는 배경색과 같아야 하므로 CREAM (BRAND.md 로고 규칙). */}
         <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
-          <svg width="228" height="154" viewBox="0 -3 99 67">
+          <svg width="228" height="154" viewBox="0 -6 103 70">
             <rect x="2" y="20" width="76" height="44" rx="22" fill={PRIMARY} />
-            <path d={LEAF} transform="translate(3,-3)" fill={SPROUT} />
+            {/* 잎 밑에 크림색을 한 겹 더 깔아 토글과 사이에 밝은 띠를 만든다.
+                이게 없으면 두 색(#2BBE8C·#72CF5E)이 둘 다 초록이라, 카톡 카드
+                크기(폭 370px)로 줄어들 때 경계가 뭉개져 한 덩어리로 보인다.
+                간격을 벌리는 것만으로는 안 됐다 — 실제로 5.8px 떨어져 있는데도
+                로드가 "겹친다"고 네 번 지적했다. */}
+            <path
+              d={LEAF}
+              transform={LEAF_SHIFT}
+              fill={CREAM}
+              stroke={CREAM}
+              strokeWidth="3.4"
+              strokeLinejoin="round"
+            />
+            <path d={LEAF} transform={LEAF_SHIFT} fill={SPROUT} />
             <circle cx="56" cy="42" r="15" fill={CREAM} />
           </svg>
           <span style={{ fontSize: 76, fontWeight: 800, color: PRIMARY_DEEP }}>씨드온</span>
