@@ -2,6 +2,7 @@ import Link from "next/link";
 import { fetchCommunityPosts, fetchProgramsByIds } from "@/lib/queries";
 import { loadRecentReviews } from "@/lib/reviews";
 import RequireLogin from "@/app/_components/RequireLogin";
+import TrackedLink from "@/app/_components/TrackedLink";
 
 /* 후기가 승인되면 바로 보여야 한다. 이 화면은 원래 빌드 시점에 한 번 만들어져
    고정됐는데, 그러면 승인해도 다음 배포 전까지 안 올라온다. 승인해놓고 안 보이면
@@ -18,6 +19,7 @@ export default async function CommunityPage() {
   // 후기가 어느 프로그램 것인지 이름으로 보여준다. id만 보여주면 아무 의미가 없다.
   const programs = await fetchProgramsByIds([...new Set(reviews.map((r) => r.program_id))]);
   const titleById = Object.fromEntries(programs.map((p) => [p.id, p.title]));
+  const categoryById = Object.fromEntries(programs.map((p) => [p.id, p.category]));
 
   return (
     <RequireLogin reason="다른 친구들이 어떻게 했는지 보려면 로그인이 필요해요. 후기를 남길 때도 로그인한 상태여야 해요.">
@@ -36,9 +38,14 @@ export default async function CommunityPage() {
           <h2 className="text-sm font-semibold text-ink-60">먼저 해본 친구들 이야기</h2>
           <div className="grid gap-3">
             {reviews.map((r) => (
-              <Link
+              /* 후기에서 프로그램으로 넘어가는 것도 카드 클릭이다. 일반 Link라
+                 이 경로가 안 세어지고 있었다(2026-08-16 사업팀 지적). */
+              <TrackedLink
                 key={r.id}
                 href={`/apply/${r.program_id}`}
+                event="category_card_click"
+                programId={r.program_id}
+                category={categoryById[r.program_id]}
                 className="rounded-2xl border border-sage-border bg-white p-5 transition hover:border-primary hover:shadow-sm"
               >
                 <p className="text-sm leading-relaxed text-body">{r.body}</p>
@@ -46,7 +53,7 @@ export default async function CommunityPage() {
                   {r.nickname || "이름 없이"} · {titleById[r.program_id] ?? "프로그램"} ·{" "}
                   {formatDate(r.created_at)}
                 </p>
-              </Link>
+              </TrackedLink>
             ))}
           </div>
         </section>

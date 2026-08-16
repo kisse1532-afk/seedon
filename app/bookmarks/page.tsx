@@ -103,7 +103,7 @@ export default function BookmarksPage() {
         <Link href="/" className="text-sm text-meta hover:text-body">
           ← 홈으로
         </Link>
-        <h1 className="text-xl font-bold mt-2">북마크</h1>
+        <h1 className="text-xl font-extrabold tracking-tight text-ink mt-2">북마크</h1>
         <p className="text-sm text-ink-60 mt-1">
           계정에 저장돼 있어요. 폰을 바꿔도 그대로 있어요.
         </p>

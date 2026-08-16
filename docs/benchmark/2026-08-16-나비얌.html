@@ -1,0 +1,308 @@
+<title>나비얌은 지금 어디까지 갔나</title>
+<style>
+  :root{
+    --ground:#faf6ee; --surface:#fff; --mint:#e6f8ef; --line:#e7dfd0; --line-soft:#f0e9db;
+    --ink:#2a2a24; --body:#576351; --meta:#9dac92;
+    --primary:#2bbe8c; --primary-deep:#17916a;
+    --alert:#c2702a; --alert-tile:#fff4e9; --alert-line:#f5dfc6;
+    --stop:#b4443a; --stop-tile:#fdf0ee; --stop-line:#f2d9d4;
+    --shadow:0 1px 2px rgba(42,42,36,.04), 0 12px 32px -20px rgba(42,42,36,.3);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+      --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+      --primary:#47d5a3; --primary-deep:#6fe0b6;
+      --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+      --stop:#f08b80; --stop-tile:#301c1a; --stop-line:#4a2b26;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+    --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+    --primary:#47d5a3; --primary-deep:#6fe0b6;
+    --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+    --stop:#f08b80; --stop-tile:#301c1a; --stop-line:#4a2b26;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--body);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard Variable",
+                Pretendard,"Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+    font-size:15px;line-height:1.72;-webkit-font-smoothing:antialiased;
+    word-break:keep-all;overflow-wrap:break-word}
+  .page{max-width:880px;margin:0 auto;padding:44px 22px 80px;display:flex;flex-direction:column;gap:40px}
+
+  .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.16em;color:var(--meta)}
+  h1{margin:10px 0 0;font-size:clamp(25px,4.6vw,36px);line-height:1.28;letter-spacing:-.03em;
+     font-weight:800;color:var(--ink);text-wrap:balance}
+  .lede{margin:14px 0 0;font-size:15.5px;max-width:60ch}
+  .lede b{color:var(--ink)}
+
+  h2{margin:0 0 4px;font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+  .sub{margin:0 0 18px;font-size:13px;color:var(--meta)}
+  section{display:flex;flex-direction:column}
+
+  /* 한 줄 인용 */
+  .quote{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--primary);
+    border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+  .quote p{margin:0;font-size:15.5px;color:var(--ink);font-weight:700;letter-spacing:-.01em;line-height:1.6}
+  .quote .src{margin:9px 0 0;font-size:12px;color:var(--meta);font-weight:400}
+
+  /* 연표 */
+  .tl{display:flex;flex-direction:column;border-left:2px solid var(--line);margin-left:6px}
+  .ev{position:relative;padding:0 0 20px 24px}
+  .ev:last-child{padding-bottom:0}
+  .ev::before{content:"";position:absolute;left:-6px;top:8px;width:10px;height:10px;border-radius:50%;
+    background:var(--line);border:2px solid var(--ground)}
+  .ev.key::before{background:var(--primary);width:13px;height:13px;left:-7.5px;top:6px}
+  .ev .d{font-size:11.5px;font-weight:800;letter-spacing:.06em;color:var(--meta);
+    font-variant-numeric:tabular-nums}
+  .ev .t{font-size:14.5px;font-weight:700;color:var(--body);margin-top:1px}
+  .ev.key .t{color:var(--ink);font-weight:800;font-size:15.5px;letter-spacing:-.01em}
+  .ev .n{margin:4px 0 0;font-size:13px;color:var(--meta)}
+  .ev.key .n{color:var(--body)}
+
+  .callout{margin:20px 0 0;background:var(--mint);border:1px solid var(--primary);border-radius:14px;
+    padding:18px 20px;font-size:14px;max-width:64ch}
+  .callout b{color:var(--ink)}
+
+  /* 돈 받는 곳 */
+  .rev{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  @media(max-width:700px){.rev{grid-template-columns:1fr}}
+  .r{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+     box-shadow:var(--shadow);display:flex;flex-direction:column}
+  .r .w{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--primary-deep);margin-bottom:6px}
+  .r .h{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .r p{margin:6px 0 0;font-size:13px}
+  .r .ex{margin-top:auto;padding-top:10px;font-size:12px;color:var(--meta)}
+
+  /* 가져올 것 / 안 가져올 것 */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.split{grid-template-columns:1fr}}
+  .col{border-radius:16px;padding:20px;border:1px solid var(--line)}
+  .col.take{background:var(--mint);border-color:var(--primary)}
+  .col.skip{background:var(--stop-tile);border-color:var(--stop-line)}
+  .col .k{font-size:11px;font-weight:800;letter-spacing:.1em;display:block;margin-bottom:12px}
+  .col.take .k{color:var(--primary-deep)}
+  .col.skip .k{color:var(--stop)}
+  .col ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:13px}
+  .col li{font-size:13.5px}
+  .col li b{display:block;color:var(--ink);font-size:14px;font-weight:800;letter-spacing:-.01em;margin-bottom:2px}
+
+  /* 숫자 */
+  .figs{display:flex;flex-wrap:wrap;gap:8px}
+  .fig{flex:1 1 150px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px 12px}
+  .fig .n{font-size:21px;font-weight:800;color:var(--ink);letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums;line-height:1.2}
+  .fig .k{font-size:11.5px;color:var(--meta);margin-top:3px}
+
+  /* 확인 상태 */
+  .ledger{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+  .row{display:grid;grid-template-columns:74px 1fr;gap:14px;padding:12px 16px;
+       border-bottom:1px solid var(--line-soft);font-size:13px;align-items:baseline}
+  .row:last-child{border-bottom:none}
+  @media(max-width:520px){.row{grid-template-columns:1fr;gap:3px}}
+  .row .s{font-size:11px;font-weight:800;letter-spacing:.04em;white-space:nowrap}
+  .row .s.ok{color:var(--primary-deep)}
+  .row .s.no{color:var(--meta)}
+  .row .d b{color:var(--ink)}
+  .row .d a{color:var(--meta);word-break:break-all}
+
+  footer{font-size:11.5px;color:var(--meta);border-top:1px solid var(--line);padding-top:16px}
+</style>
+
+<div class="page">
+
+  <header>
+    <span class="eyebrow">2026.08.16 · 벤치마크 · 나눔비타민(나비얌)</span>
+    <h1>나비얌은 지금 어디까지 갔나</h1>
+    <p class="lede">
+      결론부터. <b>나비얌은 이제 자기를 "밥 앱"이라고 안 부른다.</b>
+      공식 홈페이지 제목이 <b>"사회공헌 솔루션, CSR·ESG 플랫폼"</b>이다 —
+      로드가 어제 정한 씨드온의 수익 방향(B2G · 기업 CSR B2B)과 <b>같은 자리</b>다.
+      먼저 간 사람이 있으니 길이 보인다는 뜻이기도 하고, 그 자리에 이미 사람이 있다는 뜻이기도 하다.
+    </p>
+  </header>
+
+  <section>
+    <h2>저쪽이 자기 문제를 정의한 문장</h2>
+    <p class="sub">홈페이지 첫 화면에 이렇게 쓰여 있다.</p>
+    <div class="quote">
+      <p>
+        급식카드는 있지만 여전히 혼자 먹는 아이들<br>
+        예산은 있지만 현장을 바꾸기 어려운 기관<br>
+        따뜻한 마음은 있지만 구조를 모르는 기업<br>
+        <span style="color:var(--primary-deep)">— 이 셋을 하나의 복지 인프라로 연결합니다</span>
+      </p>
+      <p class="src">nanumnavi.com 첫 화면 · 2026.08.16 확인</p>
+    </div>
+    <p style="margin:16px 0 0;font-size:14px;max-width:64ch">
+      <b style="color:var(--ink)">둘째 줄과 셋째 줄이 핵심이다.</b>
+      아이만 놓고 말하지 않고 <b style="color:var(--ink)">"돈은 있는데 안 닿는 기관"과 "마음은 있는데 방법을 모르는 기업"</b>을
+      같은 문장에 넣었다. 그게 값을 받을 수 있는 이유를 한 문장으로 만든 것이다.
+      씨드온이 기관·기업에 뭐라고 말할지 아직 안 정했는데, 이 구조를 참고할 만하다.
+    </p>
+  </section>
+
+  <section>
+    <h2>4년 동안 밟은 순서</h2>
+    <p class="sub">공식 홈페이지 연혁 그대로. 초록 점이 결정적인 지점이다.</p>
+    <div class="tl">
+      <div class="ev key">
+        <div class="d">2022.07</div>
+        <div class="t">대통령상 — 범정부 공공데이터 창업경진대회 대상</div>
+        <p class="n">경기도지사상(공공데이터 아이디어 공모전 최우수)도 같은 달. <b style="color:var(--ink)">여기서 시작이다.</b></p>
+      </div>
+      <div class="ev">
+        <div class="d">2023.02–03</div>
+        <div class="t">KT&amp;G 국제대학생 창업교류전 한국대표 1위 · 서울대 창업경진대회 최우수</div>
+      </div>
+      <div class="ev key">
+        <div class="d">2023.04</div>
+        <div class="t">(주)나눔비타민 법인 설립</div>
+        <p class="n">대통령상을 받고 <b style="color:var(--ink)">9개월 뒤</b>다. 회사를 먼저 만든 게 아니다.</p>
+      </div>
+      <div class="ev key">
+        <div class="d">2023.05</div>
+        <div class="t">예비창업패키지 선정 — 소셜벤처 최고금액</div>
+        <p class="n">오늘 고문이 말한 <b style="color:var(--ink)">1단계(창업지원형 공모)</b>가 바로 이것이다.</p>
+      </div>
+      <div class="ev">
+        <div class="d">2023.07–09</div>
+        <div class="t">현대차 정몽구재단 H-온드림 13기 · SC제일은행 데모데이 우승</div>
+      </div>
+      <div class="ev key">
+        <div class="d">2023.12</div>
+        <div class="t">예비사회적기업 지정 — 여성가족부 부처형</div>
+        <p class="n">고문이 말한 <b style="color:var(--ink)">2단계(사회문제 해결형)</b>. 여기까지 오는 데 1년 5개월.</p>
+      </div>
+      <div class="ev key">
+        <div class="d">2024.01</div>
+        <div class="t">한국건강관리협회 1.5억 식사지원사업</div>
+        <p class="n"><b style="color:var(--ink)">첫 기관 수주.</b> 같은 달 서울대기술지주·임팩트스퀘어에서 4억 시드투자.</p>
+      </div>
+      <div class="ev">
+        <div class="d">2024.05–11</div>
+        <div class="t">초기창업패키지 · TIPS R&amp;D 5억 매칭 · Pre-A 약 3억(가이아벤처파트너스)</div>
+      </div>
+      <div class="ev key">
+        <div class="d">2025.05</div>
+        <div class="t">인천광역시 '인천i온밥' 공식 운영사</div>
+        <p class="n"><b style="color:var(--ink)">여기서 처음으로 B2G가 된다.</b> 광역시 하나를 통째로 맡은 것. 시작에서 2년 10개월.</p>
+      </div>
+      <div class="ev">
+        <div class="d">2025.07</div>
+        <div class="t">누적 기부 유통액 10억원 돌파</div>
+      </div>
+      <div class="ev key">
+        <div class="d">2026</div>
+        <div class="t">보건복지부 「2026년도 결식아동 급식 업무 표준매뉴얼」에 우수사례 등재</div>
+        <p class="n">부처가 만드는 공식 문서에 이름이 실렸다. <b style="color:var(--ink)">B2G에서 이보다 강한 근거는 없다</b> — 다른 지자체가 이걸 보고 부른다.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <b>이 순서가 오늘 고문이 말한 4단계와 거의 그대로 맞는다.</b>
+      경진대회 → 예비창업패키지 → 예비사회적기업 → 지자체 실증 → 정책 문서.
+      고문 말이 이론이 아니라 실제로 사람들이 밟는 길이라는 게 확인된 셈이다.
+      그리고 <b>상을 먼저 받고 법인을 나중에 냈다</b> — 지금 로드가 사업자등록을
+      급하게 낼 필요가 없다는 근거이기도 하다.
+    </div>
+  </section>
+
+  <section>
+    <h2>지금 어디서 돈을 받나</h2>
+    <p class="sub">청소년·아이한테 받는 돈은 없다. 이건 씨드온과 같다.</p>
+    <div class="rev">
+      <div class="r">
+        <span class="w">B2G</span>
+        <div class="h">지자체 운영 위탁</div>
+        <p>인천시 '인천i온밥' 공식 운영사. 시 가맹점과 아동급식카드 모바일 결제를 연결해 시 단위로 굴린다.</p>
+        <div class="ex">2025년 인천시 전국 공공혁신 우수사례(GovTech) · 적극행정 표창</div>
+      </div>
+      <div class="r">
+        <span class="w">기업 CSR B2B</span>
+        <div class="h">기업 사회공헌 대행</div>
+        <p>홈페이지가 기업에 던지는 말이 <b style="color:var(--ink)">"예산, 어디로 가는지 모르셨죠?"</b>다. 실시간 리포트로 돈의 흐름을 보여주는 걸 판다.</p>
+        <div class="ex">단기 사업은 평균 1~2달 · "제안서 받아보기" 버튼이 첫 화면에</div>
+      </div>
+      <div class="r">
+        <span class="w">개인</span>
+        <div class="h">정기 후원(CMS)</div>
+        <p>홈페이지 상단 '후원하기'에서 정기결제. 매출이라기보다 명분과 현금흐름 쪽에 가깝다.</p>
+        <div class="ex">이용내역을 공개하는 걸 조건으로 건다</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>규모 — 저쪽이 자기 사이트에 적어둔 숫자만</h2>
+    <p class="sub">기사에 나온 숫자(가맹점 수 등)는 뺐다. 확인 못 한 숫자는 안 쓴다는 규칙 그대로.</p>
+    <div class="figs">
+      <div class="fig"><div class="n">3만 명+</div><div class="k">이용자 (자사 FAQ)</div></div>
+      <div class="fig"><div class="n">10억원</div><div class="k">누적 기부 유통액 (2025.07)</div></div>
+      <div class="fig"><div class="n">약 12억</div><div class="k">공개된 투자·R&amp;D 합 (시드 4 + TIPS 5 + Pre-A 3)</div></div>
+      <div class="fig"><div class="n">4종</div><div class="k">여성기업·벤처기업·소셜벤처·예비사회적기업</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>그래서 씨드온은</h2>
+    <p class="sub">따라 할 것과 따라 하면 안 되는 것이 분명하게 갈린다.</p>
+    <div class="split">
+      <div class="col take">
+        <span class="k">가져올 것</span>
+        <ul>
+          <li><b>기관·기업의 문제로 번역해서 말하기</b>
+            "아이가 힘들다"가 아니라 "예산은 있는데 안 닿는다"로 말한 것. 씨드온도 기관에 그렇게 말해야 값이 매겨진다.</li>
+          <li><b>상 → 공모 → 실증 → 정책문서 순서</b>
+            건너뛴 데가 없다. 오늘 고문이 준 4단계와 같다.</li>
+          <li><b>지자체 한 곳을 끝까지 파기</b>
+            인천 하나를 제대로 해서 부처 문서에 실렸다. 여러 곳에 얕게 뿌린 게 아니다.</li>
+          <li><b>"제안서 받아보기" 버튼</b>
+            기업 담당자가 볼 페이지가 따로 있다. 씨드온 홈에는 지금 그런 입구가 없다.</li>
+        </ul>
+      </div>
+      <div class="col skip">
+        <span class="k">가져오면 안 되는 것</span>
+        <ul>
+          <li><b>급식카드 인증을 서비스 안에 넣는 것</b>
+            나비얌의 힘은 결제 레일을 쥔 데서 나온다. 그런데 그건 <b style="color:var(--ink)">아이가 자기를 증명해야 시작되는 구조</b>다. 씨드온은 그걸 안 하기로 이미 정했다.</li>
+          <li><b>저쪽 말투</b>
+            대상을 묶어 부르는 표현을 쓴다. 씨드온 절대규칙 1번이 금지한 것이라 문구를 그대로 옮기면 안 된다.</li>
+          <li><b>돈이 흐르는 구조를 흉내 내는 것</b>
+            나비얌은 결제·정산이 본체라 유통액이 실적이 된다. 씨드온은 정보다 — <b style="color:var(--ink)">우리 실적은 "몇 명이 실제로 신청까지 갔나"</b>지 금액이 아니다.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout" style="background:var(--alert-tile);border-color:var(--alert-line)">
+      <b>솔직하게 짚을 것 하나</b> — 나비얌은 씨드온이 가려는 자리에 이미 3년 먼저 가 있다.
+      다만 저쪽이 다루는 건 <b>밥 한 끼</b>이고 씨드온이 다루는 건 <b>지원제도 전체</b>라, 겹치는 건
+      "기관·기업 예산이 안 닿는다"는 문제 인식이지 하는 일이 아니다.
+      기관에 말을 걸 때 <b>"나비얌이 밥에서 한 걸 우리는 지원제도 전체에서 한다"</b>는 설명이
+      먹힐 수도 있고, "그럼 나비얌한테 시키면 되잖아"가 될 수도 있다. 이건 로드가 정할 문제다.
+    </div>
+  </section>
+
+  <section>
+    <h2>확인 상태</h2>
+    <div class="ledger">
+      <div class="row"><span class="s ok">직접 봄</span><span class="d">
+        연혁 전체·수상·투자·인증·사업자등록번호 —
+        <a href="https://www.nanumnavi.com/ko/company">nanumnavi.com/ko/company</a></span></div>
+      <div class="row"><span class="s ok">직접 봄</span><span class="d">
+        "CSR·ESG 플랫폼" 자기 규정, 인천i온밥, 복지부 표준매뉴얼 등재, 기업용 문구 —
+        <a href="https://nanumnavi.com/">nanumnavi.com</a></span></div>
+      <div class="row"><span class="s ok">직접 봄</span><span class="d">
+        <b>이용자 3만 명 넘음</b> — 같은 사이트 FAQ 원문</span></div>
+      <div class="row"><span class="s no">못 봄</span><span class="d">
+        <b>가맹점 수·파트너사 수·기관 재계약률</b> — 홈 화면 숫자가 자바스크립트로 채워져서 우리 쪽에서는 0으로만 보인다. 기사에 나온 수치가 있지만 <b>언론 숫자라 옮기지 않았다</b></span></div>
+      <div class="row"><span class="s no">못 봄</span><span class="d">
+        벤처스퀘어 기사 3건 — 우리 프록시가 막아서(410) 못 열었다. 어차피 위 규칙상 기사 숫자는 안 쓴다</span></div>
+    </div>
+  </section>
+
+  <footer>공식 도메인(nanumnavi.com)에서 직접 확인한 것만 · 언론 보도 숫자는 옮기지 않는다는 규칙 적용</footer>
+
+</div>

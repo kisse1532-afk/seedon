@@ -50,7 +50,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         <Link href="/" className="text-sm text-meta hover:text-body">
           ← 홈으로
         </Link>
-        <h1 className="text-xl font-bold mt-2">검색 결과</h1>
+        <h1 className="text-xl font-extrabold tracking-tight text-ink mt-2">검색 결과</h1>
       </div>
 
       <form action="/search" className="max-w-md">
@@ -59,7 +59,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           name="q"
           defaultValue={query}
           placeholder="지금 어떤 상황인지 적어보세요. 예: 학원비가 부담돼요"
-          className="w-full rounded-lg border border-sage-border bg-white px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full rounded-control border border-sage-border bg-white px-5 py-3 text-sm text-body focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25"
         />
       </form>
 
@@ -89,7 +89,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             </p>
           )}
           {results.map((p) => (
-            <div key={p.id} className="relative rounded-lg border border-sage-border bg-white p-5 flex flex-col gap-2">
+            <div key={p.id} className="relative rounded-card border border-sage-border bg-white p-5 flex flex-col gap-2">
               <BookmarkButton
                 programId={p.id}
                 className="absolute top-4 right-4 text-meta hover:text-primary-deep"
@@ -110,7 +110,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                   event="category_card_click"
                   programId={p.id}
                   category={p.category}
-                  className="text-sm font-medium bg-primary-deep text-white rounded-lg px-4 py-1.5 hover:opacity-90 transition-opacity"
+                  className="rounded-xl bg-primary-deep px-4 py-2 text-[13px] font-bold text-white transition hover:brightness-110"
                 >
                   신청 알아보기 →
                 </TrackedLink>

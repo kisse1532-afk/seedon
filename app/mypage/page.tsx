@@ -11,6 +11,7 @@ import type { Program } from "@/lib/data";
 import MyInfo from "./MyInfo";
 import { SeedonSymbol } from "@/app/_components/Logo";
 import { loadMyProfile } from "@/lib/consent";
+import TrackedLink from "@/app/_components/TrackedLink";
 
 /** 관심 등록 처리 상태를 청소년이 읽을 수 있는 말로. 행정용어를 그대로 쓰지 않는다. */
 const STATUS_LABEL: Record<string, string> = {
@@ -144,7 +145,16 @@ export default function MyPage() {
                 const program = programs[a.program_id];
                 return (
                   <li key={a.id} className="p-4">
-                    <Link href={`/apply/${a.program_id}`} className="block group">
+                    {/* 여기서 프로그램으로 들어가는 것도 카드 클릭이다. 일반 Link를
+                        쓰고 있어서 이 경로로 들어간 건 세어지지 않았고, 그래서
+                        "카드 클릭 0인데 상세 조회 3" 같은 숫자가 나왔다. */}
+                    <TrackedLink
+                      href={`/apply/${a.program_id}`}
+                      event="category_card_click"
+                      programId={a.program_id ?? undefined}
+                      category={program?.category}
+                      className="block group"
+                    >
                       <p className="text-sm font-semibold text-ink group-hover:text-primary-deep">
                         {/* 카드가 내려갔거나 지워졌을 수도 있다. 그때 화면이 비어
                             보이지 않게 최소한 뭔가는 보여준다. */}
@@ -155,7 +165,7 @@ export default function MyPage() {
                         {STATUS_LABEL[a.status] ?? "확인 중이에요"}
                         <span className="text-meta"> · {a.created_at.slice(0, 10)}</span>
                       </p>
-                    </Link>
+                    </TrackedLink>
                   </li>
                 );
               })}
@@ -204,9 +214,14 @@ export default function MyPage() {
         </div>
       </section>
 
-      <p className="text-[11px] leading-relaxed text-meta text-center pt-2">
-        맞춤 추천은 준비 중이에요.
-      </p>
+      {/* "준비 중이에요"라고 적혀 있었는데 /recommend는 이미 만들어져 있고
+          하단 탭에도 나와 있다. 안 됐다고 적어두면 되는 기능을 안 써보고 지나간다. */}
+      <Link
+        href="/recommend"
+        className="block pt-2 text-center text-[11px] leading-relaxed text-primary-deep hover:underline"
+      >
+        지금 어떤 상황인지 적으면 맞춤 추천도 받아볼 수 있어요 →
+      </Link>
     </div>
   );
 }

@@ -1,13 +1,18 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fetchCommunityPost } from "@/lib/queries";
+import RequireLogin from "@/app/_components/RequireLogin";
 
 export default async function CommunityPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const post = await fetchCommunityPost(id);
   if (!post || !post.published) return notFound();
 
+  /* 목록(/community)만 로그인으로 막고 이 상세 화면은 안 막혀 있었다.
+     주소를 알면 로그인 없이 그대로 읽혔다 — 로드 결정("커뮤니티는 로그인한
+     사람만 쓰게 해서 누가 무엇을 쓰는지 쌓이게 한다")이 여기서만 새고 있었다. */
   return (
+    <RequireLogin reason="이 글을 보려면 로그인이 필요해요. 다른 친구들이 어떻게 했는지 같이 볼 수 있어요.">
     <div className="max-w-lg mx-auto space-y-5">
       <Link href="/community" className="text-sm text-meta hover:text-body">
         ← 커뮤니티로
@@ -25,5 +30,6 @@ export default async function CommunityPostPage({ params }: { params: Promise<{ 
         {post.body}
       </div>
     </div>
+    </RequireLogin>
   );
 }
