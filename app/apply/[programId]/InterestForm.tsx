@@ -62,8 +62,8 @@ export default function InterestForm({ programId }: { programId: string }) {
       <div>
         <h2 className="mb-1 text-sm font-bold text-ink">이 프로그램 관심 등록</h2>
         <p className="text-xs leading-relaxed text-ink-60">
-          신청을 대신 처리해드리진 않지만, 남겨주시면 씨드온이 관련 소식이나
-          다음 단계 프로그램을 챙겨드려요.
+          신청을 대신 처리해드리진 않아요. 남겨주시면 이 프로그램 모집이 다시
+          열리거나 비슷한 게 생겼을 때 씨드온 운영자가 직접 연락드려요.
         </p>
       </div>
 
@@ -121,8 +121,8 @@ export default function InterestForm({ programId }: { programId: string }) {
       )}
 
       <p className="text-center text-[11px] leading-relaxed text-meta">
-        입력하신 정보는 씨드온이 소식 전달 목적으로만 사용하고, 처리가 끝나면
-        일정 기간 뒤 삭제해요. 실제 신청은 위 &apos;이렇게 신청하세요&apos;
+        입력하신 정보는 연락드리는 목적으로만 쓰고, 처리가 끝나면 일정 기간 뒤
+        삭제해요. 자동으로 문자나 메일이 가지는 않아요. 실제 신청은 위 &apos;이렇게 신청하세요&apos;
         안내를 따라 직접 진행해주세요.
       </p>
     </form>
