@@ -45,14 +45,21 @@ const LEAF =
   "L74.841 20.163L73.497 20.488L72.136 20.735L70.763 20.902L69.383 20.991Z";
 
 /**
- * 잎을 토글에서 얼마나 떼어놓을지.
+ * 로고 크기와 잎 간격.
  *
- * 화면 안에서는 원본 좌표(브랜드 SVG 그대로)로 두지만, 이 그림만은 예외로 더
- * 띄운다. 카톡은 이 그림을 폭 370px로 줄여서 보여주는데, 그 크기에서 원본
- * 간격은 1픽셀도 안 남는다. 여기 숫자를 바꾸면 `node scripts/check-og-logo.mjs`로
- * 실제 카드 크기에서의 간격을 다시 재볼 것.
+ * 이 둘은 같이 움직인다. 로고를 줄이면 잎-토글 간격도 같은 비율로 줄어서, 카톡
+ * 카드 크기(폭 370px)에서 다시 붙어 보이게 된다. **하나만 고치지 말 것.**
+ * 고쳤으면 `node scripts/check-og-logo.mjs`로 실제 카드 크기에서 다시 재볼 것 —
+ * 눈으로 보고 판단해서 네 번 틀렸다(2026-08-16).
+ *
+ * 화면 안 로고(app/_components/Logo.tsx)는 원본 좌표 그대로 둔다. 이 예외는
+ * 줄여서 보여주는 미리보기 그림에만 필요하다.
  */
-const LEAF_SHIFT = "translate(7,-6)";
+const LOGO_W = 168; // 글자 "씨드온"(76px)과 나란히 놓았을 때 균형이 맞는 크기
+const VIEWBOX = { x: 0, y: -8, w: 106, h: 72 };
+const LOGO_H = Math.round((LOGO_W * VIEWBOX.h) / VIEWBOX.w);
+const LEAF_SHIFT = "translate(10,-8.5)";
+const LEAF_HALO = 4.6; // 잎 둘레 크림색 띠 두께 (viewBox 단위)
 
 export default async function Image() {
   return new ImageResponse(
@@ -71,7 +78,11 @@ export default async function Image() {
         {/* 로고 — public/brand/logo/seedon-symbol-cream.svg와 같은 좌표.
             노브는 배경색과 같아야 하므로 CREAM (BRAND.md 로고 규칙). */}
         <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
-          <svg width="228" height="154" viewBox="0 -6 103 70">
+          <svg
+            width={LOGO_W}
+            height={LOGO_H}
+            viewBox={`${VIEWBOX.x} ${VIEWBOX.y} ${VIEWBOX.w} ${VIEWBOX.h}`}
+          >
             <rect x="2" y="20" width="76" height="44" rx="22" fill={PRIMARY} />
             {/* 잎 밑에 크림색을 한 겹 더 깔아 토글과 사이에 밝은 띠를 만든다.
                 이게 없으면 두 색(#2BBE8C·#72CF5E)이 둘 다 초록이라, 카톡 카드
@@ -83,7 +94,7 @@ export default async function Image() {
               transform={LEAF_SHIFT}
               fill={CREAM}
               stroke={CREAM}
-              strokeWidth="3.4"
+              strokeWidth={LEAF_HALO}
               strokeLinejoin="round"
             />
             <path d={LEAF} transform={LEAF_SHIFT} fill={SPROUT} />
