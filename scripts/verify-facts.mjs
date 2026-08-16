@@ -35,7 +35,7 @@ const UA =
 const { requireSupabase } = await import("./lib/env.mjs");
 const { url, key } = requireSupabase();
 
-const { readNoticeAttachment } = await import("./lib/hwpx.mjs");
+const { readNoticeAttachment, findAttachmentUrls } = await import("./lib/hwpx.mjs");
 
 const only = process.argv.slice(2).filter((a) => !a.startsWith("-"));
 
@@ -163,6 +163,7 @@ const titleMiss = [];
 const amountMiss = [];
 const ok = [];
 const foundInAttachment = [];
+const attachUnread = [];
 
 for (const p of programs) {
   const { text, error, html } = await fetchText(p.link);
@@ -184,8 +185,15 @@ for (const p of programs) {
      공공기관이 제목만 웹에 올리고 내용은 첨부에만 넣는 일이 흔하다.
      이걸 안 보면 근거가 있는데도 "근거 없는 금액"으로 판정해서, 다음 사람이
      멀쩡한 숫자를 지우게 된다 — 서울시 그룹활동 지원사업에서 실제로 그랬다. */
+  let attachFailed = false;
   if (missAmts.length) {
     const att = await readNoticeAttachment(p.link, { html }).catch(() => null);
+    /* 첨부가 걸려 있는데 못 읽은 경우를 따로 표시한다.
+       이걸 "근거 없음"과 같은 칸에 넣으면 다음 사람이 멀쩡한 금액을 지운다 —
+       서울시 그룹활동 지원사업의 "동아리 1개당 1,250,000원"이 실제로 그랬다.
+       공공기관 서버가 첨부를 굼뜨게 내주다 한 번씩 실패하는데, 그 한 번이
+       "근거 없음"으로 보고되면 사람은 그 말을 믿는다. */
+    if (!att && findAttachmentUrls(html || "", p.link).length) attachFailed = true;
     if (att) {
       const attValues = amountValues(att.text);
       const found = missAmts.filter((a) => pageHasAmount(att.text, attValues, a));
@@ -202,6 +210,7 @@ for (const p of programs) {
   const titleOk = toks.length === 0 || hitToks.length / toks.length >= 0.5;
 
   if (!titleOk) titleMiss.push({ ...p, toks, hitToks });
+  else if (missAmts.length && attachFailed) attachUnread.push({ ...p, missAmts });
   else if (missAmts.length) amountMiss.push({ ...p, missAmts });
   else ok.push(p);
 }
@@ -232,6 +241,13 @@ if (foundInAttachment.length) {
     "웹페이지에는 없지만 첨부 한글파일에 있었어요. 근거가 있는 숫자니 지우지 마세요.");
   for (const p of foundInAttachment)
     console.log(`   - ${p.id} · ${p.title}\n     찾은 금액: ${p.found.join(", ")}\n     ${p.attUrl}`);
+}
+
+if (attachUnread.length) {
+  head("첨부 공고문을 못 열어 확인 못 함 — 지우지 말 것", attachUnread.length,
+    "페이지에는 금액이 없고 첨부에 있을 텐데, 그 첨부를 이번엔 못 받았어요. 근거가 없다는 뜻이 아니에요. node scripts/read-hwpx.mjs <주소>로 다시 열어보세요.");
+  for (const p of attachUnread)
+    console.log(`   - ${p.id} · ${p.title}\n     확인 못 한 금액: ${p.missAmts.join(", ")}\n     ${p.link}`);
 }
 
 if (unread.length) {
