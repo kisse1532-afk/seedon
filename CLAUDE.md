@@ -260,6 +260,21 @@ pending에 쌓아두는 방식은 실제로는 **묵히는 방식**이었다. pe
 - "Do things that don't scale" — 과도한 엔지니어링, 불필요한 리팩토링은 지양하고 핵심 기능 작동에 집중할 것
 - 진행 상황, 진단 결과, 결정사항은 노션 MVP 현황 페이지에 날짜별로 기록할 것
 
+### SQL 자동 승인 (2026.08.16 로드 요청)
+로드가 SQL 실행마다 버튼을 누르는 게 번거로워서 `.claude/settings.json`에 `mcp__Supabase__execute_sql`·`apply_migration`을 자동 허용으로 넣었다.
+
+**도구 권한은 SQL 내용을 구분하지 못한다.** `CREATE TABLE`이든 `DROP TABLE`이든 같은 도구 하나로 나가므로, 허용해둔 순간 삭제성 SQL도 프롬프트 없이 실행된다. **그래서 아래는 도구가 막아주는 게 아니라 에이전트가 스스로 지켜야 하는 규율이다.**
+
+| 승인 없이 바로 | 반드시 로드에게 먼저 물어볼 것 |
+|---|---|
+| `CREATE TABLE` / `CREATE POLICY` / `CREATE INDEX` | `DROP TABLE` / `DROP COLUMN` / `TRUNCATE` |
+| `ALTER TABLE ... ADD COLUMN`(nullable) | `ALTER COLUMN ... 타입 변경`, `SET NOT NULL`(기존 행이 있는 경우) |
+| `SELECT`, 데이터 점검용 조회 | `WHERE` 없는 `DELETE`/`UPDATE` |
+| 프로그램 카드 `INSERT` / `status` 변경 | 신청자·도움요청·계정 등 **사람의 개인정보가 든 행을 지우거나 덮어쓰는 것** |
+
+- 되돌리기 어려운 SQL은 실행 전에 **무엇이 몇 건 영향받는지 `SELECT count(*)`로 먼저 세어보고** 그 숫자를 로드에게 말한다.
+- 마이그레이션은 `execute_sql`이 아니라 `apply_migration`으로 넣는다 — 이력이 남아야 나중에 되돌릴 수 있다.
+
 ## 되돌리기 원칙
 1. 작업 하나(기능 하나, 개선 하나)마다 별도 git 커밋으로 나눠서 저장할 것 — 여러 변경을 한 커밋에 몰아넣지 말 것
 2. 커밋 메시지에 "무엇을 왜 바꿨는지" 명확히 남길 것
