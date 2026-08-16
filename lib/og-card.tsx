@@ -10,7 +10,7 @@
  *
  * 이 파일은 그리기만 한다. 실제로 내보내는 곳은 둘이다:
  *   - app/og/[v]/card.png/route.tsx  ← 카톡이 실제로 가져가는 주소
- *   - app/opengraph-image.tsx        ← Next 기본 규칙(다른 도구들이 찾는 자리)
+ *   - app/opengraph-image/route.tsx   ← 카톡이 예전에 기억해간 옛 주소
  */
 import type { ReactElement } from "react";
 
@@ -26,7 +26,7 @@ export const OG_ALT = "씨드온 — 몰라서 못 받는 지원을 찾아주는
  * (2026-08-16 로드 확인). 그래서 주소의 **경로 자체**가 바뀌게 만들었다.
  * `/og/v3/card.png` → `/og/v4/card.png`가 되면 카톡에게는 처음 보는 그림이다.
  */
-export const OG_VERSION = "v3";
+export const OG_VERSION = "v4";
 export const OG_IMAGE_PATH = `/og/${OG_VERSION}/card.png`;
 
 // 브랜드 v1.0 토큰 (public/brand/tokens.css와 같은 값)
@@ -69,11 +69,11 @@ const LEAF =
  * 화면 안 로고(app/_components/Logo.tsx)는 원본 좌표 그대로 둔다. 이 예외는
  * 줄여서 보여주는 미리보기 그림에만 필요하다.
  */
-const LOGO_W = 168; // 글자 "씨드온"(76px)과 나란히 놓았을 때 균형이 맞는 크기
-const VIEWBOX = { x: 0, y: -8, w: 106, h: 72 };
+const LOGO_W = 136; // 토글 높이가 글자 "씨드온"(76px)과 비슷해지는 크기
+const VIEWBOX = { x: 0, y: -12, w: 110, h: 76 };
 const LOGO_H = Math.round((LOGO_W * VIEWBOX.h) / VIEWBOX.w);
-const LEAF_SHIFT = "translate(10,-8.5)";
-const LEAF_HALO = 4.6; // 잎 둘레 크림색 띠 두께 (viewBox 단위)
+const LEAF_SHIFT = "translate(13,-11)";
+const LEAF_HALO = 5.8; // 잎 둘레 크림색 띠 두께 (viewBox 단위)
 
 export function ogCard(): ReactElement {
   return (
