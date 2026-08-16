@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { fetchPublishedPrograms } from "@/lib/queries";
 import ResultsList from "./ResultsList";
+import RequireLogin from "@/app/_components/RequireLogin";
 
 export default async function RecommendResultsPage({
   searchParams,
@@ -11,6 +12,7 @@ export default async function RecommendResultsPage({
   const programs = await fetchPublishedPrograms();
 
   return (
+    <RequireLogin reason="적어준 상황에 맞는 걸 찾아드리려면 로그인이 필요해요. 저장해둔 것까지 같이 봐서 더 잘 골라줄 수 있어요.">
     <div className="space-y-4">
       <div>
         <Link href="/recommend" className="text-[13px] font-medium text-meta transition hover:text-ink">
@@ -27,5 +29,6 @@ export default async function RecommendResultsPage({
         있으니 <Link href="/" className="underline hover:text-body">카테고리 목록</Link>도 함께 둘러보세요.
       </p>
     </div>
+    </RequireLogin>
   );
 }

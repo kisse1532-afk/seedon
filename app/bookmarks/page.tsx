@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { rememberNext } from "@/lib/next-destination";
+import { SeedonSymbol } from "@/app/_components/Logo";
 import { loadBookmarks, onBookmarksChange } from "@/lib/bookmarks";
 import { fetchProgramsByIds } from "@/lib/queries";
 import { getClosedNotice, type Program } from "@/lib/data";
@@ -13,6 +15,9 @@ export default function BookmarksPage() {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  /* 로그인 안 한 사람이 이 기기에 저장해둔 개수. 목록은 안 보여주되 몇 개
+     있는지는 알려준다 — "로그인하세요"만 있으면 뭘 얻는지 몰라서 그냥 나간다. */
+  const [savedCount, setSavedCount] = useState(0);
 
   useEffect(() => {
     let alive = true;
@@ -20,6 +25,16 @@ export default function BookmarksPage() {
     async function load() {
       const { data } = await supabase.auth.getUser();
       const ids = await loadBookmarks();
+
+      // 로그인 전이면 목록은 그리지 않는다. 개수만 세어 로그인 안내에 쓴다.
+      if (!data.user) {
+        if (!alive) return;
+        setLoggedIn(false);
+        setSavedCount(ids.length);
+        setLoaded(true);
+        return;
+      }
+
       // 한 번에 가져온다. 예전에는 id마다 조회를 한 번씩 보내서, 많이 저장한
       // 사람일수록 목록이 늦게 떴다.
       const found = await fetchProgramsByIds(ids);
@@ -42,6 +57,46 @@ export default function BookmarksPage() {
     };
   }, []);
 
+  // 로그인 전에는 목록 대신 안내를 보여준다(로드 결정 2026-08-16). 저장 자체는
+  // 계속 되게 두는데, 저장하려는 순간 로그인부터 요구하면 거기서 나가버린다.
+  // 몇 개 저장돼 있는지는 알려준다 — 무엇을 얻는지 알아야 로그인할 이유가 생긴다.
+  if (loaded && !loggedIn) {
+    return (
+      <div className="mx-auto max-w-sm space-y-5 py-14 text-center">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-mint">
+          <SeedonSymbol height={22} />
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-lg font-extrabold tracking-tight text-ink">저장한 프로그램 보기</h1>
+          <p className="text-sm leading-relaxed text-ink-60">
+            {savedCount > 0 ? (
+              <>
+                이 기기에 <b className="font-bold text-primary-deep">{savedCount}개</b>를
+                저장해뒀어요. 로그인하면 그대로 옮겨주고, 폰을 바꿔도 남아요.
+              </>
+            ) : (
+              <>
+                저장한 프로그램은 로그인해야 볼 수 있어요. 로그인해두면 폰을 바꾸거나
+                앱을 지워도 그대로 있어요.
+              </>
+            )}
+          </p>
+        </div>
+
+        <Link
+          href="/login"
+          onClick={() => rememberNext("/bookmarks")}
+          className="block w-full rounded-full bg-primary-deep py-3.5 text-sm font-bold text-white transition hover:brightness-110"
+        >
+          로그인하고 보기
+        </Link>
+        <Link href="/" className="block text-xs text-meta transition hover:text-body">
+          로그인 없이 프로그램 둘러보기
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -49,32 +104,11 @@ export default function BookmarksPage() {
           ← 홈으로
         </Link>
         <h1 className="text-xl font-bold mt-2">북마크</h1>
-        {/* 로그인하면 계정에 저장되도록 바뀌었는데 안내문은 "이 기기에만
-            보관돼요"로 남아 있었다. 사실과 다른 안내는 없느니만 못하다 —
-            계정에 잘 있는데도 폰 바꾸면 사라진다고 믿게 만든다. */}
         <p className="text-sm text-ink-60 mt-1">
-          {!loaded
-            ? " "
-            : loggedIn
-              ? "계정에 저장돼 있어요. 폰을 바꿔도 그대로 있어요."
-              : "지금은 이 기기에만 저장돼요. 로그인하면 폰을 바꿔도 남아요."}
+          계정에 저장돼 있어요. 폰을 바꿔도 그대로 있어요.
         </p>
       </div>
 
-      {/* 로그인 안 한 사람에게만, 저장해둔 게 실제로 있을 때만 권한다.
-          빈 화면에서 로그인부터 하라고 하면 얻는 게 없어 보인다. */}
-      {loaded && !loggedIn && programs.length > 0 && (
-        <Link
-          href="/login"
-          className="flex items-center justify-between gap-3 rounded-2xl border border-primary/30 bg-mint px-5 py-4 transition hover:brightness-[0.98]"
-        >
-          <span className="text-sm leading-relaxed text-body">
-            <b className="font-bold text-primary-deep">{programs.length}개</b>를 저장해뒀어요.
-            로그인해두면 폰을 바꾸거나 앱을 지워도 그대로 있어요.
-          </span>
-          <span className="shrink-0 text-sm font-bold text-primary-deep">로그인 →</span>
-        </Link>
-      )}
 
       <div className="grid gap-3">
         {loaded && programs.length === 0 && (

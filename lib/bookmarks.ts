@@ -14,6 +14,39 @@ import { supabase } from "@/lib/supabase";
 const STORAGE_KEY = "seedon_bookmarks";
 const CHANGE_EVENT = "seedon-bookmarks-change";
 
+/**
+ * 브라우저에 남은 목록이 "누구 것인지"를 같이 적어둔다.
+ *
+ * 로그인하면 계정 목록을 브라우저에도 복사해둔다(화면이 바로 그려지게). 그런데
+ * 로그아웃할 때 그 복사본이 남아 있어서, 로그아웃한 뒤에도 저장해둔 게 계속
+ * 보였다(2026-08-16 로드 확인). 폰을 같이 쓰는 경우엔 앞사람이 저장한 게
+ * 뒷사람에게 보이는 것이기도 하다.
+ *
+ * 계정이 바뀌면(로그아웃 포함) 복사본을 비운다. 로그아웃 버튼에서만 지우면
+ * 세션이 저절로 끊긴 경우나 다른 계정으로 갈아탄 경우를 놓친다.
+ */
+const OWNER_KEY = "seedon_bookmarks_owner";
+const GUEST = "guest";
+
+function syncOwner(userId: string | null): void {
+  if (typeof window === "undefined") return;
+  const now = userId ?? GUEST;
+  const before = localStorage.getItem(OWNER_KEY);
+  if (before !== null && before !== now) {
+    localStorage.removeItem(STORAGE_KEY);
+    notify();
+  }
+  localStorage.setItem(OWNER_KEY, now);
+}
+
+/** 로그아웃할 때 부른다. 세션이 끊긴 뒤에는 계정 목록을 다시 못 읽으므로 미리 비운다. */
+export function clearLocalBookmarks(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.setItem(OWNER_KEY, GUEST);
+  notify();
+}
+
 function readLocal(): string[] {
   if (typeof window === "undefined") return [];
   try {
@@ -55,6 +88,8 @@ export function onBookmarksChange(callback: () => void) {
 /** 로그인했으면 계정에서, 아니면 브라우저에서 읽는다. */
 export async function loadBookmarks(): Promise<string[]> {
   const userId = await currentUserId();
+  // 지금 이 브라우저에 남아 있는 목록이 이 사람 것이 맞는지 먼저 맞춘다.
+  syncOwner(userId);
   if (!userId) return readLocal();
 
   const { data, error } = await supabase
@@ -73,6 +108,7 @@ export async function loadBookmarks(): Promise<string[]> {
 /** 켜고 끄기. 켜졌으면 true. */
 export async function toggleBookmark(id: string): Promise<boolean> {
   const userId = await currentUserId();
+  syncOwner(userId);
   const local = readLocal();
   const willAdd = !local.includes(id);
 

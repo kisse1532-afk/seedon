@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { fetchCommunityPosts, fetchProgramsByIds } from "@/lib/queries";
 import { loadRecentReviews } from "@/lib/reviews";
+import RequireLogin from "@/app/_components/RequireLogin";
 
 /* 후기가 승인되면 바로 보여야 한다. 이 화면은 원래 빌드 시점에 한 번 만들어져
    고정됐는데, 그러면 승인해도 다음 배포 전까지 안 올라온다. 승인해놓고 안 보이면
@@ -19,6 +20,7 @@ export default async function CommunityPage() {
   const titleById = Object.fromEntries(programs.map((p) => [p.id, p.title]));
 
   return (
+    <RequireLogin reason="다른 친구들이 어떻게 했는지 보려면 로그인이 필요해요. 후기를 남길 때도 로그인한 상태여야 해요.">
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold">커뮤니티</h1>
@@ -73,5 +75,6 @@ export default async function CommunityPage() {
         ))}
       </div>
     </div>
+    </RequireLogin>
   );
 }
