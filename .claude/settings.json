@@ -10,7 +10,12 @@
       "mcp__Supabase__get_advisors",
       "mcp__Supabase__query_logs",
       "mcp__Supabase__get_project_url",
-      "mcp__Supabase__generate_typescript_types"
+      "mcp__Supabase__generate_typescript_types",
+      "mcp__github__create_pull_request",
+      "mcp__github__merge_pull_request",
+      "mcp__github__pull_request_read",
+      "mcp__Notion__notion-fetch",
+      "mcp__Notion__notion-update-page"
     ],
     "deny": [
       "mcp__Supabase__delete_branch",
