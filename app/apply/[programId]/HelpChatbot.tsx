@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ApplyStep } from "@/lib/data";
 import PhoneLink from "@/app/_components/PhoneLink";
+import { clearMyInfo, loadMyInfo, saveMyInfo } from "@/lib/my-info";
+import SavedInfoNote from "@/app/_components/SavedInfoNote";
 
 type Props = {
   programTitle: string;
@@ -23,6 +25,30 @@ export default function HelpChatbot({
 }: Props) {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<ViewState>("menu");
+
+  /* 자동 채움. 도움 요청은 "혼자 하기 어렵다"고 말한 사람이 쓰는 창구라,
+     여기서 또 처음부터 적게 하면 안 된다. 화면이 뜬 뒤에 채운다(서버 렌더 때는
+     localStorage를 못 읽는다). */
+  const [prefill, setPrefill] = useState<{ name: string; contact: string } | null>(null);
+
+  useEffect(() => {
+    const saved = loadMyInfo();
+    if (saved) setPrefill({ name: saved.name, contact: saved.contact });
+  }, []);
+
+  function handleClearSaved() {
+    clearMyInfo();
+    setPrefill(null);
+    const form = document.getElementById("help-reserve-form") as HTMLFormElement | null;
+    form?.reset();
+  }
+
+  /* 서버 액션이라 결과를 여기서 못 본다. 보내기 직전에 저장한다 —
+     이름·연락처는 형식이 틀려서 실패하는 값이 아니라 그대로 둬도 해가 없다. */
+  function rememberOnSubmit(e: React.FormEvent<HTMLFormElement>) {
+    const data = new FormData(e.currentTarget);
+    saveMyInfo(String(data.get("name") || ""), String(data.get("contact") || ""));
+  }
 
   const BotBubble = ({ children }: { children: React.ReactNode }) => (
     <div className="rounded-2xl rounded-tl-sm bg-cream px-4 py-2.5 text-sm text-body max-w-[90%]">
@@ -191,11 +217,19 @@ export default function HelpChatbot({
           {view === "reserve" && (
             <>
               <BotBubble>언제 연락받는 게 편해? 이름이랑 연락처만 남겨줘.</BotBubble>
-              <form action={submitHelp} className="space-y-2">
+              <form
+                id="help-reserve-form"
+                action={submitHelp}
+                onSubmit={rememberOnSubmit}
+                className="space-y-2"
+              >
+                {prefill && <SavedInfoNote onClear={handleClearSaved} />}
                 <input
                   name="name"
                   type="text"
                   required
+                  defaultValue={prefill?.name ?? ""}
+                  key={`help-name-${prefill?.name ?? "empty"}`}
                   placeholder="이름"
                   className="w-full rounded-xl border border-sos-line bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sos-num/40"
                 />
@@ -203,6 +237,8 @@ export default function HelpChatbot({
                   name="contact"
                   type="tel"
                   required
+                  defaultValue={prefill?.contact ?? ""}
+                  key={`help-contact-${prefill?.contact ?? "empty"}`}
                   placeholder="연락받을 번호 (010-0000-0000)"
                   className="w-full rounded-xl border border-sos-line bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sos-num/40"
                 />
