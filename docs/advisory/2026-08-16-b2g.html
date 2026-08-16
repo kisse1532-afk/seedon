@@ -1,0 +1,287 @@
+<title>B2G는 어떻게 돈이 되나</title>
+<style>
+  :root{
+    --ground:#faf6ee; --surface:#fff; --mint:#e6f8ef; --line:#e7dfd0; --line-soft:#f0e9db;
+    --ink:#2a2a24; --body:#576351; --meta:#9dac92;
+    --primary:#2bbe8c; --primary-deep:#17916a;
+    --alert:#c2702a; --alert-tile:#fff4e9; --alert-line:#f5dfc6;
+    --stop:#b4443a; --stop-tile:#fdf0ee;
+    --shadow:0 1px 2px rgba(42,42,36,.04), 0 12px 32px -20px rgba(42,42,36,.3);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+      --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+      --primary:#47d5a3; --primary-deep:#6fe0b6;
+      --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+      --stop:#f08b80; --stop-tile:#301c1a;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+    --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+    --primary:#47d5a3; --primary-deep:#6fe0b6;
+    --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+    --stop:#f08b80; --stop-tile:#301c1a;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--body);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard Variable",
+                Pretendard,"Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+    font-size:15px;line-height:1.72;-webkit-font-smoothing:antialiased;
+    word-break:keep-all;overflow-wrap:break-word}
+  .page{max-width:880px;margin:0 auto;padding:44px 22px 80px;display:flex;flex-direction:column;gap:40px}
+
+  .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.16em;color:var(--meta)}
+  h1{margin:10px 0 0;font-size:clamp(25px,4.6vw,36px);line-height:1.28;letter-spacing:-.03em;
+     font-weight:800;color:var(--ink);text-wrap:balance}
+  .lede{margin:14px 0 0;font-size:15.5px;max-width:60ch}
+  .lede b{color:var(--ink)}
+
+  h2{margin:0 0 4px;font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+  .sub{margin:0 0 18px;font-size:13px;color:var(--meta)}
+  section{display:flex;flex-direction:column}
+
+  /* 다섯 형태 */
+  .forms{display:flex;flex-direction:column;gap:10px}
+  .form{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+        padding:16px 18px;box-shadow:var(--shadow)}
+  .form .n{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .form .n span{font-size:12px;font-weight:700;color:var(--meta);margin-left:7px;letter-spacing:0}
+  .form p{margin:5px 0 0;font-size:13.5px}
+  .form .us{margin-top:9px;padding-top:8px;border-top:1px solid var(--line-soft);
+            font-size:12.5px;font-weight:700;color:var(--primary-deep)}
+  .form .us.no{color:var(--stop)}
+
+  /* 절차 낱말풀이 */
+  .words{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:620px){.words{grid-template-columns:1fr}}
+  .word{background:var(--mint);border:1px solid var(--primary);border-radius:14px;padding:16px 18px}
+  .word .w{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px}
+  .word p{margin:0;font-size:13.5px}
+
+  /* 순서 — 진짜 순서라서 번호를 쓴다 */
+  .steps{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--line);
+         margin-left:13px;padding-left:0}
+  .step{position:relative;padding:0 0 22px 26px}
+  .step:last-child{padding-bottom:0}
+  .step::before{content:attr(data-n);position:absolute;left:-14px;top:1px;width:26px;height:26px;
+    border-radius:50%;background:var(--surface);border:1.5px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:800;color:var(--meta);font-variant-numeric:tabular-nums}
+  .step.here::before{border-color:var(--primary);color:var(--primary-deep);background:var(--mint)}
+  .step .t{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .step .t em{font-style:normal;font-size:11px;font-weight:800;letter-spacing:.06em;
+    color:var(--primary-deep);background:var(--mint);border:1px solid var(--primary);
+    border-radius:999px;padding:2px 8px;margin-left:8px;white-space:nowrap}
+  .step p{margin:4px 0 0;font-size:13.5px}
+
+  /* 실물 예시 */
+  .live{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+        padding:18px 20px;box-shadow:var(--shadow)}
+  .live .k{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--primary-deep);display:block;margin-bottom:6px}
+  .live .t{font-size:15.5px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .live dl{margin:12px 0 0;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13px}
+  @media(max-width:520px){.live dl{grid-template-columns:1fr;gap:2px 0}
+    .live dd{margin-bottom:8px}}
+  .live dt{color:var(--meta);white-space:nowrap}
+  .live dd{margin:0;color:var(--body)}
+  .live dd b{color:var(--ink)}
+  .live .catch{margin:13px 0 0;padding:11px 13px;background:var(--stop-tile);
+    border:1px solid var(--line);border-radius:10px;font-size:13px;color:var(--stop);font-weight:700}
+
+  /* 이번 주 할 일 */
+  .task{background:var(--mint);border:1px solid var(--primary);border-radius:18px;
+        padding:24px 22px;box-shadow:var(--shadow)}
+  .task .k{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--primary-deep);display:block;margin-bottom:8px}
+  .task .q{margin:0 0 12px;font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.35}
+  .task p{margin:0 0 12px;font-size:14px;max-width:62ch}
+  .task p:last-child{margin-bottom:0}
+  .task .box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:13.5px}
+  .task .box b{color:var(--ink)}
+  .task .box a{color:var(--primary-deep);font-weight:700;word-break:break-all}
+
+  /* 확인 상태 */
+  .ledger{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+  .row{display:grid;grid-template-columns:74px 1fr;gap:14px;padding:12px 16px;
+       border-bottom:1px solid var(--line-soft);font-size:13px;align-items:baseline}
+  .row:last-child{border-bottom:none}
+  @media(max-width:520px){.row{grid-template-columns:1fr;gap:3px}}
+  .row .s{font-size:11px;font-weight:800;letter-spacing:.04em;white-space:nowrap}
+  .row .s.ok{color:var(--primary-deep)}
+  .row .s.no{color:var(--meta)}
+  .row .s.fix{color:var(--stop)}
+  .row .d b{color:var(--ink)}
+  .row .d a{color:var(--meta);word-break:break-all}
+
+  footer{font-size:11.5px;color:var(--meta);border-top:1px solid var(--line);padding-top:16px}
+</style>
+
+<div class="page">
+
+  <header>
+    <span class="eyebrow">2026.08.16 · 전략기획실 고문 자문</span>
+    <h1>B2G로 간다는 건 알겠는데,<br>그게 실제로 어떻게 돈이 돼?</h1>
+    <p class="lede">
+      결론부터. <b>지금 씨드온이 지자체한테 직접 돈을 받을 수 있는 문은 없다.</b>
+      매출도 실적도 0인 곳에 기관이 바로 계약을 주는 경우가 없기 때문이다.
+      대신 <b>실적을 안 보고 "문제의식과 돌아가는 시제품"을 보는 문</b>이 따로 있고,
+      씨드온은 지금 그쪽에 해당한다.
+    </p>
+  </header>
+
+  <section>
+    <h2>① 기관이 사는 방식은 다섯 가지다</h2>
+    <p class="sub">앞의 셋은 <b>계약의 성격</b>, 뒤의 둘은 <b>돈이 어디서 나오고 어떻게 받는지</b>다. 서로 겹칠 수 있다.</p>
+    <div class="forms">
+      <div class="form">
+        <div class="n">용역 <span>일을 시키고 값을 치른다</span></div>
+        <p>기관이 예산을 정해놓고 "이 일을 해달라"며 업체를 쓰는 것. 보통 1년 계약이고 나라장터에 공고가 뜬다.</p>
+        <div class="us no">지금은 안 됨 — 대부분 "같은 일 해본 실적 O건" 조건이 붙는다</div>
+      </div>
+      <div class="form">
+        <div class="n">위탁 <span>기관 일을 통째로 맡는다</span></div>
+        <p>원래 기관이 해야 할 공공서비스를 민간이 대신 운영하는 것. 청소년수련관을 통째로 운영하는 게 대표적이다.</p>
+        <div class="us no">지금은 안 됨 — 규모가 크고 다년 계약이라 법인·실적을 본다</div>
+      </div>
+      <div class="form">
+        <div class="n">구독 <span>매년 이용료를 받는다</span></div>
+        <p>기관이 해마다 돈을 내고 서비스를 쓰는 방식. <b style="color:var(--ink)">한국 공공조달에는 "구독"이라는 계약 종류가 따로 없다.</b> 서류상으로는 용역계약이고, 매년 재계약을 다시 따내야 한다.</p>
+        <div class="us no">이름표로 팔 수 있는 게 아님 — 결국 용역을 매년 반복하는 것</div>
+      </div>
+      <div class="form">
+        <div class="n">보조금 <span>목적에 맞으면 준다</span></div>
+        <p>기관이 "이런 공익 목적 사업을 하는 곳에 돈을 주겠다"고 열어두면, 신청해서 심사를 받고 타는 돈. <b style="color:var(--ink)">씨드온이 뭘 해줘서 받는 게 아니라, 하려는 일 자체가 목적에 맞아서 받는 돈이다.</b></p>
+        <div class="us">여기가 지금 씨드온의 문이다</div>
+      </div>
+      <div class="form">
+        <div class="n">공모사업 <span>경쟁으로 가져가라</span></div>
+        <p>위의 용역이나 보조금을 "아무나 지원해서 경쟁으로 가져가라"는 <b style="color:var(--ink)">절차의 이름</b>이다. 반대말은 수의계약(경쟁 없이 바로 계약).</p>
+        <div class="us">창업·사회혁신 목적 공모는 매출이 아니라 문제의식과 시제품을 본다</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>② 처음 듣는 이름 두 개</h2>
+    <p class="sub">공공 쪽 글을 읽으면 계속 나오는데, 씨드온이 볼 곳은 둘 중 하나뿐이다.</p>
+    <div class="words">
+      <div class="word">
+        <div class="w">나라장터</div>
+        <p>조달청이 굴리는 정부 입찰 사이트. <b style="color:var(--ink)">이미 예산이 잡히고 "이 일을 한다"가 다 정해진 것</b>을 누가 할지 붙이는 곳이다. 씨드온이 아직 볼 곳이 아니다.</p>
+      </div>
+      <div class="word">
+        <div class="w">e나라도움</div>
+        <p>정부 보조금을 관리하는 시스템. 기관이 "이 목적으로 예산이 있으니 신청해라"를 올리는 곳. <b style="color:var(--ink)">씨드온이 봐야 할 문은 이쪽이다.</b></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>③ 첫 건까지 가는 순서</h2>
+    <p class="sub">건너뛸 수 있는 단계가 아니다. 앞 단계 실적이 뒤 단계의 지원 자격이 된다.</p>
+    <div class="steps">
+      <div class="step here" data-n="1">
+        <div class="t">창업지원형 공모 <em>씨드온은 여기</em></div>
+        <p>사업화 자금과 함께 "국가가 한 번 걸러낸 팀"이라는 신뢰를 같이 얻는다. 심사에서 매출을 안 본다.</p>
+      </div>
+      <div class="step" data-n="2">
+        <div class="t">사회문제 해결형 공모</div>
+        <p>사회적기업가 육성사업 계열. 씨드온처럼 미션이 분명한 팀이 유리하다.</p>
+      </div>
+      <div class="step" data-n="3">
+        <div class="t">지자체 소규모 공모</div>
+        <p>사회혁신·청년정책 쪽. 1·2단계 실적을 자격으로 요구하는 경우가 많다.</p>
+      </div>
+      <div class="step" data-n="4">
+        <div class="t">광역 단위 용역·위탁</div>
+        <p>여기서 처음으로 "B2G 수익"이라 부를 만한 돈이 된다.</p>
+      </div>
+    </div>
+    <p style="margin:20px 0 0;font-size:13.5px;max-width:62ch">
+      <b style="color:var(--ink)">왜 이렇게 돌아가나</b> — 공무원은 예산 집행에 개인적으로 책임을 진다.
+      실적 없는 곳에 돈을 줬다가 사업이 엎어지면 그 공무원이 감사를 받는다.
+      그래서 이미 심사 체계가 갖춰진 창업지원 공모를 먼저 거치게 되어 있다.
+      씨드온만의 문제가 아니라 이 바닥 구조다.
+    </p>
+  </section>
+
+  <section>
+    <h2>④ 실제로 지금 열려 있는 것</h2>
+    <p class="sub">고문 보고를 받고 실장이 k-startup 공고를 직접 열어 확인한 것.</p>
+    <div class="live">
+      <span class="k">지금 모집 중 · 실물 확인</span>
+      <div class="t">2026 창업경진대회 — IMPACT ON 강북</div>
+      <dl>
+        <dt>접수</dt><dd><b>2026.08.11 ~ 08.26 23:59</b> (온라인 구글폼)</dd>
+        <dt>주관</dt><dd>광운대학교산학협력단 · 강북청년창업마루 02-908-8246</dd>
+        <dt>창업업력</dt><dd><b>예비창업자 포함</b> — 사업자등록이 없어도 낼 수 있다</dd>
+        <dt>행사</dt><dd>2026.09.10 발표 · 사전교육 수강 필수</dd>
+      </dl>
+      <p class="catch">단, 신청대상이 "서울 강북구 거주민 또는 생활권을 둔 청년"이다 — 로드는 자격이 안 될 가능성이 크다.</p>
+    </div>
+    <p style="margin:16px 0 0;font-size:13.5px;max-width:62ch">
+      이걸 넣은 이유는 <b style="color:var(--ink)">"이런 게 매주 실제로 열린다"</b>는 걸 보여주기 위해서다.
+      연초에만 몰려 있는 게 아니다. 그리고 <b style="color:var(--ink)">거의 전부 지역 조건이 붙는다</b> —
+      그래서 남이 정리한 목록이 아니라 로드가 자기 지역으로 직접 걸러 봐야 한다.
+    </p>
+  </section>
+
+  <section>
+    <h2>⑤ 그래서 이번 주에 할 일 — 하나</h2>
+    <div class="task">
+      <span class="k">이번 주</span>
+      <p class="q">k-startup에서 "예비창업자 + 내 지역"으로 걸러<br>지금 열려 있는 게 뭔지 30분만 본다</p>
+      <p>
+        고문은 <b style="color:var(--ink)">"사업자등록을 낼지부터 정하라"</b>고 했다. 방향은 맞는데 순서가 반대다.
+        예비창업 단계용 공모는 사업자등록이 <b style="color:var(--ink)">없어야</b> 자격이 되고,
+        기창업 대상 공모는 <b style="color:var(--ink)">있어야</b> 자격이 된다.
+        <b style="color:var(--ink)">그러니 뭐가 열려 있는지 먼저 보고, 그걸 보고 등록을 정하는 게 맞다.</b>
+        먼저 등록해버리면 예비창업 쪽 문이 닫힌다.
+      </p>
+      <div class="box">
+        <b>여기 들어가서</b> — <a href="https://www.k-startup.go.kr/web/contents/bizpbanc-ongoing.do">k-startup.go.kr → 사업공고 → 모집중</a><br>
+        <b>상세검색에서</b> 창업업력 <b>예비창업자</b> + 지역 <b>본인 지역</b>을 체크하고 검색.<br>
+        <span style="color:var(--meta)">2026년 통합공고 기준 중앙부처 88개·지자체 420개 사업이 등록돼 있다. 전부 볼 필요 없고, 마감이 살아 있는 것만 훑으면 된다.</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>⑥ 안 물어봤지만 알아둘 것</h2>
+    <p style="margin:0;font-size:14px;max-width:62ch">
+      <b style="color:var(--ink)">2026년 창업지원사업 통합공고</b>라는 게 매년 초에 나온다.
+      그해 정부가 하는 창업지원사업을 <b style="color:var(--ink)">한 문서에 다 모아놓은 것</b>이다.
+      올해치는 중앙부처 15개 부처 88개 사업(3조 2,740억원), 지자체 96곳 420개 사업(1,905억원).
+      <b style="color:var(--ink)">이 문서 하나가 1년치 지도다</b> — 매년 1월에 이것부터 보면 된다.
+      k-startup 첫 화면에 "2026 창업지원사업통합공고"로 걸려 있다.
+    </p>
+  </section>
+
+  <section>
+    <h2>확인 상태 — 무엇을 직접 봤나</h2>
+    <p class="sub">고문 보고를 그대로 옮기지 않는다. 실장이 연 것과 못 연 것을 구분해서 적는다.</p>
+    <div class="ledger">
+      <div class="row"><span class="s ok">직접 봄</span><span class="d">
+        <b>통합공고 숫자</b> (중앙부처 88개·3조 2,740억 / 지자체 420개·1,905억) —
+        <a href="https://www.k-startup.go.kr/web/contents/webFSBIPBANC.do">k-startup.go.kr/web/contents/webFSBIPBANC.do</a></span></div>
+      <div class="row"><span class="s ok">직접 봄</span><span class="d">
+        <b>강북 창업경진대회 공고 원문</b> (접수기간·창업업력·신청대상·연락처) — k-startup 공고 상세 178884</span></div>
+      <div class="row"><span class="s ok">직접 봄</span><span class="d">
+        <b>"예비창업자"가 공식 업력 구분</b>이라는 것 — k-startup 상세검색 항목</span></div>
+      <div class="row"><span class="s fix">고문 오진</span><span class="d">
+        고문이 <b>k-startup·사회적기업진흥원·법제처가 막혔다</b>고 했으나, 실장이 확인하니 <b>셋 다 정상으로 열린다.</b>
+        그래서 "확인 못 함"이 실제보다 많았다</span></div>
+      <div class="row"><span class="s no">못 엶</span><span class="d">
+        <b>기업마당(bizinfo.go.kr)</b> — 이건 진짜 연결이 끊긴다. 로드 폰에서는 열릴 것</span></div>
+      <div class="row"><span class="s no">안 씀</span><span class="d">
+        수의계약 금액 기준(2천만원·청년기업 5천만원)은 <b>언론 기사 숫자</b>라 이 문서에 옮기지 않았다.
+        2026년 회차별 공모 일정도 공식 공고로 대조하지 못해 뺐다</span></div>
+    </div>
+  </section>
+
+  <footer>전략기획실(고문) 자문을 실장이 근거 대조해 정리 · 확인 못 한 숫자는 쓰지 않는다는 규칙 적용</footer>
+
+</div>
