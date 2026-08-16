@@ -12,10 +12,23 @@ import type { Category } from "@/lib/data";
 export const dynamic = "force-dynamic";
 
 /* 주소는 페이지마다 자기 것을 말한다(공통 설정에 박으면 모든 페이지가 홈이 된다 —
-   layout.tsx 설명 참고). 홈은 여기서 자기 주소를 말한다. */
+   layout.tsx 설명 참고).
+
+   ⚠️ openGraph는 여기 적으면 공통 설정의 openGraph를 통째로 덮어쓴다(합쳐지지
+   않는다). 처음엔 url만 적었다가 카톡 카드 제목·설명이 옛 기본값으로 돌아갔다
+   (2026-08-16 로드 지적). 그래서 카드에 나갈 내용을 여기 다 적는다.
+   문구를 고칠 땐 layout.tsx의 TITLE·DESC와 같이 고칠 것. */
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
-  openGraph: { url: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "씨드온",
+    locale: "ko_KR",
+    url: "/",
+    title: "씨드온 — 몰라서 못 받는 지원 찾기",
+    description:
+      "교육·심리상담·주거·생활비·진로·문화체험·공모전. 청소년이 실제로 신청할 수 있는 지원제도를 쉬운 말로 정리해뒀어요.",
+  },
 };
 
 // 상황별 입구. 카테고리와 짝이 지어져 있어 아이콘을 그대로 빌려 쓴다.
