@@ -24,9 +24,9 @@ export const OG_ALT = "씨드온 — 몰라서 못 받는 지원을 찾아주는
  * Next가 기본으로 붙여주는 `?해시`는 카톡이 무시하는 것으로 보인다 — 내용을
  * 두 번 바꾸고 카카오 캐시 초기화까지 했는데도 예전 그림이 계속 떴다
  * (2026-08-16 로드 확인). 그래서 주소의 **경로 자체**가 바뀌게 만들었다.
- * `/og/v3/card.png` → `/og/v4/card.png`가 되면 카톡에게는 처음 보는 그림이다.
+ * `/og/v4/card.png` → `/og/v5/card.png`가 되면 카톡에게는 처음 보는 그림이다.
  */
-export const OG_VERSION = "v4";
+export const OG_VERSION = "v5";
 export const OG_IMAGE_PATH = `/og/${OG_VERSION}/card.png`;
 
 // 브랜드 v1.0 토큰 (public/brand/tokens.css와 같은 값)
@@ -72,8 +72,8 @@ const LEAF =
 const LOGO_W = 136; // 토글 높이가 글자 "씨드온"(76px)과 비슷해지는 크기
 const VIEWBOX = { x: 0, y: -12, w: 110, h: 76 };
 const LOGO_H = Math.round((LOGO_W * VIEWBOX.h) / VIEWBOX.w);
-const LEAF_SHIFT = "translate(13,-11)";
-const LEAF_HALO = 5.8; // 잎 둘레 크림색 띠 두께 (viewBox 단위)
+const LEAF_SHIFT = "translate(9.5,-8.5)";
+const LEAF_HALO = 4.8; // 잎 둘레 크림색 띠 두께 (viewBox 단위)
 
 export function ogCard(): ReactElement {
   return (
