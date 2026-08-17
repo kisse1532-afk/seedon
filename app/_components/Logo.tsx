@@ -18,6 +18,9 @@
 
 type Tone = "dark" | "cream";
 
+/** Pretendard Bold로 "씨드온"을 실제로 재서 얻은 값 (글자 크기 대비 비율). */
+const INK = { ascent: 0.77, descent: 0.16, ink: 0.93, symbolInk: 0.97, fontRatio: 0.97 / 0.93 };
+
 const TONE = {
   // 어두운 배경(헤더·푸터) 위
   dark: { body: "#5FDDA8", leaf: "#8FDC6A", knob: "#FFFFFF", text: "#FFFFFF" },
@@ -71,12 +74,34 @@ export default function Logo({
   className?: string;
 }) {
   const c = TONE[tone];
+  /* 글자 크기·위치는 눈으로 맞추지 말 것.
+     예전엔 fontSize를 심볼 높이의 0.75로 두고 세로 가운데정렬만 했는데,
+     그러면 글자가 심볼보다 확연히 작고 윗선·밑선이 서로 안 맞아 어색했다
+     (2026.08.17 로드 지적).
+
+     지금은 **글자의 실제 잉크 높이를 심볼 잉크 높이에 맞춘다.**
+     - 심볼: viewBox(0 -3 99 67) 안에서 내용이 y=-1..64를 차지하므로
+       잉크 높이는 상자의 0.97배이고, 잉크 밑선이 상자 밑선과 같다.
+     - 글자: Pretendard Bold로 "씨드온"을 재보면 잉크 높이가 글자 크기의
+       0.93배(윗선 0.77 위, 밑선 0.16 아래)다.
+     그래서 fontSize = 0.97 × height ÷ 0.93 ≈ height × 1.043.
+     밑선을 맞추려고 baseline 정렬 대신 아래를 기준으로 세우고 미세 보정한다.
+
+     바꿀 일이 있으면 scratchpad/logofit.mjs로 재서 확인할 것. */
+  const fontSize = height * INK.fontRatio;
+
   return (
-    <span className={`inline-flex items-center gap-2 ${className}`}>
+    <span className={`inline-flex items-end gap-2 ${className}`}>
       <SeedonSymbol tone={tone} height={height} />
       <span
         className="font-bold tracking-tight"
-        style={{ color: c.text, fontSize: height * 0.75 }}
+        style={{
+          color: c.text,
+          fontSize,
+          lineHeight: 1,
+          // 글자 잉크 밑선(baseline 아래 0.16em)을 심볼 상자 밑선에 맞춘다.
+          transform: `translateY(${(INK.descent * fontSize).toFixed(2)}px)`,
+        }}
       >
         씨드온
       </span>

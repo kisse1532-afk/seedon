@@ -295,9 +295,11 @@ export default async function HomePage() {
               wrapperClassName="relative block w-full"
               className="block h-full rounded-2xl border border-sos-line bg-white px-2 py-4 text-center transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_-12px_rgba(194,112,42,0.6)] sm:py-6"
             >
-              <span className="block text-[21px] font-extrabold leading-tight tracking-tight text-sos-num sm:text-[28px]">
-                {s.head}
-                {s.tail && <span className="text-[13px] sm:text-[17px]">{s.tail}</span>}
+              {/* 번호는 통째로 한 크기로 그린다. 예전엔 "1577"만 크게 하고
+                  "-0199"를 작게 붙여서, 그 타일만 글씨 크기가 다른 것처럼
+                  보였다(2026.08.17 로드 지적). */}
+              <span className="block text-[19px] font-extrabold leading-tight tracking-tight text-sos-num tabular-nums sm:text-[25px]">
+                {s.number}
               </span>
               <span className="mt-1.5 block text-[11.5px] font-bold text-sos-ink sm:text-[14px]">
                 {s.name}
