@@ -97,7 +97,7 @@ export default function LoginPage() {
             <rect x="3.2" y="5.5" width="17.6" height="13" rx="2.2" />
             <path d="m3.8 7 8.2 6 8.2-6" />
           </svg>
-          이메일로 시작하기
+          아이디로 시작하기
         </Link>
       </div>
 

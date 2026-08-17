@@ -8,9 +8,12 @@ import { loadBookmarks, onBookmarksChange, clearLocalBookmarks } from "@/lib/boo
 import MyInfo from "./MyInfo";
 import { SeedonSymbol } from "@/app/_components/Logo";
 import { loadMyProfile } from "@/lib/consent";
+import { emailToUsername } from "@/lib/username";
 
 export default function MyPage() {
   const router = useRouter();
+  /** 아이디로 가입하면 내부 주소(아이디@id.seedon.app)가 들어온다.
+      화면에는 아이디만 보여준다 — 청소년에게 그 주소를 보여줄 이유가 없다. */
   const [email, setEmail] = useState<string | null>(null);
   const [bookmarkCount, setBookmarkCount] = useState(0);
   const [profileName, setProfileName] = useState<string | null>(null);
@@ -55,6 +58,7 @@ export default function MyPage() {
   /* 적어준 이름이 있으면 그걸 부른다. 없을 때만 이메일 앞부분으로 대신한다 —
      아이디처럼 보이는 문자열로 부르면 자기 계정 같지가 않다(2026-08-16 로드 지적).
      이메일 주소를 통째로 띄우지는 않는다. */
+  const accountId = emailToUsername(email) ?? email;
   const displayName = profileName ?? (email ? email.split("@")[0] : null);
 
   return (
@@ -118,7 +122,7 @@ export default function MyPage() {
           {loggedIn && (
             <div className="p-4 flex items-center justify-between">
               <span className="text-meta">로그인한 계정</span>
-              <span className="text-body truncate max-w-[60%]">{email}</span>
+              <span className="text-body truncate max-w-[60%]">{accountId}</span>
             </div>
           )}
           <Link href="/report" className="p-4 flex items-center justify-between text-body hover:text-primary-deep">

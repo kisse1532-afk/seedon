@@ -7,16 +7,16 @@ import { supabase } from "@/lib/supabase";
 import { takeNext } from "@/lib/next-destination";
 import { loadMyProfile } from "@/lib/consent";
 import { needsOnboarding } from "@/lib/role";
+import { checkUsername, usernameToEmail, USERNAME_HINT } from "@/lib/username";
 
-export default function EmailLoginPage() {
+export default function IdLoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<"signin" | "signup">("signup");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [needsConfirm, setNeedsConfirm] = useState(false);
 
   /**
    * Supabase가 주는 오류는 영어다. "Email not confirmed"를 그대로 띄우면
@@ -26,26 +26,36 @@ export default function EmailLoginPage() {
   function toKorean(raw: string): string {
     const m = raw.toLowerCase();
     if (m.includes("email not confirmed"))
-      return "아직 메일 확인이 안 됐어요. 메일함에서 씨드온이 보낸 링크를 눌러주세요. 스팸함도 꼭 봐주세요.";
+      // 아이디 가입은 진짜 메일함이 없으므로 청소년이 스스로 풀 수 없다.
+      // 설정 문제라는 걸 알려주고 다른 길을 준다.
+      return "지금은 가입을 마칠 수 없어요. 잠시 뒤 다시 해보고, 계속 안 되면 씨드온에 알려주세요.";
     if (m.includes("invalid login credentials"))
-      return "이메일이나 비밀번호가 맞지 않아요. 다시 확인해주세요.";
+      return "아이디나 비밀번호가 맞지 않아요. 다시 확인해주세요.";
     if (m.includes("already registered") || m.includes("already been registered"))
-      return "이미 가입한 이메일이에요. 위에서 \"로그인\"을 눌러 들어가세요.";
+      return "이미 쓰고 있는 아이디예요. 다른 아이디로 만들거나, 위에서 \"로그인\"을 눌러 들어가세요.";
     if (m.includes("password") && m.includes("6"))
       return "비밀번호는 6자 이상으로 만들어주세요.";
     if (m.includes("rate limit") || m.includes("too many"))
       return "잠깐만요, 너무 여러 번 시도했어요. 1분쯤 뒤에 다시 해주세요.";
     if (m.includes("invalid") && m.includes("email"))
-      return "이메일 주소를 다시 확인해주세요.";
+      return "아이디를 다시 확인해주세요. " + USERNAME_HINT + "이에요.";
     return `문제가 생겼어요: ${raw}`;
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
     setMessage(null);
     setError(null);
-    setNeedsConfirm(false);
+
+    // 아이디 규칙은 서버에 보내기 전에 여기서 먼저 잡는다. Supabase가 주는
+    // 영어 오류보다 "무엇이 잘못됐는지"를 정확히 말해줄 수 있다.
+    const bad = checkUsername(username);
+    if (bad) {
+      setError(bad);
+      return;
+    }
+    const email = usernameToEmail(username);
+    setLoading(true);
 
     if (mode === "signup") {
       const { data, error } = await supabase.auth.signUp({ email, password });
@@ -59,16 +69,16 @@ export default function EmailLoginPage() {
       } else {
         // 확인 메일을 받아야 하는 설정이면 여기로 온다. 메일이 스팸함으로 가거나
         // 발송 제한에 걸려 안 오는 일이 잦아서, 다시 보내는 길을 같이 준다.
-        setNeedsConfirm(true);
+        // 아이디 가입에는 진짜 메일함이 없으므로 여기 오면 청소년이 할 수 있는
+        // 게 없다. 확인 메일 설정이 켜져 있다는 뜻이라 운영자가 꺼야 한다.
         setMessage(
-          "가입은 됐어요! 메일함에서 씨드온이 보낸 링크를 눌러야 로그인할 수 있어요. 스팸함도 꼭 확인해주세요."
+          "가입 신청은 됐는데 마무리가 안 됐어요. 씨드온에 알려주시면 바로 열어드릴게요."
         );
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       setLoading(false);
       if (error) {
-        if (error.message.toLowerCase().includes("email not confirmed")) setNeedsConfirm(true);
         setError(toKorean(error.message));
         return;
       }
@@ -85,20 +95,6 @@ export default function EmailLoginPage() {
     }
   }
 
-  /** 확인 메일이 안 왔을 때 다시 보내기. */
-  async function resendConfirm() {
-    if (!email) return;
-    setLoading(true);
-    setError(null);
-    const { error } = await supabase.auth.resend({ type: "signup", email });
-    setLoading(false);
-    setMessage(
-      error
-        ? toKorean(error.message)
-        : "확인 메일을 다시 보냈어요. 몇 분 걸릴 수 있고, 스팸함도 봐주세요."
-    );
-  }
-
   return (
     <div className="max-w-sm mx-auto py-10 space-y-6">
       <div className="text-center">
@@ -113,13 +109,18 @@ export default function EmailLoginPage() {
             className="h-6 w-6"
             aria-hidden
           >
-            <rect x="3.2" y="5.5" width="17.6" height="13" rx="2.2" />
-            <path d="m3.8 7 8.2 6 8.2-6" />
+            <circle cx="12" cy="8.6" r="3.6" />
+            <path d="M4.8 19.4a7.2 7.2 0 0 1 14.4 0" />
           </svg>
         </div>
         <h1 className="text-lg font-extrabold tracking-tight text-ink">
-          {mode === "signup" ? "이메일로 가입하기" : "이메일로 로그인"}
+          {mode === "signup" ? "아이디로 가입하기" : "아이디로 로그인"}
         </h1>
+        {mode === "signup" && (
+          <p className="mt-1.5 text-xs leading-relaxed text-meta">
+            이메일은 안 물어봐요. 아이디만 정하면 돼요.
+          </p>
+        )}
       </div>
 
       <div className="flex rounded-full border border-sage-border p-1 bg-cream">
@@ -139,17 +140,25 @@ export default function EmailLoginPage() {
 
       <form onSubmit={handleSubmit} className="space-y-3">
         <input
-          type="email"
+          type="text"
           required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="이메일"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          autoComplete="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="아이디"
           className="w-full rounded-xl border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
+        {mode === "signup" && (
+          <p className="-mt-1 text-[11px] leading-relaxed text-meta">{USERNAME_HINT}</p>
+        )}
         <input
           type="password"
           required
           minLength={6}
+          autoComplete={mode === "signup" ? "new-password" : "current-password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="비밀번호 (6자 이상)"
@@ -157,16 +166,6 @@ export default function EmailLoginPage() {
         />
         {error && <p className="text-xs leading-relaxed text-red-500">{error}</p>}
         {message && <p className="text-xs leading-relaxed text-primary-deep">{message}</p>}
-        {needsConfirm && (
-          <button
-            type="button"
-            onClick={resendConfirm}
-            disabled={loading}
-            className="w-full rounded-full border border-primary-deep/40 py-2.5 text-xs font-semibold text-primary-deep transition hover:bg-mint disabled:opacity-60"
-          >
-            확인 메일 다시 보내기
-          </button>
-        )}
         <button
           type="submit"
           disabled={loading}
