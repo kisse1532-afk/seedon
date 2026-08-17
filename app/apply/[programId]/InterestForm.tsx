@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { submitInterest } from "@/lib/applications";
-import { clearMyInfo, loadMyInfo, saveMyInfo } from "@/lib/my-info";
+import { clearMyInfo, loadMyInfo, onMyInfoChange, saveMyInfo } from "@/lib/my-info";
 import SavedInfoNote from "@/app/_components/SavedInfoNote";
 
 /**
@@ -26,27 +26,34 @@ export default function InterestForm({ programId }: { programId: string }) {
   /* 자동 채움. 서버 렌더 때는 localStorage를 못 읽으므로 비워둔 채로 그리고,
      화면이 뜬 뒤에 채운다. 처음부터 값을 넣으면 서버가 그린 것과 달라져서
      리액트가 경고를 내고 입력칸이 초기화되는 일이 생긴다. */
-  const [prefill, setPrefill] = useState<{ name: string; contact: string } | null>(null);
+  const [prefill, setPrefill] = useState<
+    { name: string; contact: string; savedAt: string } | null
+  >(null);
 
   useEffect(() => {
     let alive = true;
     supabase.auth.getUser().then(({ data }) => {
       if (alive) setLoggedIn(Boolean(data.user));
     });
-    const saved = loadMyInfo();
-    if (saved) setPrefill({ name: saved.name, contact: saved.contact });
+
+    const sync = () => {
+      const saved = loadMyInfo();
+      setPrefill(saved && { name: saved.name, contact: saved.contact, savedAt: saved.savedAt });
+    };
+    sync();
+    // 이 화면에는 같은 정보를 쓰는 폼이 하나 더 있다(도움 챗봇). 거기서 지웠는데
+    // 여기 칸에 그대로 남아 있으면, 그대로 등록을 눌러 방금 지운 게 되살아난다.
+    const off = onMyInfoChange(sync);
+
     return () => {
       alive = false;
+      off();
     };
   }, []);
 
   function handleClearSaved() {
     clearMyInfo();
     setPrefill(null);
-    // 이미 채워진 입력칸도 같이 비운다. 안 그러면 "지웠다"고 해놓고 화면에는
-    // 그대로 남아 있어서, 지워졌는지 아닌지 알 수 없다.
-    const form = document.getElementById("interest-form") as HTMLFormElement | null;
-    form?.reset();
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -88,7 +95,9 @@ export default function InterestForm({ programId }: { programId: string }) {
         </p>
       </div>
 
-      {prefill && <SavedInfoNote onClear={handleClearSaved} />}
+      {prefill && (
+        <SavedInfoNote onClear={handleClearSaved} savedAt={prefill.savedAt} />
+      )}
 
       <div className="space-y-1.5">
         <label htmlFor="name" className="text-xs font-semibold text-ink-60">
@@ -148,11 +157,11 @@ export default function InterestForm({ programId }: { programId: string }) {
       )}
 
       <p className="text-center text-[11px] leading-relaxed text-meta">
-        입력하신 정보는 연락드리는 목적으로만 쓰고, 처리가 끝나면 일정 기간 뒤
-        삭제해요. 자동으로 문자나 메일이 가지는 않아요. 다음에 또 적지 않아도 되게
-        이름과 연락처는 이 폰 안에만 남겨둬요 &mdash; 위 &apos;저장된 내 정보 지우기&apos;를
-        누르면 바로 없어져요. 실제 신청은 위 &apos;이렇게 신청하세요&apos; 안내를 따라 직접
-        진행해주세요.
+        등록하면 이름과 연락처가 <b className="font-semibold">씨드온에 저장돼요.</b>{" "}
+        연락드리는 목적으로만 쓰고, 자동으로 문자나 메일이 가지는 않아요. 그리고 다음에 또
+        적지 않아도 되게 <b className="font-semibold">이 폰에도 사본을 하나 남겨둬요</b>
+        &mdash; 위 &apos;저장된 내 정보 지우기&apos;는 이 사본만 지워요(등록한 기록은 그대로
+        남아요). 실제 신청은 위 &apos;이렇게 신청하세요&apos; 안내를 따라 직접 진행해주세요.
       </p>
     </form>
   );

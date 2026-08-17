@@ -18,6 +18,34 @@
 
 const KEY = "seedon.myinfo.v1";
 
+/**
+ * 저장된 값이 바뀌었다고 알리는 신호.
+ *
+ * 왜 필요한가 (2026.08.17 디자인팀 지적으로 발견):
+ * 신청 상세 화면에는 이 정보를 쓰는 폼이 **둘** 있다(관심 등록, 도움 요청).
+ * 각자 자기 state에 값을 들고 있어서, 한쪽에서 "지우기"를 눌러도 다른 쪽 칸에는
+ * 그대로 남아 있었다. 거기서 등록을 누르면 다시 저장돼 **방금 지운 게 되살아났다.**
+ * "지운다"고 적어놓고 안 지워지는 건 몰래 갖고 있는 것보다 신뢰를 더 깎는다.
+ */
+const CHANGED = "seedon:myinfo-changed";
+
+function announce(): void {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event(CHANGED));
+}
+
+/** 저장·삭제가 일어나면 알려준다. 해제 함수를 돌려주므로 useEffect에서 그대로 쓴다. */
+export function onMyInfoChange(handler: () => void): () => void {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener(CHANGED, handler);
+  // 다른 탭에서 지운 경우도 같이 반영한다.
+  window.addEventListener("storage", handler);
+  return () => {
+    window.removeEventListener(CHANGED, handler);
+    window.removeEventListener("storage", handler);
+  };
+}
+
 export type MyInfo = {
   name: string;
   contact: string;
@@ -74,6 +102,7 @@ export function saveMyInfo(name: string, contact: string): void {
       savedAt: new Date().toISOString(),
     };
     window.localStorage.setItem(KEY, JSON.stringify(value));
+    announce();
   } catch {
     // 저장 못 해도 신청은 이미 끝났다. 조용히 넘어간다.
   }
@@ -84,6 +113,7 @@ export function clearMyInfo(): void {
   if (!canUse()) return;
   try {
     window.localStorage.removeItem(KEY);
+    announce();
   } catch {
     /* 지울 게 없으면 그만이다 */
   }

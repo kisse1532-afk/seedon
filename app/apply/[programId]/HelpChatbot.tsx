@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { ApplyStep } from "@/lib/data";
 import PhoneLink from "@/app/_components/PhoneLink";
-import { clearMyInfo, loadMyInfo, saveMyInfo } from "@/lib/my-info";
+import { clearMyInfo, loadMyInfo, onMyInfoChange, saveMyInfo } from "@/lib/my-info";
 import SavedInfoNote from "@/app/_components/SavedInfoNote";
 
 type Props = {
@@ -29,18 +29,23 @@ export default function HelpChatbot({
   /* 자동 채움. 도움 요청은 "혼자 하기 어렵다"고 말한 사람이 쓰는 창구라,
      여기서 또 처음부터 적게 하면 안 된다. 화면이 뜬 뒤에 채운다(서버 렌더 때는
      localStorage를 못 읽는다). */
-  const [prefill, setPrefill] = useState<{ name: string; contact: string } | null>(null);
+  const [prefill, setPrefill] = useState<
+    { name: string; contact: string; savedAt: string } | null
+  >(null);
 
   useEffect(() => {
-    const saved = loadMyInfo();
-    if (saved) setPrefill({ name: saved.name, contact: saved.contact });
+    const sync = () => {
+      const saved = loadMyInfo();
+      setPrefill(saved && { name: saved.name, contact: saved.contact, savedAt: saved.savedAt });
+    };
+    sync();
+    // 같은 화면 아래쪽 관심 등록 폼에서 지웠을 때도 여기 칸이 같이 비워져야 한다.
+    return onMyInfoChange(sync);
   }, []);
 
   function handleClearSaved() {
     clearMyInfo();
     setPrefill(null);
-    const form = document.getElementById("help-reserve-form") as HTMLFormElement | null;
-    form?.reset();
   }
 
   /* 서버 액션이라 결과를 여기서 못 본다. 보내기 직전에 저장한다 —
@@ -223,7 +228,13 @@ export default function HelpChatbot({
                 onSubmit={rememberOnSubmit}
                 className="space-y-2"
               >
-                {prefill && <SavedInfoNote onClear={handleClearSaved} />}
+                {prefill && (
+                  <SavedInfoNote
+                    onClear={handleClearSaved}
+                    savedAt={prefill.savedAt}
+                    tone="warm"
+                  />
+                )}
                 <input
                   name="name"
                   type="text"
