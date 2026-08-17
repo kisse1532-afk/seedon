@@ -4,6 +4,7 @@ import "./globals.css";
 import BottomNav from "@/app/_components/BottomNav";
 import Logo from "@/app/_components/Logo";
 import PhoneLink from "@/app/_components/PhoneLink";
+import { emergencyContacts } from "@/lib/data";
 import { OG_IMAGE_PATH, OG_ALT } from "@/lib/og-card";
 
 const SITE = "https://seedon.vercel.app";
@@ -119,10 +120,17 @@ export default function RootLayout({
               </div>
               <div>
                 <h2 className="text-white text-[11px] font-bold mb-2">긴급 연락</h2>
+                {/* 목록을 여기 직접 적어두면 반드시 어긋난다 — 실제로 푸터에만
+                    여성긴급전화(1366)가 빠져 3개만 보이고 있었다. lib/data.ts
+                    한 곳에서 가져온다. */}
                 <ul className="flex flex-col gap-1.5 text-[11px]">
-                  <li><PhoneLink number="1388" className="hover:text-white">청소년전화 1388</PhoneLink></li>
-                  <li><PhoneLink number="1577-0199" className="hover:text-white">위기상담 1577-0199</PhoneLink></li>
-                  <li><PhoneLink number="117" className="hover:text-white">학교폭력 117</PhoneLink></li>
+                  {emergencyContacts.map((c) => (
+                    <li key={c.number}>
+                      <PhoneLink number={c.number} className="hover:text-white">
+                        {c.short} {c.number}
+                      </PhoneLink>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
