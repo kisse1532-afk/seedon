@@ -39,7 +39,7 @@ export default function HelpChatbot({
       setPrefill(saved && { name: saved.name, contact: saved.contact, savedAt: saved.savedAt });
     };
     sync();
-    // 같은 화면 아래쪽 관심 등록 폼에서 지웠을 때도 여기 칸이 같이 비워져야 한다.
+    // 다른 화면·다른 탭에서 지웠을 때도 여기 칸이 같이 비워져야 한다.
     return onMyInfoChange(sync);
   }, []);
 

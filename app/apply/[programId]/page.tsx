@@ -9,7 +9,6 @@ import PhoneLink from "@/app/_components/PhoneLink";
 import { submitHelpRequest } from "./actions";
 import ApplySteps from "./ApplySteps";
 import HelpChatbot from "./HelpChatbot";
-import InterestForm from "./InterestForm";
 import Reviews from "./Reviews";
 import TrackPageView from "@/app/_components/TrackPageView";
 import { OG_IMAGE_PATH, OG_ALT } from "@/lib/og-card";
@@ -179,8 +178,6 @@ export default async function ApplyPage({
       />
 
       <Reviews programId={program.id} />
-
-      <InterestForm programId={program.id} />
     </div>
   );
 }
