@@ -20,7 +20,7 @@ type Props = {
   onClear: () => void;
   /** 저장 시각(ISO). 없으면 날짜를 안 보여준다. */
   savedAt?: string;
-  /** "mint" = 흰 카드 위(관심 등록), "warm" = 도움 챗봇 블록 안 */
+  /** "mint" = 흰 카드 위, "warm" = 도움 챗봇 블록 안 */
   tone?: "mint" | "warm";
 };
 
