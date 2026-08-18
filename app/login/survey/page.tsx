@@ -43,8 +43,10 @@ export default function LoginSurveyPage() {
         ))}
       </div>
 
+      {/* 안 고르고도 넘어갈 수 있어야 한다. 이건 우리가 궁금해서 묻는 것이지
+          청소년이 답해야 할 의무가 아니다 — 선택 항목 거부를 이유로 서비스를
+          막을 수 없다는 원칙을 profile 화면과 똑같이 지킨다. */}
       <button
-        disabled={!selected}
         onClick={async () => {
           // 그동안 답을 받고 그냥 버렸다. 어디서 알고 왔는지는 다음 청소년에게
           // 어떻게 닿을지 정하는 근거가 된다.
@@ -52,10 +54,10 @@ export default function LoginSurveyPage() {
           router.push("/login/complete");
         }}
         className={`w-full rounded-full text-sm font-medium py-3 transition ${
-          selected ? "bg-primary-deep text-white hover:brightness-110" : "bg-cream text-meta cursor-not-allowed"
+          selected ? "bg-primary-deep text-white hover:brightness-110" : "bg-cream text-body hover:brightness-95"
         }`}
       >
-        다음
+        {selected ? "다음" : "건너뛰기"}
       </button>
     </div>
   );
