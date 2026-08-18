@@ -1,0 +1,221 @@
+<title>씨드온 데일리 0818</title>
+<style>
+  :root {
+    --ground:#faf6ee; --surface:#fff; --mint:#e6f8ef; --line:#e7dfd0; --line-soft:#f0e9db;
+    --ink:#2a2a24; --body:#576351; --meta:#9dac92;
+    --primary:#2bbe8c; --primary-deep:#17916a; --sprout:#72cf5e;
+    --alert:#c2702a; --alert-tile:#fff4e9; --alert-line:#f5dfc6;
+    --shadow:0 1px 2px rgba(42,42,36,.04), 0 12px 32px -20px rgba(42,42,36,.3);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+      --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+      --primary:#47d5a3; --primary-deep:#6fe0b6; --sprout:#8fe07c;
+      --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+    --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+    --primary:#47d5a3; --primary-deep:#6fe0b6; --sprout:#8fe07c;
+    --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--body);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard Variable",
+                Pretendard,"Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+    font-size:15px; line-height:1.68; -webkit-font-smoothing:antialiased;
+    word-break:keep-all; overflow-wrap:break-word;
+  }
+  .page{max-width:900px;margin:0 auto;padding:44px 22px 76px;display:flex;flex-direction:column;gap:34px}
+
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .date{font-size:11.5px;font-weight:700;letter-spacing:.16em;color:var(--meta)}
+  .runs{font-size:11.5px;color:var(--meta)}
+  .runs b{color:var(--primary-deep);font-weight:700}
+
+  h1{margin:8px 0 0;font-size:clamp(24px,4.4vw,34px);line-height:1.3;letter-spacing:-.03em;
+     font-weight:800;color:var(--ink);text-wrap:balance}
+  h1 em{font-style:normal;color:var(--alert)}
+
+  h2{margin:0 0 14px;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--meta)}
+
+  /* 오늘의 발견 */
+  .finds{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:660px){.finds{grid-template-columns:1fr}}
+  .find{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--alert);
+        border-radius:14px;padding:18px 18px 16px;box-shadow:var(--shadow)}
+  .find .h{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em;margin-bottom:6px}
+  .find p{margin:0;font-size:13.5px}
+  .find .fix{margin-top:10px;padding-top:9px;border-top:1px solid var(--line-soft);
+             font-size:12px;color:var(--primary-deep);font-weight:700}
+
+  /* 정할 것 */
+  .decide{background:var(--mint);border:1px solid var(--primary);border-radius:18px;
+          padding:24px 22px;box-shadow:var(--shadow)}
+  .decide .q{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin:0 0 12px}
+  .decide .why{margin:0 0 16px;font-size:14px;max-width:62ch}
+  .rec{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .rec .tag{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--primary-deep);display:block;margin-bottom:5px}
+  .rec .num{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+  .rec .note{font-size:12.5px;margin-top:5px}
+
+  /* 숫자 */
+  .figs{display:flex;flex-wrap:wrap;gap:8px}
+  .fig{flex:1 1 108px;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+       padding:14px 14px 12px}
+  .fig .n{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.02em;
+          font-variant-numeric:tabular-nums;line-height:1.15}
+  .fig .k{font-size:11px;color:var(--meta);margin-top:2px}
+  .fig.flat .n{color:var(--meta)}
+
+  /* 팀별 */
+  .teams{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;
+         overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+  .team{display:grid;grid-template-columns:88px 1fr auto;gap:14px;align-items:baseline;
+        padding:13px 16px;border-bottom:1px solid var(--line-soft)}
+  .team:last-child{border-bottom:none}
+  @media(max-width:600px){
+    .team{grid-template-columns:1fr auto;gap:4px 10px}
+    .team .name{grid-column:1/-1}
+  }
+  .team .name{font-size:13px;font-weight:800;color:var(--ink)}
+  .team .did{font-size:13px}
+  .team .score{font-size:11.5px;font-weight:700;white-space:nowrap;color:var(--primary-deep)}
+  .team .score.none{color:var(--meta)}
+
+  /* 로드 할 일 */
+  .todo{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .todo ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+  .todo li{font-size:13.5px;display:flex;gap:10px;align-items:baseline}
+  .todo .box{flex:none;width:13px;height:13px;border:1.5px solid var(--line);border-radius:3.5px;
+             display:inline-block;transform:translateY(1px)}
+  .todo .new{font-size:10.5px;font-weight:800;letter-spacing:.06em;color:var(--alert);
+             background:var(--alert-tile);border:1px solid var(--alert-line);border-radius:999px;
+             padding:1px 7px;margin-left:2px}
+  .todo .tip{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line-soft);
+             font-size:12.5px;color:var(--meta)}
+
+  footer{font-size:11.5px;color:var(--meta);border-top:1px solid var(--line);padding-top:16px}
+</style>
+<div class="page">
+
+  <header>
+    <div class="top">
+      <span class="date">2026.08.18 화 · 데일리</span>
+      <span class="runs">부서 <b>6/6</b> 보고 · 제안 <b>21</b>건 → 반영 <b>4</b> · 보류 <b>17</b></span>
+    </div>
+    <h1>주거 칸을 채우려다 못 채웠다<br><em>하나뿐인 명단이 13년 전 자료였다</em></h1>
+  </header>
+
+  <section>
+    <h2>오늘의 발견</h2>
+    <div class="finds">
+
+      <article class="find">
+        <div class="h">13년 된 전화번호를 올릴 뻔했다</div>
+        <p>리서치가 인천 청소년쉼터 8곳을 주소·전화번호까지 찾아왔다. 인천시 공식 페이지라 근거는 맞았는데, 그 글이 <b>2013년 10월</b>에 쓰인 것이었다. 주소에 적힌 "남구"는 2018년에 미추홀구로 이름이 바뀌었고, 쉼터 홈페이지로 싸이월드 주소가 적혀 있다. 지낼 곳이 없어 전화를 거는 청소년에게 끊긴 번호를 주는 건 아무것도 안 주는 것보다 나쁘다.</p>
+        <div class="fix">안 올렸다 — 최신 명단을 받아서 다시 한다</div>
+      </article>
+
+      <article class="find">
+        <div class="h">어제 올린 카드가 홈에서 안 보이고 있었다</div>
+        <p>경기도 자원봉사대회 카드다. 내가 "접수 일정이 안 적혀 있어요"라는 안내를 <b>엉뚱한 칸</b>에 넣었는데, 그 칸은 "이번 모집은 끝났다"는 뜻이라 홈의 두 목록에서 카드가 통째로 빠졌다. 청소년 대부분은 홈에서 시작하니 사실상 없는 카드였다. 디자인팀이 찾아냈다.</p>
+        <div class="fix">고침 — 홈에 다시 보이는 것까지 확인했다</div>
+      </article>
+
+      <article class="find">
+        <div class="h">개인정보 안내가 두 자리에서 다른 말을 했다</div>
+        <p>도움 요청 폼은 "일정 기간 뒤 삭제해요"라고 했는데, 개인정보처리방침에는 "1년"이라고 정확히 적혀 있었다. "일정 기간"은 한 달일 수도 영원일 수도 있어서 오히려 더 불안하다. CS팀 지적이다.</p>
+        <div class="fix">고침 — "1년"으로 통일하고, 더 빨리 지우고 싶을 때 어디로 말할지도 넣었다</div>
+      </article>
+
+      <article class="find">
+        <div class="h">우리가 궁금해서 묻는 걸로 가입을 막고 있었다</div>
+        <p>"씨드온을 어떻게 알게 되셨나요"에서 답을 안 고르면 다음 버튼이 안 눌렸다. 바로 앞 화면은 닉네임·지역을 비워도 넘어가는데 이 화면만 막혀 있었다. 답하기 애매한 청소년은 여기서 가입을 못 끝낸다. 사업운영팀 지적이다.</p>
+        <div class="fix">고침 — 안 고르면 "건너뛰기"로 바뀌어 그냥 넘어간다</div>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>그래서 정할 것 — 하나</h2>
+    <div class="decide">
+      <p class="q">여가부 쉼터 명단 엑셀, 폰으로 한 번 받아주실 수 있을까요?</p>
+      <p class="why">주거는 로드가 정한 개발 큐 2순위인데 지금도 2건뿐입니다. 오늘 채우려고 파봤더니, 쓸 만한 <b>최신 명단이 딱 하나</b> 있었습니다 — 여성가족부가 올린 「청소년쉼터, 청소년자립지원관 현황」 엑셀입니다. <b>2024년 11월</b>자이고 전국 쉼터 136곳·자립지원관 13곳이 다 들어 있습니다. 그런데 그 파일은 내려받을 때 여가부 서버가 우리 요청만 거부합니다. 로드 폰에서는 그냥 받아집니다.</p>
+      <div class="rec">
+        <span class="tag">추천</span>
+        <span class="num">그 페이지 열어서 엑셀 하나만 받아 올려주기</span>
+        <p class="note">5분이면 됩니다. 그거 하나면 주거 칸이 2건에서 지역별 여러 건으로 늘어나고, 무엇보다 <b>번호가 살아 있는 것</b>으로 채워집니다. 우리가 다른 데서 긁어모으면 오늘처럼 13년 전 자료를 또 만납니다. 여가부 페이지에서 "청소년쉼터, 청소년자립지원관 현황(241121).xlsx"를 받으시면 됩니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>숫자</h2>
+    <div class="figs">
+      <div class="fig"><div class="n">42</div><div class="k">게시 프로그램</div></div>
+      <div class="fig"><div class="n">2</div><div class="k">주거 <span style="color:var(--alert)">안 늘어남</span></div></div>
+      <div class="fig"><div class="n">0</div><div class="k">죽은 링크</div></div>
+      <div class="fig"><div class="n">0</div><div class="k">계정 <span style="color:var(--alert)">어제 3</span></div></div>
+      <div class="fig flat"><div class="n">0</div><div class="k">신청 · 도움요청</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>팀별</h2>
+    <div class="teams">
+      <div class="team">
+        <span class="name">디자인</span>
+        <span class="did">홈에서 카드가 사라진 원인을 찾아냈다 — 오늘 제일 큰 수확</span>
+        <span class="score">2 / 3</span>
+      </div>
+      <div class="team">
+        <span class="name">CS</span>
+        <span class="did">개인정보 문구가 방침과 어긋난 것 적발. 대체 문안까지 써왔다</span>
+        <span class="score">1 / 1</span>
+      </div>
+      <div class="team">
+        <span class="name">사업운영</span>
+        <span class="did">가입 설문 막힘 적발. "관심 등록이 없다"는 보고는 어제 로드가 지시해 뺀 것이라 반려</span>
+        <span class="score">1 / 3</span>
+      </div>
+      <div class="team">
+        <span class="name">전략기획실</span>
+        <span class="did">소셜벤처 리그는 쫓지 말자고 판단 — 마감이 내일이고 주제도 안 맞는다</span>
+        <span class="score">0 / 1</span>
+      </div>
+      <div class="team">
+        <span class="name">마케팅</span>
+        <span class="did">나비얌 인천시 협약을 공식 문서로 확인. 꿈길은 씨드온이 실릴 수 없는 통로임도 확인</span>
+        <span class="score">0 / 2</span>
+      </div>
+      <div class="team">
+        <span class="name">리서치</span>
+        <span class="did">주거 후보 11건 — 근거가 13년 전이거나 나이 확인이 안 돼 한 건도 못 올렸다</span>
+        <span class="score">0 / 11</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>로드가 할 일</h2>
+    <div class="todo">
+      <ul>
+        <li><span class="box"></span><span><b style="color:var(--ink)">여가부 쉼터 엑셀 받아주기</b> — 주거가 지금 여기서 막혀 있습니다 <span class="new">오늘 새로</span></span></li>
+        <li><span class="box"></span><span><b style="color:var(--ink)">계정이 3개에서 0개가 됐는데</b>, 테스트 계정을 지우신 건가요? 맞으면 그냥 넘어가겠습니다 <span class="new">오늘 새로</span></span></li>
+        <li><span class="box"></span><span>마이데이터 지원센터 메일 (<span style="white-space:nowrap">mydatahelpdesk@korea.kr</span>) — 원스톱 2단계가 이 답에 달렸습니다</span></li>
+        <li><span class="box"></span><span>폰으로 확인 — 딥링크 7건 · 우리 쪽에서만 안 열리는 11건</span></li>
+      </ul>
+      <p class="tip">「모두의 창업」은 <b>안 하셔도 됩니다</b> — 기획실이 다시 봤더니 마감이 내일인 데다 심사 주제 다섯 개 중 "정보 비대칭 해소"에 맞는 게 없었습니다. 어제 넘긴 숙제 하나가 없어졌습니다.</p>
+    </div>
+  </section>
+
+  <footer>부서 보고는 실장이 근거 URL을 직접 열어 확인한 것만 반영 · 숫자는 Supabase 실측치 · npm run build 통과</footer>
+
+</div>
