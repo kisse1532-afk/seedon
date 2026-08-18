@@ -188,9 +188,17 @@ and (description ~ '저소득|취약계층|결손|차상위|수급자|지원대�
 부르기 **전에** 이걸 돌려 그림을 만들고, 그 경로를 프롬프트에 적어줘라:
 
 ```
-node scripts/shot.mjs https://seedon.vercel.app/ /category/housing /apply/edu-01 \
+# 로컬로 띄운 다음 찍는다 (배포 주소는 못 찍는다 — 아래 이유 참고)
+NODE_USE_ENV_PROXY=1 npm run start &
+node scripts/shot.mjs http://127.0.0.1:3000/ /category/housing /apply/edu-01 \
   --widths 390,1000 --out .shots
 ```
+
+**배포 주소(`https://seedon.vercel.app`)는 못 찍는다.** 이 환경의 바깥 통신은 프록시를
+거치는데 크롬이 그 프록시를 못 쓴다(`--proxy-server`를 줘도 ERR_CONNECTION_RESET,
+example.com도 똑같이 실패하니 우리 사이트 문제가 아니다 — 2026.08.18 확인).
+**로컬로 띄워서 찍으면 된다.** 배포본이 아니라 지금 코드를 보는 것이라 리뷰용으로는
+오히려 이게 맞다. 도구가 바깥 주소를 받으면 미리 경고해준다.
 
 - **폰 폭(390)을 반드시 포함한다.** 청소년은 폰으로 본다
 - 그림 맨 위 띠에 폭·테마와 **가로 밀림 여부**가 찍혀 나온다

@@ -10,10 +10,22 @@
  * 이제 실장이 이걸 돌려 PNG를 만들어두면, 디자인팀은 Read로 그 그림을 직접 본다.
  *
  * 쓰는 법
- *   node scripts/shot.mjs https://seedon.vercel.app/
  *   node scripts/shot.mjs docs/daily/2026-08-18.html --themes light,dark
- *   node scripts/shot.mjs https://seedon.vercel.app/ /category/housing /apply/edu-01
+ *   node scripts/shot.mjs http://127.0.0.1:3000/ /category/housing /apply/edu-01
  *   node scripts/shot.mjs <대상> --widths 390,1000 --out .shots --tall 3000
+ *
+ * ⚠️ 배포된 주소(https://seedon.vercel.app)는 못 찍는다.
+ *    이 환경의 바깥 통신은 프록시를 거치는데 크롬이 그 프록시를 못 쓴다
+ *    (--proxy-server를 줘도 ERR_CONNECTION_RESET. example.com도 똑같이 실패하니
+ *    우리 사이트 문제가 아니라 크롬-프록시 궁합 문제다. 2026.08.18 확인).
+ *    대신 **로컬로 띄워서 찍는다.** 배포본이 아니라 지금 코드를 보는 것이라
+ *    리뷰용으로는 오히려 이게 맞다:
+ *
+ *      NEXT_PUBLIC_SUPABASE_URL=... NEXT_PUBLIC_SUPABASE_ANON_KEY=... \
+ *        NODE_USE_ENV_PROXY=1 npm run start &
+ *      node scripts/shot.mjs http://127.0.0.1:3000/ /category/housing --widths 390,1000
+ *
+ *    (localhost는 프록시를 안 타므로 크롬이 문제없이 연다.)
  *
  * ⚠️ 헤드리스 크롬은 --window-size를 무시하고 제 맘대로 485px로 그린다.
  *    그걸 모르고 390으로 찍으면 넓게 그린 화면을 390으로 "잘라낸" 그림이 나와서,
@@ -55,6 +67,15 @@ const targets = argv.filter((a, i) => !a.startsWith("--") && !argv[i - 1]?.start
 if (!targets.length) {
   console.log("찍을 대상을 하나 이상 주세요.\n예: node scripts/shot.mjs https://seedon.vercel.app/ --widths 390,1000");
   process.exit(1);
+}
+
+// 배포 주소를 주면 어차피 실패하므로 미리 알려준다 (위 주석 참고)
+for (const t of argv) {
+  if (/^https:\/\//.test(t) && !/^https:\/\/(localhost|127\.0\.0\.1)/.test(t)) {
+    console.log(`⚠️  ${t}\n   바깥 주소는 못 찍어요. 크롬이 이 환경의 프록시를 못 씁니다.`);
+    console.log(`   로컬로 띄워서 http://127.0.0.1:3000 를 찍으세요 (파일 맨 위 주석 참고).\n`);
+    break;
+  }
 }
 
 const chrome = findChrome();
