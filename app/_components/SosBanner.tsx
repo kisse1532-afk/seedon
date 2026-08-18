@@ -34,7 +34,7 @@ export default function SosBanner() {
                 그냥 두면 옆의 이름이 칸마다 다른 위치에서 시작해 줄이 어긋난다.
                 번호는 통째로 한 크기로 그린다 — 예전엔 "-0199"만 작게 붙여서
                 그 줄만 글씨가 다른 것처럼 보였다(2026.08.17 로드 지적). */}
-            <span className="w-[100px] shrink-0 text-center text-[17px] font-extrabold leading-none tracking-tight text-sos-num tabular-nums">
+            <span className="w-[100px] shrink-0 whitespace-nowrap text-center text-[17px] font-extrabold leading-none tracking-tight text-sos-num tabular-nums">
               {c.number}
             </span>
             <span className="min-w-0 text-left">

@@ -5,6 +5,7 @@ import type { ApplyStep } from "@/lib/data";
 import PhoneLink from "@/app/_components/PhoneLink";
 import { clearMyInfo, loadMyInfo, onMyInfoChange, saveMyInfo } from "@/lib/my-info";
 import SavedInfoNote from "@/app/_components/SavedInfoNote";
+import { POLICY_CONTACT } from "@/lib/policy";
 
 type Props = {
   programTitle: string;
@@ -265,8 +266,10 @@ export default function HelpChatbot({
                 >
                   연락 요청 보내기
                 </button>
-                <p className="text-[10px] text-sos-meta text-center">
-                  남겨주신 정보는 연락 목적으로만 쓰고, 처리가 끝나면 일정 기간 뒤 삭제해요.
+                <p className="text-[10px] text-sos-meta text-center leading-relaxed">
+                  남겨주신 정보는 연락하는 데만 써요. 다 도와드리고 나서 1년이 지나면 지워요.
+                  <br />
+                  더 빨리 지우고 싶으면 {POLICY_CONTACT}로 알려주세요.
                 </p>
               </form>
               <BackRow />
