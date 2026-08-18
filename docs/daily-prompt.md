@@ -80,6 +80,7 @@
 
 ```
 node scripts/team-brief.mjs       # ★ 제일 먼저. 부서가 읽을 "지금 상태"를 새로 만든다
+node scripts/org-sync.mjs         # ★ 기관 표 → 명부. "이번 주에 볼 곳"을 골라준다
 node scripts/check-links.mjs      # 링크가 살아있나
 node scripts/check-programs.mjs   # 마감·대상 연령·접수방식·기관 대문 링크·금액 카드
 node scripts/verify-facts.mjs     # 사업명·금액이 공식 페이지에 실제로 있나
