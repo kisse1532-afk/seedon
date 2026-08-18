@@ -42,3 +42,6 @@ next-env.d.ts
 
 # 화면 촬영 결과 (scripts/shot.mjs) — 저장소에 넣지 않는다
 .shots/
+
+# 실장이 대신 받아둔 페이지 (scripts/fetch-pages.mjs)
+.pages/
