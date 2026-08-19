@@ -37,6 +37,38 @@ node scripts/verify-facts.mjs
 
 `--fix`를 붙이면 마감 지난 것은 자동 정리된다(`check-programs.mjs --fix`).
 
+## 1-2. 카드 성적표를 뽑는다 — 이게 씨드온의 성적표다
+
+> **로드(2026.08.19): "그냥 그 카드에 몇 번 눌렸고 홈페이지 들어간 전환율이 어떻게 됐는지
+> 뭐 그런 거를 보는 게 더 중요한 거 아니야?"** 그리고 **"관리자 화면을 건드려봤자 아니야?"**
+
+둘 다 맞다. 그래서 **관리자 화면에만 두지 않고 매일 브리핑에 실어 보낸다.**
+로드가 `/admin`에 매일 들어갈 리 없다.
+
+집계 대상 뷰는 서버 전용 키로만 읽히므로 **Supabase MCP로 직접 조회한다.**
+
+```sql
+-- 카드별 성적표 (최근 30일 · 우리가 누른 건 이미 빠진 것)
+select p.id, p.title, p.category,
+       count(*) filter (where e.event_type='category_card_click') as 카드누름,
+       count(*) filter (where e.event_type='apply_page_view')     as 상세열림,
+       count(*) filter (where e.event_type='apply_link_click')    as 기관으로
+  from public.programs p
+  left join public.program_events_counted e
+         on e.program_id = p.id and e.created_at > now() - interval '30 days'
+ where p.status='published'
+ group by p.id, p.title, p.category
+ order by 상세열림 desc, 카드누름 desc;
+```
+
+**브리핑에 넣을 것 셋**
+- **닿은 카드 수** — "N / 42장". 비율이 아니라 이 숫자가 올라가야 한다
+  (카드를 늘릴수록 비율은 떨어진다. 로드가 지적한 그대로다)
+- **성적이 낮은 카드** — 상세는 열렸는데 기관으로 안 넘어간 것. 문구나 링크 문제다
+- **한 번도 안 열린 카드** — 리서치팀 작업 목록
+
+**숫자가 전부 0인 날은 "아직 아무도 안 왔습니다" 한 줄로 끝낸다.** 표를 늘어놓지 않는다.
+
 ## 2. 헬스체크 + ⚠️ 자동 조임 확인
 
 - **가입자 수를 반드시 확인한다.** `org_system.md` 1-3의 자동 조임 규칙이 여기서 걸린다

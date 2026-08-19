@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { categories } from "@/lib/data";
 import { fetchAllPrograms, fetchReports } from "@/lib/queries";
-import { fetchHelpRequests, fetchEventStats, fetchApplications, fetchPendingReviews, fetchCardReach } from "@/lib/queries-admin";
+import { fetchHelpRequests, fetchEventStats, fetchApplications, fetchPendingReviews, fetchCardReach, fetchCardFunnel } from "@/lib/queries-admin";
 import { hasAdminKey } from "@/lib/supabase-admin";
 import { deleteProgram, dismissReport, logout, markHelpRequestContacted, markHelpRequestCompleted, markApplicationContacted, markApplicationCompleted, publishReview, rejectReview } from "./actions";
 
@@ -18,7 +18,7 @@ export default async function AdminPage({
 }) {
   const { status, category, q } = await searchParams;
 
-  const [programs, reports, helpRequests, eventStats, applications, pendingReviews, cardReach] = await Promise.all([
+  const [programs, reports, helpRequests, eventStats, applications, pendingReviews, cardReach, cardFunnel] = await Promise.all([
     fetchAllPrograms(),
     fetchReports(),
     fetchHelpRequests(),
@@ -26,6 +26,7 @@ export default async function AdminPage({
     fetchApplications(),
     fetchPendingReviews(),
     fetchCardReach(30),
+    fetchCardFunnel(30),
   ]);
 
   const programTitle = new Map(programs.map((p) => [p.id, p.title]));
@@ -206,15 +207,61 @@ export default async function AdminPage({
             카드는 계속 늘어나니까 <b>비율보다 왼쪽 큰 숫자가 올라가는지</b>를 보세요.
             우리(운영자 계정·화면 점검 도구)가 누른 건 여기서 빠집니다.
           </p>
-          {cardReach.untouched.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-emerald-100">
-              <p className="text-xs text-neutral-500 mb-1.5">
-                아직 아무도 안 열어본 카드 {cardReach.untouched.length}건 — 문구나 분류를 다시 볼 것
-              </p>
-              <p className="text-[11px] text-neutral-400 leading-relaxed break-all">
-                {cardReach.untouched.join(" · ")}
-              </p>
-            </div>
+        </div>
+
+        {/* 카드별 성적표 — 이게 본체다. 위 요약은 이 표를 한 줄로 줄인 것.
+            로드 지적(2026.08.19): "그 카드에 몇 번 눌렸고 홈페이지 들어간
+            전환율이 어떻게 됐는지 뭐 그런 거를 보는 게 더 중요한 거 아니야?" */}
+        <div className="rounded-2xl border border-neutral-200 bg-white overflow-hidden">
+          <div className="px-4 py-3 border-b border-neutral-100">
+            <p className="text-sm font-semibold text-neutral-700">카드별 성적표</p>
+            <p className="text-[11px] text-neutral-400 mt-0.5">
+              열린 카드가 위에. <b>맨 오른쪽이 그 카드의 성적</b>이에요 — 상세를 연 사람 중 몇 %가
+              기관 신청 페이지까지 갔나. 낮으면 문구가 안 와닿거나 링크가 엉뚱한 거예요.
+            </p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-neutral-50 text-[11px] text-neutral-500">
+                  <th className="px-4 py-2 text-left font-semibold">프로그램</th>
+                  <th className="px-2 py-2 text-right font-semibold whitespace-nowrap">카드 누름</th>
+                  <th className="px-2 py-2 text-right font-semibold whitespace-nowrap">상세 열림</th>
+                  <th className="px-2 py-2 text-right font-semibold whitespace-nowrap">기관으로</th>
+                  <th className="px-4 py-2 text-right font-semibold whitespace-nowrap">성적</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cardFunnel.map((r) => (
+                  <tr
+                    key={r.programId}
+                    className={`border-t border-neutral-100 ${r.pageViews === 0 ? "text-neutral-300" : ""}`}
+                  >
+                    <td className="px-4 py-2">
+                      <span className={r.pageViews === 0 ? "" : "text-neutral-700"}>{r.title}</span>
+                      <span className="block text-[10px] text-neutral-400">{r.programId}</span>
+                    </td>
+                    <td className="px-2 py-2 text-right tabular-nums">{r.cardClicks || "·"}</td>
+                    <td className="px-2 py-2 text-right tabular-nums">{r.pageViews || "·"}</td>
+                    <td className="px-2 py-2 text-right tabular-nums">{r.applyClicks || "·"}</td>
+                    <td className="px-4 py-2 text-right tabular-nums font-semibold">
+                      {r.reachRate === null ? (
+                        <span className="text-neutral-300">·</span>
+                      ) : (
+                        <span className={r.reachRate >= 30 ? "text-emerald-600" : "text-amber-700"}>
+                          {r.reachRate}%
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {cardFunnel.every((r) => r.pageViews === 0) && (
+            <p className="px-4 py-3 text-xs text-neutral-400 border-t border-neutral-100">
+              아직 아무 카드도 열리지 않았어요. 흐린 글씨는 열린 적 없는 카드예요.
+            </p>
           )}
         </div>
       </section>

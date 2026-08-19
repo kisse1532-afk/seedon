@@ -258,3 +258,82 @@ export async function fetchCardReach(windowDays = 30): Promise<CardReach> {
     untouched: ids.filter((id) => !opened.has(id)).slice(0, 20),
   };
 }
+
+
+/**
+ * 카드별 성적표 — "이 카드는 몇 번 열렸고, 그중 몇 번이 기관 사이트로 넘어갔나."
+ *
+ * 왜 이게 본체인가 (2026.08.19 로드 지적)
+ * ---------------------------------------
+ * 로드: "그냥 그 카드에 몇 번 눌렸고 홈페이지 들어간 전환율이 어떻게 됐는지
+ *        뭐 그런 거를 보는 게 더 중요한 거 아니야?"
+ *
+ * 맞다. "42장 중 1장"은 넓이만 보는 숫자다. 정작 손댈 곳을 알려주는 건 카드별이다.
+ *   · 20번 열렸는데 신청까지 1번 → 문구가 안 와닿거나 링크가 엉뚱하다
+ *   · 3번 열렸는데 2번 넘어감    → 좋은 카드다. 이런 카드를 더 찾으면 된다
+ *
+ * 그래서 이 표가 리서치팀 작업 지시서가 되고, 기관에 보여줄 근거가 된다.
+ * "귀 기관 사업이 몇 번 열려서 몇 명이 신청 페이지까지 갔습니다."
+ */
+export type CardFunnelRow = {
+  programId: string;
+  title: string;
+  category: string;
+  cardClicks: number;   // 목록에서 카드를 누른 횟수
+  pageViews: number;    // 상세를 연 횟수
+  applyClicks: number;  // 기관 신청 페이지로 넘어간 횟수
+  /** 상세를 연 것 중 몇 %가 기관으로 넘어갔나. 이게 그 카드의 성적이다. */
+  reachRate: number | null;
+};
+
+export async function fetchCardFunnel(windowDays = 30): Promise<CardFunnelRow[]> {
+  if (!supabaseAdmin) return [];
+
+  const windowStart = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000).toISOString();
+  const since = windowStart > MEASURE_SINCE ? windowStart : MEASURE_SINCE;
+
+  const [{ data: programs }, { data: events }] = await Promise.all([
+    supabaseAdmin.from("programs").select("id, title, category").eq("status", "published"),
+    supabaseAdmin
+      .from("program_events_counted")
+      .select("program_id, event_type")
+      .gte("created_at", since),
+  ]);
+
+  const rows = new Map<string, CardFunnelRow>();
+  for (const p of programs || []) {
+    const row = p as { id: string; title: string; category: string };
+    rows.set(row.id, {
+      programId: row.id,
+      title: row.title,
+      category: row.category,
+      cardClicks: 0,
+      pageViews: 0,
+      applyClicks: 0,
+      reachRate: null,
+    });
+  }
+
+  for (const e of events || []) {
+    const ev = e as { program_id: string | null; event_type: string };
+    if (!ev.program_id) continue;
+    const row = rows.get(ev.program_id);
+    if (!row) continue; // 이미 내린 카드는 세지 않는다
+    if (ev.event_type === "category_card_click") row.cardClicks += 1;
+    else if (ev.event_type === "apply_page_view") row.pageViews += 1;
+    else if (ev.event_type === "apply_link_click") row.applyClicks += 1;
+  }
+
+  for (const row of rows.values()) {
+    row.reachRate =
+      row.pageViews > 0 ? Math.round((row.applyClicks / row.pageViews) * 1000) / 10 : null;
+  }
+
+  /* 열린 카드를 먼저, 그 안에서 많이 열린 순. 한 번도 안 열린 카드는 뒤로 몰되
+     목록에서 빼지 않는다 — 그게 "손대야 할 카드"라서 오히려 봐야 한다. */
+  return [...rows.values()].sort((a, b) => {
+    if (b.pageViews !== a.pageViews) return b.pageViews - a.pageViews;
+    if (b.cardClicks !== a.cardClicks) return b.cardClicks - a.cardClicks;
+    return a.title.localeCompare(b.title, "ko");
+  });
+}
