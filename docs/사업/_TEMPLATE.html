@@ -1,0 +1,229 @@
+<title>씨드온 사업 보고 MMDD</title>
+<style>
+  :root {
+    --ground:#faf6ee; --surface:#fff; --mint:#e6f8ef; --line:#e7dfd0; --line-soft:#f0e9db;
+    --ink:#2a2a24; --body:#576351; --meta:#9dac92;
+    --primary:#2bbe8c; --primary-deep:#17916a; --sprout:#72cf5e;
+    --alert:#c2702a; --alert-tile:#fff4e9; --alert-line:#f5dfc6;
+    --shadow:0 1px 2px rgba(42,42,36,.04), 0 12px 32px -20px rgba(42,42,36,.3);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+      --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+      --primary:#47d5a3; --primary-deep:#6fe0b6; --sprout:#8fe07c;
+      --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+    --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+    --primary:#47d5a3; --primary-deep:#6fe0b6; --sprout:#8fe07c;
+    --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--body);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard Variable",
+                Pretendard,"Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+    font-size:15px; line-height:1.68; -webkit-font-smoothing:antialiased;
+    word-break:keep-all; overflow-wrap:break-word;
+  }
+  .page{max-width:900px;margin:0 auto;padding:44px 22px 76px;display:flex;flex-direction:column;gap:34px}
+
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .date{font-size:11.5px;font-weight:700;letter-spacing:.16em;color:var(--meta)}
+  .runs{font-size:11.5px;color:var(--meta)}
+  .runs b{color:var(--primary-deep);font-weight:700}
+
+  h1{margin:8px 0 0;font-size:clamp(24px,4.4vw,34px);line-height:1.3;letter-spacing:-.03em;
+     font-weight:800;color:var(--ink);text-wrap:balance}
+  h1 em{font-style:normal;color:var(--alert)}
+
+  h2{margin:0 0 14px;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--meta)}
+
+  /* 오늘의 발견 */
+  .finds{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:660px){.finds{grid-template-columns:1fr}}
+  .find{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--alert);
+        border-radius:14px;padding:18px 18px 16px;box-shadow:var(--shadow)}
+  .find .h{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em;margin-bottom:6px}
+  .find p{margin:0;font-size:13.5px}
+  .find .fix{margin-top:10px;padding-top:9px;border-top:1px solid var(--line-soft);
+             font-size:12px;color:var(--primary-deep);font-weight:700}
+
+  /* 정할 것 */
+  .decide{background:var(--mint);border:1px solid var(--primary);border-radius:18px;
+          padding:24px 22px;box-shadow:var(--shadow)}
+  .decide .q{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin:0 0 12px}
+  .decide .why{margin:0 0 16px;font-size:14px;max-width:62ch}
+  .rec{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .rec .tag{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--primary-deep);display:block;margin-bottom:5px}
+  .rec .num{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+  .rec .note{font-size:12.5px;margin-top:5px}
+
+  /* 숫자 */
+  .figs{display:flex;flex-wrap:wrap;gap:8px}
+  .fig{flex:1 1 108px;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+       padding:14px 14px 12px}
+  .fig .n{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.02em;
+          font-variant-numeric:tabular-nums;line-height:1.15}
+  .fig .k{font-size:11px;color:var(--meta);margin-top:2px}
+  .fig.flat .n{color:var(--meta)}
+
+  /* 팀별 */
+  .teams{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;
+         overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+  .team{display:grid;grid-template-columns:88px 1fr auto;gap:14px;align-items:baseline;
+        padding:13px 16px;border-bottom:1px solid var(--line-soft)}
+  .team:last-child{border-bottom:none}
+  @media(max-width:600px){
+    .team{grid-template-columns:1fr auto;gap:4px 10px}
+    .team .name{grid-column:1/-1}
+  }
+  .team .name{font-size:13px;font-weight:800;color:var(--ink)}
+  .team .did{font-size:13px}
+  .team .score{font-size:11.5px;font-weight:700;white-space:nowrap;color:var(--primary-deep)}
+  .team .score.none{color:var(--meta)}
+
+  /* 로드 할 일 */
+  .todo{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .todo ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+  .todo li{font-size:13.5px;display:flex;gap:10px;align-items:baseline}
+  .todo .box{flex:none;width:13px;height:13px;border:1.5px solid var(--line);border-radius:3.5px;
+             display:inline-block;transform:translateY(1px)}
+  .todo .new{font-size:10.5px;font-weight:800;letter-spacing:.06em;color:var(--alert);
+             background:var(--alert-tile);border:1px solid var(--alert-line);border-radius:999px;
+             padding:1px 7px;margin-left:2px}
+  .todo .tip{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line-soft);
+             font-size:12.5px;color:var(--meta)}
+
+  /* 전/후 비교 — 말로 열 줄 설명하는 것보다 나란히 놓는 게 빠르다 (2026.08.19) */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media(max-width:600px){.ba{grid-template-columns:1fr}}
+  .ba .col{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:var(--ground)}
+  .ba .col.after{border-color:var(--primary);background:var(--mint)}
+  .ba .lbl{font-size:10.5px;font-weight:800;letter-spacing:.1em;color:var(--meta);display:block;margin-bottom:7px}
+  .ba .col.after .lbl{color:var(--primary-deep)}
+  .ba .txt{font-size:13.5px;color:var(--ink);font-weight:600;line-height:1.5}
+  .ba .col.before .txt{color:var(--alert)}
+
+  /* 오늘 바뀐 것 한 덩어리 */
+  .chg{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--primary);
+       border-radius:14px;padding:20px 20px 18px;box-shadow:var(--shadow)}
+  .chg + .chg{margin-top:14px}
+  .chg .h{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:8px}
+  .chg p{margin:0;font-size:14px}
+  .chg .why{margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--meta)}
+
+  footer{font-size:11.5px;color:var(--meta);border-top:1px solid var(--line);padding-top:16px}
+</style>
+<style>
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+  th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+  th{background:var(--mint);color:var(--ink);font-weight:800;font-size:12px}
+  .wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+  .card + .card{margin-top:14px}
+  .card .h{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:8px;letter-spacing:-.02em}
+  .card p{margin:0;font-size:14px}
+  .card p + p{margin-top:9px}
+  .card.flag{border-left:3px solid var(--alert)}
+  .src{font-size:11.5px;color:var(--meta);margin-top:9px;padding-top:8px;border-top:1px solid var(--line-soft)}
+</style>
+
+
+<!--
+  씨드온 사업 보고 — 틀 (전략기획실 전용 · 매주 토요일)
+
+  왜 데일리와 나눴나 (2026.08.19 로드 지시)
+  ────────────────────────────────────────
+  "그 다섯 팀이랑 전략기획실에서 브리핑하는 거는 다른 자료로 가져와라."
+
+  다섯 팀은 "오늘 화면에서 뭐가 달라졌나"이고, 전략기획실은 "씨드온이 어디로
+  가야 하나"다. 한 장에 섞었더니 "카드 문구 고쳤어요" 옆에 "지자체와 계약하려면"이
+  붙어서, 있지도 않은 결정을 로드에게 강요하게 됐다(지역 선정 건 — 통째로 폐기).
+
+  쓰는 규칙
+  ────────
+  ⓪ 로드가 모를 단어를 쓰지 않는다. (docs/daily-prompt.md 5번의 표를 그대로 따른다)
+  ① 로드가 실제로 답할 수 있는 것만 묻는다. 근거·선택지·추천까지 다 채워서 낸다.
+     "정해주세요"만 던지면 그건 결정을 떠넘기는 것이다.
+  ② 결정할 것은 하나. 없으면 "이번 주엔 정할 게 없습니다"라고 쓰고 끝낸다.
+     매주 억지로 결정을 만들면 로드가 매주 결정에 시달린다.
+  ③ 마감이 3주 안으로 들어온 기회만 적는다. 그보다 급한 건 데일리에 한 줄로 넘긴다.
+  ④ "이건 원래 어떻게 하는 건가"는 반드시 실제 사례로 답한다. 일반론은 쓰지 않는다.
+  ⑤ 지난주에 로드가 정한 것이 어떻게 됐는지 먼저 적는다. 그게 없으면 보고가 아니라 제안일 뿐이다.
+  ⑥ A4 한 장. 올리기 전에 폰 390px로 찍어 확인한다.
+-->
+
+<div class="page">
+
+  <header>
+    <div class="top">
+      <span class="date">YYYY.MM.DD 요일 · 사업 보고</span>
+      <span class="runs">지난주 결정 <b>N건</b> 중 <b>N건</b> 진행</span>
+    </div>
+    <!-- 이번 주 씨드온이 사업으로서 어디쯤 와 있는지 한 문장 -->
+    <h1>결론 한 문장<br><em>제일 중요한 조각</em></h1>
+  </header>
+
+  <!-- ① 지난주에 정한 것이 어떻게 됐나 — 이게 맨 위다 -->
+  <section>
+    <h2>지난주에 정한 것</h2>
+    <div class="todo">
+      <ul>
+        <li><span class="box"></span><span><b style="color:var(--ink)">무엇을 정했나</b> — 그래서 어떻게 됐나</span></li>
+      </ul>
+      <p class="tip">아무것도 안 움직였으면 그렇다고 쓴다. 왜 안 움직였는지도.</p>
+    </div>
+  </section>
+
+  <!-- ② 이번 주에 밖에서 알아온 것 — 실제 사례만 -->
+  <section>
+    <h2>밖에서 알아온 것</h2>
+    <div class="card">
+      <div class="h">무엇을 알아봤나</div>
+      <p>어디가 / 어떻게 했나 / 그래서 씨드온이 뭘 해야 하나까지.</p>
+      <div class="src">근거: 직접 열어서 문장까지 확인한 것만</div>
+    </div>
+  </section>
+
+  <!-- ③ 지금 열려 있는 기회 — 마감 3주 이상 남은 것만 -->
+  <section>
+    <h2>지금 넣을 수 있는 것</h2>
+    <div class="wrap"><table>
+      <tr><th>무엇</th><th>주최</th><th>마감</th><th>자격</th><th>로드가 할 일</th></tr>
+      <tr><td></td><td></td><td></td><td></td><td></td></tr>
+    </table></div>
+    <p style="font-size:13px;color:var(--meta)">없으면 "이번 주엔 없습니다"라고 쓴다. 억지로 채우지 않는다.</p>
+  </section>
+
+  <!-- ④ 정할 것 — 하나. 없으면 이 구역을 통째로 뺀다 -->
+  <section>
+    <h2>이번 주에 정할 것 — 하나</h2>
+    <div class="decide">
+      <p class="q">물음 한 줄</p>
+      <p class="why">왜 이걸 정해야 하는지. 근거를 먼저, 부탁을 나중에.
+        로드가 이 문단만 읽고 답할 수 있어야 한다.</p>
+      <div class="rec">
+        <span class="tag">제 추천</span>
+        <span class="num">추천하는 것</span>
+        <p class="note">왜 이걸 고르는지와, 정해졌을 때 로드가 실제로 할 일.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑤ 못 한 것 — 정직하게 -->
+  <section>
+    <h2>못 한 것</h2>
+    <div class="card flag">
+      <p>확인 못 한 것, 막힌 것, 틀렸던 것. 숨기지 않는다.</p>
+    </div>
+  </section>
+
+  <footer>근거는 기관·회사 공식 페이지에서 직접 열어 확인한 것만 · 못 본 것은 못 봤다고 적었습니다</footer>
+
+</div>
