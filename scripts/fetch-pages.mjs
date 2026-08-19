@@ -68,14 +68,36 @@ const made = [], failed = [];
 
 for (const url of urls) {
   const target = /^https?:\/\//.test(url) ? url : "https://" + url;
-  let body = "", code = "000";
+  let body = "", code = "000", charset = "utf-8";
   try {
-    body = execFileSync("curl", [
+    /* 바이트 그대로 받는다. utf-8로 강제 해석하면 EUC-KR 사이트가 깨진다.
+       2026.08.19에 시립보라매청소년센터(EUC-KR)가 이걸로 통째로 깨졌고,
+       그 깨진 글자를 받은 부서가 **없는 프로그램 제목을 지어냈다.**
+       "확인 못 함"보다 나쁘다 — 없는 사업을 올릴 뻔한 일이 이미 한 번 있었다. */
+    const buf = execFileSync("curl", [
       "-sS", "-L", "--max-time", "45", "--compressed",
       "-H", "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36",
       "-H", "Accept-Language: ko-KR,ko;q=0.9",
       "-w", "\n@@HTTP@@%{http_code}", target,
-    ], { encoding: "utf-8", maxBuffer: 32 * 1024 * 1024, timeout: 60_000 });
+    ], { maxBuffer: 32 * 1024 * 1024, timeout: 60_000 });
+
+    // 먼저 latin1로 훑어 <meta charset>을 찾는다. 어떤 인코딩이든 ASCII 부분은 그대로다.
+    const peek = buf.toString("latin1");
+    const cm = peek.match(/charset\s*=\s*["']?([\w-]+)/i);
+    let enc = (cm?.[1] || "utf-8").toLowerCase();
+    if (enc === "ks_c_5601-1987" || enc === "ksc5601" || enc === "cp949") enc = "euc-kr";
+    try {
+      body = new TextDecoder(enc, { fatal: false }).decode(buf);
+    } catch {
+      body = buf.toString("utf-8");
+      enc = "utf-8(폴백)";
+    }
+    // utf-8이라고 적혀 있어도 실제로 깨졌으면 euc-kr로 다시 해본다.
+    if (enc.startsWith("utf-8") && (body.match(/\uFFFD/g) || []).length > 20) {
+      try { body = new TextDecoder("euc-kr").decode(buf); enc = "euc-kr(추정)"; } catch { /* 그대로 */ }
+    }
+    charset = enc;
+
     const m = body.match(/\n@@HTTP@@(\d+)$/);
     if (m) { code = m[1]; body = body.slice(0, m.index); }
   } catch (e) {
@@ -90,9 +112,9 @@ for (const url of urls) {
     continue;
   }
   const name = `${slug(target)}.txt`;
-  writeFileSync(join(outDir, name), `# ${target}\n# HTTP ${code} · ${text.length}자\n\n${text}`, "utf-8");
+  writeFileSync(join(outDir, name), `# ${target}\n# HTTP ${code} · ${text.length}자 · 글자표 ${charset}\n\n${text}`, "utf-8");
   made.push([name, code, text.length]);
-  console.log(`  ✅ ${name}  (HTTP ${code}, ${text.length}자)`);
+  console.log(`  ✅ ${name}  (HTTP ${code}, ${text.length}자${charset.startsWith("utf-8") ? "" : ", " + charset})`);
 }
 
 console.log(`\n받은 것 ${made.length} · 못 받은 것 ${failed.length}`);
