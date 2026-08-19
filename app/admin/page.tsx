@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { categories } from "@/lib/data";
 import { fetchAllPrograms, fetchReports } from "@/lib/queries";
-import { fetchHelpRequests, fetchEventStats, fetchApplications, fetchPendingReviews } from "@/lib/queries-admin";
+import { fetchHelpRequests, fetchEventStats, fetchApplications, fetchPendingReviews, fetchCardReach } from "@/lib/queries-admin";
 import { hasAdminKey } from "@/lib/supabase-admin";
 import { deleteProgram, dismissReport, logout, markHelpRequestContacted, markHelpRequestCompleted, markApplicationContacted, markApplicationCompleted, publishReview, rejectReview } from "./actions";
 
@@ -18,13 +18,14 @@ export default async function AdminPage({
 }) {
   const { status, category, q } = await searchParams;
 
-  const [programs, reports, helpRequests, eventStats, applications, pendingReviews] = await Promise.all([
+  const [programs, reports, helpRequests, eventStats, applications, pendingReviews, cardReach] = await Promise.all([
     fetchAllPrograms(),
     fetchReports(),
     fetchHelpRequests(),
     fetchEventStats(30),
     fetchApplications(),
     fetchPendingReviews(),
+    fetchCardReach(30),
   ]);
 
   const programTitle = new Map(programs.map((p) => [p.id, p.title]));
@@ -172,6 +173,51 @@ export default async function AdminPage({
           </div>
         </section>
       )}
+
+      {/* 씨드온의 성적표. 2026.08.19에 로드가 "가입자 몇 명"에서 이걸로 바꿨다.
+          우리가 파는 건 회원이 아니라 "기관 사업이 청소년에게 닿았나"라서다. */}
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold text-neutral-500">카드가 닿았나 (최근 30일)</h2>
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50/40 p-5">
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-bold text-emerald-700">{cardReach.reachedApply}</span>
+            <span className="text-lg text-neutral-500">/ {cardReach.published}장</span>
+          </div>
+          <p className="text-xs text-neutral-500 mt-1">
+            올려둔 카드 중 <b>기관 신청 페이지까지 넘어간</b> 카드 수
+            {cardReach.reachedRate !== null && ` · 전체의 ${cardReach.reachedRate}%`}
+          </p>
+          <div className="mt-4 pt-4 border-t border-emerald-100 grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <div className="font-bold text-neutral-700">{cardReach.opened} / {cardReach.published}장</div>
+              <div className="text-xs text-neutral-400 mt-0.5">
+                한 번이라도 열어본 카드
+                {cardReach.openedRate !== null && ` (${cardReach.openedRate}%)`}
+              </div>
+            </div>
+            <div>
+              <div className="font-bold text-neutral-700">{cardReach.published - cardReach.opened}장</div>
+              <div className="text-xs text-neutral-400 mt-0.5">아무도 안 열어본 카드</div>
+            </div>
+          </div>
+          {/* 분모가 계속 늘어나므로 비율만 보면 안 된다. 카드를 열심히 늘릴수록
+              비율은 떨어진다. 왼쪽 큰 숫자(닿은 카드 수)가 올라가야 하는 것이다. */}
+          <p className="text-[11px] leading-relaxed text-neutral-400 mt-4">
+            카드는 계속 늘어나니까 <b>비율보다 왼쪽 큰 숫자가 올라가는지</b>를 보세요.
+            우리(운영자 계정·화면 점검 도구)가 누른 건 여기서 빠집니다.
+          </p>
+          {cardReach.untouched.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-emerald-100">
+              <p className="text-xs text-neutral-500 mb-1.5">
+                아직 아무도 안 열어본 카드 {cardReach.untouched.length}건 — 문구나 분류를 다시 볼 것
+              </p>
+              <p className="text-[11px] text-neutral-400 leading-relaxed break-all">
+                {cardReach.untouched.join(" · ")}
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold text-neutral-500">전환율 (최근 30일)</h2>

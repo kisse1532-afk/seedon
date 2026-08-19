@@ -113,10 +113,13 @@ export type EventStats = {
 
 /* 이벤트에 user_id가 붙으면서 이 표도 개인정보가 됐다("누가 무엇을 봤나").
    공개 키 읽기 정책을 없앴으므로 집계는 서버 전용 키로만 한다. */
+/* program_events가 아니라 program_events_counted를 센다.
+   그 뷰가 우리 점검 도구가 만든 기록(source<>web)과 운영자 계정(is_internal)을
+   이미 빼놓은 것이다. 원본을 세면 우리가 화면 찍은 것까지 성과로 잡힌다. */
 async function countEvents(eventType: string, sinceIso: string) {
   if (!supabaseAdmin) return 0;
   const { count } = await supabaseAdmin
-    .from("program_events")
+    .from("program_events_counted")
     .select("*", { count: "exact", head: true })
     .eq("event_type", eventType)
     .gte("created_at", sinceIso);
@@ -136,7 +139,7 @@ export async function fetchEventStats(windowDays = 30): Promise<EventStats> {
 
   const { data: applyClickRows } = supabaseAdmin
     ? await supabaseAdmin
-        .from("program_events")
+        .from("program_events_counted")
         .select("program_id")
         .eq("event_type", "apply_link_click")
         .gte("created_at", since)
@@ -176,5 +179,82 @@ export async function fetchEventStats(windowDays = 30): Promise<EventStats> {
     applyRate: pageViews > 0 ? Math.round((applyClicks / pageViews) * 1000) / 10 : null,
     submitRate: pageViews > 0 ? Math.round((submissions / pageViews) * 1000) / 10 : null,
     topPrograms,
+  };
+}
+
+
+/**
+ * "올려둔 카드 중 몇 장이 실제로 닿았나."
+ *
+ * 왜 이 숫자인가 (2026.08.19 로드 결정)
+ * ------------------------------------
+ * 그동안 "가입자 몇 명"을 성적표로 봤는데, 우리가 파는 건 회원이 아니다.
+ * 기관이 궁금한 건 "너희 앱에 몇 명 가입했나"가 아니라 "우리 사업이
+ * 청소년에게 닿았나"다. 그래서 세는 단위를 카드로 바꾼다.
+ *
+ * 로드 지적: "카드 42건 말고 계속 늘어나기는 할 거니까."
+ * 맞다. 그래서 비율만 보면 안 된다 — 카드를 열심히 늘릴수록 비율은 떨어진다.
+ * 닿은 카드 수(늘어나야 하는 것)와 비율(넓이) 둘 다 돌려준다.
+ *
+ * 한 번도 안 열린 카드 목록은 리서치팀 작업거리가 된다 — 아무도 안 누르는
+ * 카드는 잘못 쓰였거나 잘못 분류됐을 가능성이 있다.
+ */
+export type CardReach = {
+  windowDays: number;
+  published: number;      // 지금 올라가 있는 카드 수 (분모, 계속 늘어난다)
+  opened: number;         // 그중 상세를 한 번이라도 연 카드 수
+  reachedApply: number;   // 그중 기관 신청 페이지까지 넘어간 카드 수
+  openedRate: number | null;
+  reachedRate: number | null;
+  untouched: string[];    // 아무도 안 연 카드 (최대 20개)
+};
+
+export async function fetchCardReach(windowDays = 30): Promise<CardReach> {
+  const empty: CardReach = {
+    windowDays,
+    published: 0,
+    opened: 0,
+    reachedApply: 0,
+    openedRate: null,
+    reachedRate: null,
+    untouched: [],
+  };
+  if (!supabaseAdmin) return empty;
+
+  const windowStart = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000).toISOString();
+  const since = windowStart > MEASURE_SINCE ? windowStart : MEASURE_SINCE;
+
+  const [{ data: programs }, { data: events }] = await Promise.all([
+    supabaseAdmin.from("programs").select("id").eq("status", "published"),
+    supabaseAdmin
+      .from("program_events_counted")
+      .select("program_id, event_type")
+      .gte("created_at", since)
+      .in("event_type", ["apply_page_view", "apply_link_click"]),
+  ]);
+
+  const ids = (programs || []).map((p) => (p as { id: string }).id);
+  const opened = new Set<string>();
+  const reached = new Set<string>();
+  for (const e of events || []) {
+    const row = e as { program_id: string | null; event_type: string };
+    if (!row.program_id) continue;
+    opened.add(row.program_id);
+    if (row.event_type === "apply_link_click") reached.add(row.program_id);
+  }
+
+  // 이미 내린 카드가 눌린 기록은 세지 않는다 — 지금 올라가 있는 것만 분모다.
+  const live = new Set(ids);
+  const openedLive = [...opened].filter((id) => live.has(id));
+  const reachedLive = [...reached].filter((id) => live.has(id));
+
+  return {
+    windowDays,
+    published: ids.length,
+    opened: openedLive.length,
+    reachedApply: reachedLive.length,
+    openedRate: ids.length > 0 ? Math.round((openedLive.length / ids.length) * 1000) / 10 : null,
+    reachedRate: ids.length > 0 ? Math.round((reachedLive.length / ids.length) * 1000) / 10 : null,
+    untouched: ids.filter((id) => !opened.has(id)).slice(0, 20),
   };
 }
