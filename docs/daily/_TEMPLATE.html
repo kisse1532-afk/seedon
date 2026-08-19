@@ -100,13 +100,39 @@
   .todo .tip{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line-soft);
              font-size:12.5px;color:var(--meta)}
 
+  /* 전/후 비교 — 말로 열 줄 설명하는 것보다 나란히 놓는 게 빠르다 (2026.08.19) */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media(max-width:600px){.ba{grid-template-columns:1fr}}
+  .ba .col{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:var(--ground)}
+  .ba .col.after{border-color:var(--primary);background:var(--mint)}
+  .ba .lbl{font-size:10.5px;font-weight:800;letter-spacing:.1em;color:var(--meta);display:block;margin-bottom:7px}
+  .ba .col.after .lbl{color:var(--primary-deep)}
+  .ba .txt{font-size:13.5px;color:var(--ink);font-weight:600;line-height:1.5}
+  .ba .col.before .txt{color:var(--alert)}
+
+  /* 오늘 바뀐 것 한 덩어리 */
+  .chg{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--primary);
+       border-radius:14px;padding:20px 20px 18px;box-shadow:var(--shadow)}
+  .chg + .chg{margin-top:14px}
+  .chg .h{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:8px}
+  .chg p{margin:0;font-size:14px}
+  .chg .why{margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--meta)}
+
   footer{font-size:11.5px;color:var(--meta);border-top:1px solid var(--line);padding-top:16px}
 </style>
 
 <!--
   씨드온 데일리 보고서 — 틀
 
-  쓰는 규칙은 docs/daily-prompt.md 6번. 요약하면:
+  쓰는 규칙은 docs/daily-prompt.md 5번. 요약하면:
+
+  ⓪ 로드가 모를 단어를 쓰지 않는다. 함수명·파일명·색코드·503·RLS·
+     "반려/제안/반영"·"절대규칙 N번" 전부 금지.
+     2026.08.19에 이걸 어겨 "뭔 개소리인지 하나도 이해가 안 가"를 들었고
+     브리핑을 통째로 다시 썼다. 08.16에도 같은 지적이 있었다.
+     로드가 알고 싶은 건 셋뿐이다 — 화면에서 뭐가 달라졌나 / 그게 왜 문제였나 /
+     나는 뭘 하면 되나. "실장이 한 일"이 아니라 "씨드온이 나아진 것"을 쓴다.
+     어제 문구와 오늘 문구를 나란히 놓는다(.ba 칸).
 
   ① 두괄식. 표를 나열하는 건 보고가 아니다.
      첫 시도가 구역 다섯에 표 여섯을 늘어놓은 것이었고 로드에게

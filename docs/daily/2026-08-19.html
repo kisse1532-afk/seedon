@@ -102,133 +102,118 @@
 
   footer{font-size:11.5px;color:var(--meta);border-top:1px solid var(--line);padding-top:16px}
 </style>
+<style>
+  /* 전/후 비교 — 말로 설명하는 것보다 나란히 놓는 게 빠르다 */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media(max-width:600px){.ba{grid-template-columns:1fr}}
+  .ba .col{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:var(--ground)}
+  .ba .col.after{border-color:var(--primary);background:var(--mint)}
+  .ba .lbl{font-size:10.5px;font-weight:800;letter-spacing:.1em;color:var(--meta);display:block;margin-bottom:7px}
+  .ba .col.after .lbl{color:var(--primary-deep)}
+  .ba .txt{font-size:13.5px;color:var(--ink);font-weight:600;line-height:1.5}
+  .ba .col.before .txt{color:var(--alert)}
+  .chg{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--primary);
+       border-radius:14px;padding:20px 20px 18px;box-shadow:var(--shadow)}
+  .chg + .chg{margin-top:14px}
+  .chg .h{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:8px}
+  .chg p{margin:0;font-size:14px}
+  .chg .why{margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--meta)}
+</style>
 
 <div class="page">
 
   <header>
     <div class="top">
       <span class="date">2026.08.19 수요일 · 데일리</span>
-      <span class="runs">부서 <b>6/6</b> 보고 · 제안 <b>11</b>건 → 반영 <b>8</b> · 반려 <b>3</b></span>
+      <span class="runs">팀 <b>6곳</b> 다 돌았어요</span>
     </div>
-    <h1>오늘 드러난 건 카드 문구가 아니라<br><em>팀이 자기가 판정할 것을 못 보고 있었다는 것</em></h1>
+    <h1>오늘 씨드온에서<br><em>세 가지가 바뀌었어요</em></h1>
   </header>
 
   <section>
-    <h2>오늘의 발견</h2>
-    <div class="finds">
-
-      <article class="find">
-        <div class="h">상담 카드에 "대상자 발굴 · 사각지대 학생"이 적혀 있었어요</div>
-        <p>마음이 힘들어서 상담 카드를 연 청소년이, 신청 순서 두 번째 칸에서
-           자기가 <b>"발굴"되는 "사각지대 학생"</b>으로 적혀 있는 걸 읽게 됩니다.
-           절대규칙 1번이 정확히 금지하는 문장인데, 이 칸은 지금까지 아무도
-           글자로 훑어본 적이 없었습니다.</p>
-        <div class="fix">고침 — 여섯 카드의 신청 단계를 "~해요"로 다시 씀 (되돌릴 값 기록해둠)</div>
-      </article>
-
-      <article class="find">
-        <div class="h">부서 셋이 자기가 판정할 대상을 못 보고 있었어요</div>
-        <p>CS팀에게 "카드 42건 문구를 봐라"라고 시켰더니 <b>0건</b>을 봤습니다.
-           부서 도구로는 우리 사이트를 열 수가 없거든요. 리서치팀은 나흘 전에
-           이미 고쳐둔 걸 "고쳐야 한다"고 또 보고했습니다. 화면을 못 보니
-           검색 결과로 추측한 겁니다.</p>
-        <div class="fix">고침 — 카드 전문을 파일로 뽑아주는 도구를 만듦. 만들자마자 위 6건이 걸림</div>
-      </article>
-
-      <article class="find">
-        <div class="h">목록에 순서가 없어서 끝난 것이 위에 있었어요</div>
-        <p>교육 칸 11건에서 "3월에 접수 끝남" 카드가 네 번째에, 지금 되는 카드가
-           그 아래에 섞여 있었습니다. 게다가 열림·닫힘 딱지 색이 거의 같아서
-           글자를 하나씩 읽어야 구별이 됐습니다.</p>
-        <div class="fix">고침 — 지금 되는 것 먼저, 마감 가까운 순. 닫힘 딱지는 회색으로 뒤로</div>
-      </article>
-
-      <article class="find">
-        <div class="h">"막혀서 못 봤다"의 대부분이 사실 안 막혀 있었어요</div>
-        <p>오늘 팀들이 <b>13곳이 막혔다</b>고 보고했는데, 제가 다시 열어보니
-           <b>9곳이 멀쩡히 열렸습니다.</b> 어제도 여섯 곳이 그랬습니다.
-           이러면 팀이 살아있는 기관을 매일 버리게 됩니다.</p>
-        <div class="fix">고침 — 팀 지침에 "503은 막힘이 아니다"를 박고, 재확인을 데일리 필수 절차로</div>
-      </article>
-
+    <h2>하나 — 상담 카드가 청소년을 부르던 말을 바꿨어요</h2>
+    <div class="chg">
+      <div class="h">"대상자 발굴 · 사각지대 학생"이라고 적혀 있었어요</div>
+      <p>마음이 힘들어서 상담 카드를 열면, 신청 순서 두 번째 칸에 이렇게 쓰여 있었습니다.
+         읽는 사람이 자기 얘기인 걸 압니다.</p>
+      <div class="ba">
+        <div class="col before">
+          <span class="lbl">어제까지</span>
+          <div class="txt">대상자 발굴<br>심리치료 사각지대 학생 확인</div>
+        </div>
+        <div class="col after">
+          <span class="lbl">오늘부터</span>
+          <div class="txt">누가 받을지 정해요<br>학교랑 초록우산이 같이 정해요</div>
+        </div>
+      </div>
+      <p class="why">이런 문장이 여섯 개 카드에 있었습니다. "대상자 확인", "심사·선정",
+        "가정 상황 확인" 같은 것들이요. 전부 바꿨습니다.</p>
     </div>
   </section>
 
   <section>
-    <h2>그래서 정할 것 — 하나</h2>
+    <h2>둘 — 목록에서 이미 끝난 게 위에 있던 걸 내렸어요</h2>
+    <div class="chg">
+      <div class="h">교육 칸을 열면 네 번째가 "3월에 접수 끝남"이었어요</div>
+      <p>카드가 순서 없이 나오고 있었습니다. 지금 신청되는 것과 이미 끝난 것이
+         섞여 있어서, 청소년이 위에서부터 눌러보면 끝난 걸 먼저 만납니다.</p>
+      <div class="ba">
+        <div class="col before">
+          <span class="lbl">어제까지</span>
+          <div class="txt">순서 없음<br><span style="font-weight:500;font-size:12.5px">끝난 카드가 위에 섞여 있음</span></div>
+        </div>
+        <div class="col after">
+          <span class="lbl">오늘부터</span>
+          <div class="txt">지금 되는 것 먼저<br><span style="font-weight:500;font-size:12.5px">그 안에서 마감 가까운 순</span></div>
+        </div>
+      </div>
+      <p class="why">"지금 신청 가능"과 "끝남" 딱지 색도 거의 똑같아서 글자를 읽어야
+        구별이 됐습니다. 끝난 건 회색으로 흐리게 바꿨습니다.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>셋 — 개인정보를 지워달라고 하면 진짜 지울 수 있게 됐어요</h2>
+    <div class="chg">
+      <div class="h">"계정을 통째로 지워드려요"가 거짓말이었어요</div>
+      <p>화면에는 그렇게 적혀 있는데, 실제로 지우는 방법이 아무 데도 없었습니다.
+         게다가 계정만 지우면 <b>청소년이 적어둔 이름과 전화번호가 그대로 남는</b> 구조였습니다.</p>
+      <p class="why">이름·전화번호·후기를 먼저 지우고 계정을 지우는 순서를 만들었고,
+        요청이 오면 뭘 어떻게 하면 되는지 적어뒀습니다. 법으로 <b>10일 안에</b>
+        지우고 알려줘야 한다는 것도 확인했습니다(개인정보 보호법).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>왜 이런 게 여태 남아 있었나</h2>
+    <div class="decide" style="background:var(--surface);border-color:var(--line)">
+      <p class="q" style="font-size:17px">팀이 화면을 못 보고 일하고 있었어요</p>
+      <p class="why" style="max-width:none">CS팀에게 "카드 42개 문구를 봐라"라고 시켰더니
+        <b>한 개도 못 봤습니다.</b> 팀에게 주어진 도구로는 우리 사이트가 안 열리거든요.
+        리서치팀은 나흘 전에 이미 고쳐둔 걸 "고쳐야 한다"고 또 보고했습니다.
+        화면을 못 보니 인터넷 검색으로 추측한 겁니다.<br><br>
+        <b>그래서 카드 내용을 통째로 파일로 뽑아주는 걸 만들었습니다.</b>
+        만들자마자 위의 여섯 개가 바로 걸렸습니다 — 지금까지 아무도 들여다본 적 없는
+        칸이었어요.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>로드가 정할 것 — 하나예요</h2>
     <div class="decide">
-      <p class="q">지역 한 곳만 정해주세요. 용인(죽전)인가요, 천안인가요?</p>
-      <p class="why">전략기획실이 조사해온 결론입니다. 위노트도 나비얌도 지자체와 계약할 때
-        들고 간 게 <b>사용자 수가 아니라 "그 지자체가 스스로 못 가진 목록"</b>이었습니다.
-        지금 우리 42건은 "어디 사람이든 쓸 수 있는 것"이라 어느 동네 것도 아닙니다.
-        같은 날 마케팅팀은 첫 사용자를 데려온 회사들이 전부 <b>창업자가 이미 발 담근 현장</b>을
-        통로로 썼다는 걸 찾아왔고, 로드가 실제로 닿는 현장은 단국대입니다.
-        <b>리서치가 채울 지역과 로드가 말을 걸 수 있는 곳이 같으면 두 일이 한 번에 굴러갑니다.</b></p>
+      <p class="q">지역 한 곳만 골라주세요.<br>용인(죽전)인가요, 천안인가요?</p>
+      <p class="why">지자체랑 일하려면 뭘 보여줘야 하는지 조사했더니, 먼저 한 회사들은
+        <b>"우리 앱 사용자 몇 명"이 아니라 "그 시청이 스스로는 못 가진 목록"</b>을 들고 갔습니다.
+        지금 우리 42개는 전국 아무나 쓸 수 있는 거라 <b>어느 동네 것도 아닙니다.</b><br><br>
+        같은 날 다른 팀이 조사한 것도 방향이 같았습니다 — 첫 사용자를 데려온 회사들은
+        광고가 아니라 <b>창업자가 이미 드나들던 현장</b>에서 시작했습니다.</p>
       <div class="rec">
-        <span class="tag">추천</span>
-        <span class="num">용인시 (죽전)</span>
-        <p class="note">단국대 죽전캠퍼스와 같은 생활권이라, 마케팅이 준비한 봉사센터 메일이
-          닿는 학생들이 만나는 청소년과 리서치가 채울 지역이 겹칩니다. 2주면 그 지역
-          전수 목록과 A4 한 장이 나옵니다. 되돌리기는 해당 카드를 안 보이게 되돌리면 끝입니다.</p>
+        <span class="tag">제 추천</span>
+        <span class="num">용인시 죽전</span>
+        <p class="note">단국대 죽전캠퍼스랑 같은 동네라서요. 봉사 나가는 학생들이 만나는 청소년과,
+          우리가 채울 지역이 같아집니다. 로드가 실제로 말 걸 수 있는 곳이기도 하고요.<br>
+          <b>이거 하나만 정해지면 2주치 일이 알아서 굴러갑니다.</b></p>
       </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>숫자</h2>
-    <div class="figs">
-      <div class="fig flat"><div class="n">0</div><div class="k">가입자</div></div>
-      <div class="fig flat"><div class="n">42</div><div class="k">게시된 카드</div></div>
-      <div class="fig"><div class="n">6</div><div class="k">문구 고친 카드 <span style="color:var(--alert)">낙인</span></div></div>
-      <div class="fig flat"><div class="n">26</div><div class="k">기관 명부</div></div>
-      <div class="fig"><div class="n">9</div><div class="k">"막힘"이 아니었던 곳 <span style="color:var(--primary-deep)">/13</span></div></div>
-    </div>
-  </section>
-
-  <section>
-    <h2>팀별</h2>
-    <div class="teams">
-      <div class="team">
-        <span class="name">디자인</span>
-        <span class="did">교육·경제 칸을 처음 그림으로 봄 → 목록 순서 없음·딱지 색 안 갈림 둘 다 사실이었음</span>
-        <span class="score">2 / 2</span>
-      </div>
-      <div class="team">
-        <span class="name">사업운영</span>
-        <span class="did">약관·개인정보 약속 10건 전수 대조 완료(전부 일치). 어제 제가 쓴 문서의 틀린 줄을 잡아냄</span>
-        <span class="score">2 / 2</span>
-      </div>
-      <div class="team">
-        <span class="name">전략기획실</span>
-        <span class="did">위노트·나비얌이 계약 때 들고 간 것을 확인 → "지역 한 곳" 제안 (위 결정)</span>
-        <span class="score">1 / 2</span>
-      </div>
-      <div class="team">
-        <span class="name">마케팅</span>
-        <span class="did">가입 0의 원인을 (가) 노출 자체가 0으로 판정. "씨드온" 이름을 큰 재단이 이미 쓰고 있음</span>
-        <span class="score">1 / 2</span>
-      </div>
-      <div class="team">
-        <span class="name">리서치</span>
-        <span class="did">문화체험 신규 0건 — 억지로 안 채운 건 맞는 판단. 다만 이미 고친 것 둘을 다시 보고</span>
-        <span class="score">1 / 3</span>
-      </div>
-      <div class="team">
-        <span class="name">CS</span>
-        <span class="did">카드를 한 건도 못 봄 → 그게 오늘 제일 큰 발견이 됨. 1388은 문자·카톡도 된다는 것도 찾아옴</span>
-        <span class="score">1 / 1</span>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>반려한 것 — 근거를 직접 열어보고 되돌린 것</h2>
-    <div class="todo">
-      <ul>
-        <li><span class="box" style="border-color:var(--alert)"></span><span>리서치 "은뜨락멘토단이 진로 칸에 잘못 들어가 있다" — <b style="color:var(--ink)">이미 8월 15일에 교육 칸으로 옮겨져 있었습니다.</b> 카드를 못 봐서 생긴 일</span></li>
-        <li><span class="box" style="border-color:var(--alert)"></span><span>리서치 "마인드업은 학교를 거쳐야만 하니 내려야 한다" — <b style="color:var(--ink)">규칙은 그럴 때 내리지 말고 행동을 적으라고 합니다.</b> 이미 "선생님한테 이렇게 말해보세요"와 전화번호가 들어 있어 그대로 둡니다</span></li>
-        <li><span class="box" style="border-color:var(--alert)"></span><span>전략기획실·리서치의 "막혔다" 13곳 중 9곳 — 다시 열어보니 정상이었습니다</span></li>
-      </ul>
     </div>
   </section>
 
@@ -236,14 +221,22 @@
     <h2>로드가 할 일</h2>
     <div class="todo">
       <ul>
-        <li><span class="box"></span><span><b style="color:var(--ink)">지역 한 곳 정하기</b> — 위 결정. 이것만 정해지면 2주치 일이 자동으로 굴러갑니다 <span class="new">오늘 새로</span></span></li>
-        <li><span class="box"></span><span>단국대 사회봉사단 담당자 메일 주소 확인 — 학교 포털에서만 보입니다. 보낼 메일 본문은 마케팅팀이 다 써뒀습니다 <span class="new">오늘 새로</span></span></li>
-        <li><span class="box"></span><span>여성가족부 엑셀 3개 폰으로 받기 — 이거 하나로 기관 1,326곳이 열립니다</span></li>
+        <li><span class="box"></span><span><b style="color:var(--ink)">지역 한 곳 고르기</b> — 위에 있는 거요 <span class="new">오늘 새로</span></span></li>
+        <li><span class="box"></span><span><b style="color:var(--ink)">단국대 사회봉사단 담당자 이메일 주소</b> — 학교 포털에서만 보여요. 보낼 메일은 다 써놨습니다 <span class="new">오늘 새로</span></span></li>
+        <li><span class="box"></span><span>여성가족부 엑셀 3개 폰으로 받기 — 이거 하나면 기관 1,326곳이 한 번에 들어옵니다</span></li>
       </ul>
-      <p class="tip">"밖으로 나간 것"은 오늘도 0입니다. 위 두 번째가 첫 번째 바깥일이 됩니다.</p>
     </div>
   </section>
 
-  <footer>부서 보고는 실장이 근거 URL을 직접 열어 확인한 것만 반영 · 숫자는 Supabase 실측치 · 고친 카드는 폰 390px로 찍어 확인</footer>
+  <section>
+    <h2>숫자</h2>
+    <div class="figs">
+      <div class="fig flat"><div class="n">0</div><div class="k">가입한 사람</div></div>
+      <div class="fig flat"><div class="n">42</div><div class="k">올라간 프로그램</div></div>
+      <div class="fig"><div class="n">6</div><div class="k">오늘 문구 고친 카드</div></div>
+    </div>
+  </section>
+
+  <footer>팀이 올린 건 제가 직접 근거를 열어보고 맞는 것만 반영했습니다 · 고친 화면은 폰으로 찍어서 확인했습니다</footer>
 
 </div>
