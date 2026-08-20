@@ -66,3 +66,39 @@ select cron.schedule(
   '17 18 * * *',                    -- UTC 18:17 = 한국시간 새벽 3시 17분
   $$select public.purge_finished_personal_data()$$
 );
+
+-- ── 2026.08.20 추가 ───────────────────────────────────────────────
+-- 사업운영팀 지적: 개인정보 안내가 "어떤 화면을 봤는지에 대한 기록은 1년까지요"
+-- 라고 약속하는데, 위 청소 작업은 applications와 help_requests만 지운다.
+-- program_events는 아무도 안 지우고 있었다. 어제 이 표에 user_id와 source가
+-- 붙으면서 개인정보 성격이 더 커졌는데도 그대로였다.
+--
+-- 통계는 최근 30일만 보므로 1년 지난 것을 지워도 잃는 게 없다.
+create or replace function public.purge_finished_personal_data()
+returns table(source text, removed bigint)
+language plpgsql security definer set search_path = public as $$
+declare a bigint; h bigint; e bigint;
+begin
+  delete from public.applications
+   where status='completed' and completed_at is not null
+     and completed_at < now() - interval '1 year';
+  get diagnostics a = row_count;
+
+  delete from public.help_requests
+   where status='completed' and completed_at is not null
+     and completed_at < now() - interval '1 year';
+  get diagnostics h = row_count;
+
+  -- 화면을 본 기록. 처리 완료 개념이 없으니 남긴 날부터 1년으로 센다.
+  delete from public.program_events
+   where created_at < now() - interval '1 year';
+  get diagnostics e = row_count;
+
+  return query
+    select 'applications', a union all
+    select 'help_requests', h union all
+    select 'program_events', e;
+end;
+$$;
+
+revoke all on function public.purge_finished_personal_data() from public, anon, authenticated;
