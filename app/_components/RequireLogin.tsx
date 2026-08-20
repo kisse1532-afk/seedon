@@ -52,7 +52,14 @@ export default function RequireLogin({
   // 확인하는 동안 잠깐 비워둔다. 여기서 로그인 안내를 먼저 띄우면, 로그인한
   // 사람도 화면이 한 번 깜빡이면서 "로그인하래" 하고 지나간다.
   if (state === "checking") {
-    return <div className="min-h-[40vh]" aria-hidden />;
+    /* 예전에는 아무것도 없는 빈 칸을 그렸다. 네트워크가 느린 폰에서는 이 순간이
+       길어지고, 그동안 화면이 통째로 비어 보여 "고장났나" 하고 나가게 된다.
+       (2026.08.20 디자인팀 — 화면을 찍었더니 헤더·푸터만 있고 본문이 없었다) */
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center" aria-hidden>
+        <span className="h-6 w-6 animate-spin rounded-full border-2 border-sage-border border-t-primary-deep" />
+      </div>
+    );
   }
 
   if (state === "in") return <>{children}</>;
