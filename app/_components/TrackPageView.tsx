@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { trackSource } from "@/lib/track-source";
 
 /**
  * 프로그램 상세를 "사람이 실제로 봤다"고 기록한다.
@@ -17,6 +18,7 @@ import { supabase } from "@/lib/supabase";
  * 두 가지를 더한다.
  *  - 같은 사람이 같은 프로그램을 여러 번 열어도 한 번만 센다(탭을 닫을 때까지)
  *  - 로그인했으면 누구인지 같이 남긴다 — 그래야 "몇 명이 갔나"를 셀 수 있다
+ *  - 어디서 열렸는지 같이 남긴다 — 우리가 화면 찍을 때 생긴 기록을 빼기 위해
  */
 export default function TrackPageView({
   programId,
@@ -45,6 +47,7 @@ export default function TrackPageView({
           program_id: programId,
           category,
           user_id: data.user?.id ?? null,
+          source: trackSource(),
         })
         .then(() => {});
     });

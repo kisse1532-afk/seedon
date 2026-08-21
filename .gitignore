@@ -45,3 +45,8 @@ next-env.d.ts
 
 # 실장이 대신 받아둔 페이지 (scripts/fetch-pages.mjs)
 .pages/
+
+# 화면 캡처 — 브리핑에 글자로 박아 넣으므로 저장소에 원본을 남기지 않는다
+.shots-before/
+.shots-after/
+.clips/

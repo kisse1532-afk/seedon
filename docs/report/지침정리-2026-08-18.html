@@ -1,0 +1,178 @@
+<title>지침 정리 결과</title>
+<style>
+  :root {
+    --ground:#faf6ee; --surface:#fff; --mint:#e6f8ef; --line:#e7dfd0; --line-soft:#f0e9db;
+    --ink:#2a2a24; --body:#576351; --meta:#9dac92;
+    --primary:#2bbe8c; --primary-deep:#17916a; --sprout:#72cf5e;
+    --alert:#c2702a; --alert-tile:#fff4e9; --alert-line:#f5dfc6;
+    --shadow:0 1px 2px rgba(42,42,36,.04), 0 12px 32px -20px rgba(42,42,36,.3);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+      --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+      --primary:#47d5a3; --primary-deep:#6fe0b6; --sprout:#8fe07c;
+      --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+    --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+    --primary:#47d5a3; --primary-deep:#6fe0b6; --sprout:#8fe07c;
+    --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--body);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard Variable",
+                Pretendard,"Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+    font-size:15px; line-height:1.68; -webkit-font-smoothing:antialiased;
+    word-break:keep-all; overflow-wrap:break-word;
+  }
+  .page{max-width:900px;margin:0 auto;padding:44px 22px 76px;display:flex;flex-direction:column;gap:34px}
+
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .date{font-size:11.5px;font-weight:700;letter-spacing:.16em;color:var(--meta)}
+  .runs{font-size:11.5px;color:var(--meta)}
+  .runs b{color:var(--primary-deep);font-weight:700}
+
+  h1{margin:8px 0 0;font-size:clamp(24px,4.4vw,34px);line-height:1.3;letter-spacing:-.03em;
+     font-weight:800;color:var(--ink);text-wrap:balance}
+  h1 em{font-style:normal;color:var(--alert)}
+
+  h2{margin:0 0 14px;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--meta)}
+  .page{max-width:960px;margin:0 auto;padding:40px 22px 64px;display:flex;flex-direction:column;gap:26px}
+  h2{margin:0 0 12px;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--meta)}
+  .figs{display:flex;flex-wrap:wrap;gap:8px}
+  .fig{flex:1 1 120px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .fig .n{font-size:26px;font-weight:800;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+  .fig .k{font-size:11px;color:var(--meta);margin-top:2px}
+  .fig.zero .n{color:var(--alert)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:720px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+        box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px}
+  .card .nm{font-size:14.5px;font-weight:800;color:var(--ink)}
+  .card .nm span{font-size:11px;font-weight:600;color:var(--meta);margin-left:6px}
+  .row{display:grid;grid-template-columns:52px 1fr;gap:10px;font-size:12.8px;line-height:1.6}
+  .row b{font-size:10.5px;font-weight:800;letter-spacing:.08em;color:var(--meta);padding-top:3px}
+  .goal{color:var(--ink);font-weight:600}
+  .now{color:var(--body)}
+  .now em{font-style:normal;color:var(--alert);font-weight:700}
+  .todo{color:var(--primary-deep);font-weight:600}
+  .file{font-size:11px;color:var(--meta);border-top:1px dashed var(--line);padding-top:8px;margin-top:1px}
+  .how{background:var(--mint);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .how li{font-size:13px;margin:0 0 7px;color:var(--body)}
+  .how li:last-child{margin-bottom:0}
+  .how b{color:var(--ink)}
+  .how ol{margin:0;padding-left:19px}
+  footer{font-size:11px;color:var(--meta);text-align:center;border-top:1px solid var(--line);padding-top:16px}
+</style>
+<style>
+  .cut{width:100%;border-collapse:collapse;font-size:12.6px}
+  .cut th{text-align:left;font-size:10.5px;letter-spacing:.08em;color:var(--meta);
+          font-weight:800;padding:0 10px 7px 0;border-bottom:1px solid var(--line)}
+  .cut td{padding:8px 10px 8px 0;border-bottom:1px solid var(--line-soft);vertical-align:top;color:var(--body)}
+  .cut td:first-child{color:var(--ink);font-weight:600}
+  .cut td.n{text-align:right;font-variant-numeric:tabular-nums;color:var(--alert);font-weight:700;white-space:nowrap}
+  .wrap{overflow-x:auto}
+  .big{display:flex;gap:10px;flex-wrap:wrap}
+  .big div{flex:1 1 150px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .big .n{font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+  .big .k{font-size:11px;color:var(--meta);margin-top:3px}
+  .big .n small{font-size:14px;color:var(--primary-deep);font-weight:700;margin-left:5px}
+  .note{background:var(--mint);border:1px solid var(--line);border-radius:14px;padding:16px 18px;font-size:13px}
+  .note b{color:var(--ink)}
+  .note p{margin:0 0 8px}.note p:last-child{margin:0}
+  footer{font-size:11px;color:var(--meta);text-align:center;border-top:1px solid var(--line);padding-top:16px}
+</style>
+<div class="page">
+  <header>
+    <div class="top">
+      <span class="date">2026.08.18 · 지침 정리 결과</span>
+      <span class="runs">커밋 8개로 나눠서 하나씩 되돌릴 수 있음</span>
+    </div>
+    <h1>규칙이 서로 싸우고 있었다<br><em>절반을 걷어내고 자리를 갈랐다</em></h1>
+  </header>
+
+  <section>
+    <div class="big">
+      <div><div class="n">1,979<small>→ 1,115</small></div><div class="k">지침 줄 수 (44% 줄임)</div></div>
+      <div><div class="n">864</div><div class="k">지운 줄</div></div>
+      <div><div class="n">8</div><div class="k">커밋 (하나씩 되돌리기 가능)</div></div>
+      <div><div class="n">0</div><div class="k">절대규칙 손댄 곳</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>왜 정리했나</h2>
+    <div class="note">
+      <p><b>같은 규칙이 여러 파일에 흩어져 서로 다른 말을 하고 있었다.</b>
+      예를 들어 어떤 파일은 "제안하고 승인을 기다려라"라고 하는데, 로드가 새로 만든 체계는
+      "되돌릴 수 있으면 그냥 해라"다. 에이전트가 둘 다 읽으면 어느 쪽을 따를지 모른다.</p>
+      <p>그래서 <b>"무엇을 만드는가"와 "어떻게 일하는가"를 갈랐다.</b>
+      섞여 있던 게 충돌의 원인이었다.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>어느 파일이 무엇을 담나</h2>
+    <div class="wrap"><table class="cut">
+      <tr><th>파일</th><th>담는 것</th></tr>
+      <tr><td>CLAUDE.md</td><td><b>무엇을 만드는가</b> — 절대규칙 · 미션 · 카드에 뭘 어떻게 쓰나 · 환경</td></tr>
+      <tr><td>org_system.md</td><td><b>어떻게 일하는가</b> — 로드가 새로 만든 기준 문서. A/B/C · 등급 · 인계 · 팀 직무</td></tr>
+      <tr><td>daily-prompt.md</td><td><b>오늘 무엇을 어떤 순서로</b></td></tr>
+      <tr><td>team-context.md</td><td><b>로드가 이미 정한 것 · 겪은 사고</b></td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>지운 것 — 무엇을 왜</h2>
+    <div class="wrap"><table class="cut">
+      <tr><th>무엇</th><th class="n">줄</th><th>왜</th></tr>
+      <tr><td>팀 파일 공통 규칙 복붙</td><td class="n">228</td><td>팀 파일 6개에 <b>같은 내용이 복사</b>돼 있었다. 기준 문서를 가리키게만 바꿈</td></tr>
+      <tr><td>CLAUDE.md 팀 구조</td><td class="n">76</td><td>새 기준 문서가 통째로 대체</td></tr>
+      <tr><td>agent-teams.md (파일 삭제)</td><td class="n">65</td><td>같은 이유</td></tr>
+      <tr><td>트리거 변경 이력</td><td class="n">56</td><td>지금 어떻게 도는지만 남기고 <b>그동안의 경위</b>는 삭제</td></tr>
+      <tr><td>게시 전 체크리스트 11개</td><td class="n">43</td><td>CLAUDE.md에 같은 게 이미 있었다</td></tr>
+      <tr><td>네트워크 진단·링크 도구 설명</td><td class="n">35</td><td><b>점검 프로그램이 자동으로 하는 걸</b> 글로 또 적어둔 것</td></tr>
+      <tr><td>승인 절차·SQL 규칙</td><td class="n">22</td><td><b>새 체계와 정면 충돌.</b> "승인 없이 진행" 같은 옛 표현</td></tr>
+      <tr><td>FastAPI 전환 원칙</td><td class="n">7</td><td><b>한 번도 시작한 적 없다.</b> 지금 할 일도 아니다</td></tr>
+      <tr><td>개발 큐</td><td class="n">11</td><td>1순위 끝 · 2순위 진행 중 · 3순위는 로드 대기. 목록으로 둘 이유 없음</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>팀마다 "하지 않을 것"이 생겼다</h2>
+    <div class="wrap"><table class="cut">
+      <tr><th>팀</th><th>하지 않을 것</th></tr>
+      <tr><td>리서치</td><td>총량 늘리기 금지 — 42건이면 충분하고 목표는 <b>카테고리 균형</b>이다</td></tr>
+      <tr><td>디자인</td><td><b>사진 없이 "점검 완료" 금지</b> · 관리자 화면은 범위 밖</td></tr>
+      <tr><td>사업운영</td><td>새 기능 제안 금지 — 검증하는 팀이 제안하면 검증이 무뎌진다</td></tr>
+      <tr><td>전략기획실</td><td>마감 1주 미만 보고 금지 — 「모두의 창업」을 마감 하루 전에 가져온 일 재발 방지</td></tr>
+      <tr><td>마케팅</td><td>SNS 콘텐츠 금지 · <b>2주 연속 0이면 원인 구분</b>(발송이 안 된 거면 팀은 정상)</td></tr>
+      <tr><td>CS</td><td>사용자 0명에서 응대 통계 만들기 금지 · <b>위기 신호는 무조건 즉시 로드에게</b></td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>내일부터 달라지는 것</h2>
+    <div class="note">
+      <p><b>1. 승인을 안 기다립니다.</b> 되돌릴 수 있는 일은 그냥 합니다.
+      대신 <b>되돌리는 방법을 한 줄로 못 적으면 그건 로드에게 묻습니다.</b></p>
+      <p><b>2. 매일 가입자 수를 봅니다.</b> 지금은 아무도 안 봐서 자유롭게 하는 건데,
+      <b>한 명이라도 생기면 그날부터 검증을 당일로 조입니다.</b> 열 명이 넘으면 전 팀을 한 단계 내립니다.
+      이건 로드 승인 없이 자동입니다.</p>
+      <p><b>3. 팀끼리 일을 넘깁니다.</b> 지금까지 6팀이 전부 저하고만 이야기해서
+      조직이 아니라 <b>따로 일하는 여섯 명</b>이었습니다. 이제 넘긴 일은 다음 날 처리 여부를 보고합니다.</p>
+      <p><b>4. 매일 하나씩 밖에서 배워 반영합니다.</b> "조사했다"는 성과가 아니고
+      <b>"오늘 반영한 것 1개"</b>가 성과입니다.</p>
+      <p><b>5. 토요일마다 주간 보고가 나옵니다.</b> 맨 위 네 줄만 보시면 되고,
+      <b>"이건 빼"라고 하시면 다음 날 바로 뺍니다.</b> 이유는 안 여쭙니다.</p>
+    </div>
+  </section>
+
+  <footer>커밋 8개로 나눠뒀습니다 · 마음에 안 드는 것만 골라서 되돌릴 수 있습니다</footer>
+</div>
