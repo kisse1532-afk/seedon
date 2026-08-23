@@ -10,10 +10,13 @@ import { POLICY_CONTACT, POLICY_UPDATED, type PolicySection } from "@/lib/policy
 export default function PolicyDoc({
   title,
   intro,
+  summary,
   sections,
 }: {
   title: string;
   intro: string;
+  /* 본문이 긴 문서에만 준다. 짧은 문서에 붙이면 군더더기다. */
+  summary?: string[];
   sections: PolicySection[];
 }) {
   return (
@@ -25,6 +28,17 @@ export default function PolicyDoc({
         <h1 className="mt-3 text-xl font-extrabold tracking-tight text-ink">{title}</h1>
         <p className="mt-2 text-sm leading-relaxed text-body">{intro}</p>
         <p className="mt-3 text-xs text-meta">{POLICY_UPDATED}부터 적용돼요</p>
+
+        {summary && (
+          <div className="mt-4 rounded-card border border-primary/30 bg-mint p-4">
+            <p className="mb-1.5 text-xs font-bold text-primary-deep">3줄 요약</p>
+            <ul className="list-inside list-disc space-y-1 text-sm leading-relaxed text-body">
+              {summary.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       <div className="space-y-6">
