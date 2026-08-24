@@ -1,0 +1,289 @@
+<title>씨드온 사업 보고 0824</title>
+<style>
+  :root {
+    --ground:#faf6ee; --surface:#fff; --mint:#e6f8ef; --line:#e7dfd0; --line-soft:#f0e9db;
+    --ink:#2a2a24; --body:#576351; --meta:#9dac92;
+    --primary:#2bbe8c; --primary-deep:#17916a; --sprout:#72cf5e;
+    --alert:#c2702a; --alert-tile:#fff4e9; --alert-line:#f5dfc6;
+    --shadow:0 1px 2px rgba(42,42,36,.04), 0 12px 32px -20px rgba(42,42,36,.3);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+      --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+      --primary:#47d5a3; --primary-deep:#6fe0b6; --sprout:#8fe07c;
+      --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+    --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+    --primary:#47d5a3; --primary-deep:#6fe0b6; --sprout:#8fe07c;
+    --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--body);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard Variable",
+                Pretendard,"Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+    font-size:15px; line-height:1.68; -webkit-font-smoothing:antialiased;
+    word-break:keep-all; overflow-wrap:break-word;
+  }
+  .page{max-width:900px;margin:0 auto;padding:44px 22px 76px;display:flex;flex-direction:column;gap:34px}
+
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .date{font-size:11.5px;font-weight:700;letter-spacing:.16em;color:var(--meta)}
+  .runs{font-size:11.5px;color:var(--meta)}
+  .runs b{color:var(--primary-deep);font-weight:700}
+
+  h1{margin:8px 0 0;font-size:clamp(24px,4.4vw,34px);line-height:1.3;letter-spacing:-.03em;
+     font-weight:800;color:var(--ink);text-wrap:balance}
+  h1 em{font-style:normal;color:var(--alert)}
+
+  h2{margin:0 0 14px;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--meta)}
+
+  /* 오늘의 발견 */
+  .finds{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:660px){.finds{grid-template-columns:1fr}}
+  .find{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--alert);
+        border-radius:14px;padding:18px 18px 16px;box-shadow:var(--shadow)}
+  .find .h{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em;margin-bottom:6px}
+  .find p{margin:0;font-size:13.5px}
+  .find .fix{margin-top:10px;padding-top:9px;border-top:1px solid var(--line-soft);
+             font-size:12px;color:var(--primary-deep);font-weight:700}
+
+  /* 정할 것 */
+  .decide{background:var(--mint);border:1px solid var(--primary);border-radius:18px;
+          padding:24px 22px;box-shadow:var(--shadow)}
+  .decide .q{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin:0 0 12px}
+  .decide .why{margin:0 0 16px;font-size:14px;max-width:62ch}
+  .rec{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .rec .tag{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--primary-deep);display:block;margin-bottom:5px}
+  .rec .num{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+  .rec .note{font-size:12.5px;margin-top:5px}
+
+  /* 숫자 */
+  .figs{display:flex;flex-wrap:wrap;gap:8px}
+  .fig{flex:1 1 108px;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+       padding:14px 14px 12px}
+  .fig .n{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.02em;
+          font-variant-numeric:tabular-nums;line-height:1.15}
+  .fig .k{font-size:11px;color:var(--meta);margin-top:2px}
+  .fig.flat .n{color:var(--meta)}
+
+  /* 팀별 */
+  .teams{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;
+         overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+  .team{display:grid;grid-template-columns:88px 1fr auto;gap:14px;align-items:baseline;
+        padding:13px 16px;border-bottom:1px solid var(--line-soft)}
+  .team:last-child{border-bottom:none}
+  @media(max-width:600px){
+    .team{grid-template-columns:1fr auto;gap:4px 10px}
+    .team .name{grid-column:1/-1}
+  }
+  .team .name{font-size:13px;font-weight:800;color:var(--ink)}
+  .team .did{font-size:13px}
+  .team .score{font-size:11.5px;font-weight:700;white-space:nowrap;color:var(--primary-deep)}
+  .team .score.none{color:var(--meta)}
+
+  /* 로드 할 일 */
+  .todo{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .todo ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+  .todo li{font-size:13.5px;display:flex;gap:10px;align-items:baseline}
+  /* 체크박스 옆 내용은 한 덩어리여야 한다. 안 감싸면 <b>·글·딱지가 각각
+     칸이 돼서 폰에서 글이 좁은 세로줄로 쪼개진다 (2026.08.24에 실제로 겪음) */
+  .todo li > .t{flex:1 1 auto;min-width:0}
+  .todo .box{flex:none;width:13px;height:13px;border:1.5px solid var(--line);border-radius:3.5px;
+             display:inline-block;transform:translateY(1px)}
+  .todo .new{font-size:10.5px;font-weight:800;letter-spacing:.06em;color:var(--alert);
+             background:var(--alert-tile);border:1px solid var(--alert-line);border-radius:999px;
+             padding:1px 7px;margin-left:2px}
+  .todo .tip{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line-soft);
+             font-size:12.5px;color:var(--meta)}
+
+  /* 전/후 비교 — 말로 열 줄 설명하는 것보다 나란히 놓는 게 빠르다 (2026.08.19) */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media(max-width:600px){.ba{grid-template-columns:1fr}}
+  .ba .col{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:var(--ground)}
+  .ba .col.after{border-color:var(--primary);background:var(--mint)}
+  .ba .lbl{font-size:10.5px;font-weight:800;letter-spacing:.1em;color:var(--meta);display:block;margin-bottom:7px}
+  .ba .col.after .lbl{color:var(--primary-deep)}
+  .ba .txt{font-size:13.5px;color:var(--ink);font-weight:600;line-height:1.5}
+  .ba .col.before .txt{color:var(--alert)}
+
+  /* 오늘 바뀐 것 한 덩어리 */
+  .chg{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--primary);
+       border-radius:14px;padding:20px 20px 18px;box-shadow:var(--shadow)}
+  .chg + .chg{margin-top:14px}
+  .chg .h{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:8px}
+  .chg p{margin:0;font-size:14px}
+  .chg .why{margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--meta)}
+
+  footer{font-size:11.5px;color:var(--meta);border-top:1px solid var(--line);padding-top:16px}
+
+  /* 브리핑에 끼워 넣는 화면 캡처. 폭을 안 묶으면 폰에서 가로로 밀린다
+     (2026.08.24에 실제로 175px 밀렸다). */
+  .one{border:2px solid var(--primary);border-radius:12px;overflow:hidden;
+       background:var(--surface);margin-top:12px}
+  .one img{display:block;width:100%;height:auto}
+  img{max-width:100%;height:auto}
+</style>
+<div class="page">
+
+  <header>
+    <div class="top">
+      <span class="date">2026.08.24 월 · 사업 보고</span>
+      <span class="runs">고문 관점 · <b>지난주 숙제 1건 해결</b></span>
+    </div>
+    <h1>「모두의 창업」 2차, <em>내는 데 드는 게 거의 없어요.</em><br>서류가 한 장도 없고, 사업자등록이 없어야 자격이에요.</h1>
+  </header>
+
+  <section>
+    <h2>세 줄</h2>
+    <div class="todo">
+      <ul>
+        <li><span class="box"></span><span class="t"><b>지난주에 "확인 못 함"으로 남겨둔 마감일을 원문에서 확인했어요.</b>
+        2026년 9월 17일(목) 오후 4시, 24일 남았어요. 주최 사이트는 여전히 우리 쪽 접속을 막아서,
+        부처 공고 목록을 거쳐 대학이 다시 올린 공고문 원본을 열었어요.</span></li>
+        <li><span class="box"></span><span class="t"><b>"첫 사용자를 어디서 데려왔나"를 숫자로 남긴 한국 자료는 거의 없어요.</b>
+        기사들은 전부 지금 규모만 말해요. 딱 하나 초기 실행이 숫자로 남은 게 나비얌인데 —
+        <b>하루 50~100곳을 직접 찾아가서 그중 30% 정도가 참여로 이어졌어요.</b>
+        첫 사용자는 채널로 오는 게 아니라 발로 가서 데려오는 거였어요.</span></li>
+        <li><span class="box"></span><span class="t"><b>대회와 첫 사용자는 둘 중 하나를 고르는 게 아니에요.</b>
+        이번 건은 사람이 0명이어도 자격에 문제가 없고 서류도 없어서, 내는 비용이 거의 0이에요.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>「모두의 창업」 2차 — 공고문에서 직접 읽은 것</h2>
+    <div class="chg">
+      <div class="h">중소벤처기업부 공고 제2026-511호 (2026년 8월 20일)</div>
+      <p>공고문 원본에 이렇게 적혀 있어요 —</p>
+      <div class="ba">
+        <div class="col after">
+          <span class="lbl">언제까지</span>
+          <span class="txt">2026년 9월 17일(목) 오후 4시<br>
+          <span style="font-weight:500;color:var(--body)">"16시 정각에 종료되며 이후 신규 신청 불가"</span></span>
+        </div>
+        <div class="col after">
+          <span class="lbl">뭘 내나</span>
+          <span class="txt">아무것도 안 내요<br>
+          <span style="font-weight:500;color:var(--body)">"신청서 외 별도 제출 서류 없음" — 홈페이지에 직접 적는 게 전부. 증빙은 1차 통과한 8,000명한테만 나중에 물어봐요</span></span>
+        </div>
+        <div class="col after">
+          <span class="lbl">자격</span>
+          <span class="txt">사업자등록이 <b>없어야</b> 돼요<br>
+          <span style="font-weight:500;color:var(--body)">나이·지역 제한 없음. 지금 우리가 딱 그 상태예요</span></span>
+        </div>
+        <div class="col after">
+          <span class="lbl">되면 뭘 받나</span>
+          <span class="txt">1차 통과 8,000명 전원<br>
+          <span style="font-weight:500;color:var(--body)">활동자금 200만원 + AI도구 2개월치 100만원 + 멘토링. 씨드온이 지금까지 쓴 돈은 0원이에요</span></span>
+        </div>
+      </div>
+      <p class="why"><b>미리 알아두실 것 셋 (전부 공고문에 있어요)</b><br>
+      ① <b>3라운드까지 가면 사업자등록이 필요해요.</b> 지금이 아니라 나중 문제예요<br>
+      ② <b>재도전 가산점은 1차에 냈던 사람만 받아요.</b> 우리는 0점에서 시작해요<br>
+      ③ <b>대학리그가 따로 있어요.</b> 결선에 오른 22개 팀 대표는 2라운드에 우선 뽑혀요.
+      로드가 단국대 재학생이라 해당될 수 있는데 <b>그 공고는 아직 못 찾았어요</b> — 다음에 찾아볼게요</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>아무도 안 오는 상태를 푼 사람들</h2>
+    <div class="teams">
+      <div class="team">
+        <span class="name">나비얌</span>
+        <span class="did">가게 문을 <b>직접 열고 들어갔어요.</b> 온라인 채널이 아니에요.
+        하루 50~100곳을 돌아서 30% 정도가 참여로 이어졌고, 지금은 가맹점 6만 곳이 넘어요.</span>
+        <span class="score">발로</span>
+      </div>
+      <div class="team">
+        <span class="name">웰로</span>
+        <span class="did">"몰라서 못 받는 복지"라는 <b>씨드온과 똑같은 문제</b>를 푸는 곳이에요.
+        설립 1년 만에 가입자 10만 명. 다만 <b>첫 수십 명을 어디서 데려왔는지는 어느 기사에도 안 적혀 있어요.</b></span>
+        <span class="score none">초기 채널 못 봄</span>
+      </div>
+      <div class="team">
+        <span class="name">웰로 — 기관에 낸 숫자</span>
+        <span class="did">국토교통부 사업에서 <b>"우리 회원이 몇 명"이 아니라 "귀 기관 사업이 5만 4,600명에게 닿았고 그중 90.1%가 열어봤다"</b>고 냈어요.
+        씨드온이 8월 19일에 성적표를 "카드 몇 장이 눌려 기관까지 갔나"로 바꾼 게 정확히 이 방향이에요.</span>
+        <span class="score">우리 방향 확인</span>
+      </div>
+      <div class="team">
+        <span class="name">MyFriendBen (미국)</span>
+        <span class="did">"실제로 신청했나"를 기술로 못 재니까 <b>그냥 물어봤어요.</b> 다 쓴 사람의 30%가 "신청했다/할 생각이다"라고 답했어요.</span>
+        <span class="score">방법</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>이번 주에 해볼 것 — 하나</h2>
+    <div class="decide">
+      <p class="q">청소년이 아니라, 청소년을 매주 만나는 사람에게 말을 걸어요</p>
+      <p class="why">청소년에게 직접 광고하는 건 어려워요. 그런데 <b>봉사 나가서 매주 중고생을 만나는 대학생</b>은
+      로드가 이미 계정을 가진 통로예요. 그리고 <b>가입해달라고 하지 말고 "봐주실래요"라고 부탁하는 게</b> 답이 옵니다 —
+      나비얌이 하루 100곳을 돌아 30곳을 얻은 것처럼, 100명에게 "써보세요"보다 10명에게 "봐주세요"가 낫습니다.
+      답을 준 사람 하나하나가 나중에 기관 문을 여는 이름이 돼요.</p>
+      <div class="rec">
+        <span class="tag">그대로 붙여 쓰셔도 돼요</span>
+        <span class="num" style="font-size:15px;line-height:1.6;font-weight:600">
+        "청소년이 신청할 수 있는 지원제도 42개를 한 곳에 모아놨어요(seedon.vercel.app).
+        봉사 나가서 만나는 애들한테 보여줄 만한지 봐주실 수 있을까요?
+        이상한 부분 한 줄만 알려주셔도 큰 도움이에요."</span>
+        <p class="note"><b>어디에</b> — 에브리타임 단국대 게시판, 또는 단국대 사회봉사단 게시판.
+        계정이 이미 있으니 가입 절차가 없어요.<br>
+        <b>얼마나</b> — 글 하나 쓰고 끝. 30분.<br>
+        <b>되돌리는 법</b> — 글 삭제.<br>
+        <b>순서</b> — 이걸 먼저 하면 「모두의 창업」 신청서에 "몇 명이 봐줬고 뭐라고 하더라"를 한 줄 넣을 수 있어요.
+        아이디어를 보는 심사라 그 한 줄이 큽니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>오늘의 공부 — 정부 지원의 첫 계단은 "회사"가 아니에요</h2>
+    <div class="chg">
+      <div class="h">지금 할 수 있는 것</div>
+      <p>초기 공익 스타트업이 받는 첫 돈은 투자가 아니라 <b>정부 창업지원금</b>이고,
+      그 문턱은 법인·매출·사용자가 아니라 <b>"사업자등록이 아직 없다"는 사실 그 자체</b>예요.
+      정부는 예비창업자 몫을 아예 따로 떼어 놔요 — 이번 2차는 예비창업자가 80% 내외예요.
+      씨드온은 법인도 매출도 사용자도 없는데, 그게 <b>결격이 아니라 자격</b>인 문이 있는 거예요.</p>
+    </div>
+    <div class="chg">
+      <div class="h">아직 못 하는 것 — 뭐가 갖춰지면 되나</div>
+      <p>
+      <b>같은 해에 중기부 창업지원사업 여러 개</b> → 안 돼요. 하나만 골라야 해요<br>
+      <b>3라운드 진출</b> → 사업자등록이 필요해요<br>
+      <b>사회적기업가 육성사업</b>(초기 최대 8천만원) → <b>대표 포함 2명 이상</b>이 요건이에요. 로드 혼자면 못 내요 → <b>사람 한 명</b>이 필요해요<br>
+      <b>소셜벤처 판별 · 지자체 일 따기</b> → <b>확인 못 했어요.</b> 공식 페이지가 안 열려서 조건을 못 봤어요. 추측으로 안 씁니다</p>
+      <p class="why">⚠️ 사회적기업가 육성사업의 "2명 이상"은 공식 사이트가 전부 안 열려서
+      <b>검색 요약으로만 본 것</b>이에요. 결정에 쓰기 전에 다시 확인해야 해요.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>정할 것 — 둘</h2>
+    <div class="todo">
+      <ul>
+        <li><span class="box"></span><span class="t"><b>「모두의 창업」 2차, 낼까요 말까요</b> <span class="new">9/17 마감</span><br>
+        8월 18일에 한 번 자르셨는데, 그때 자른 이유 둘(마감이 다음 날 · 부문이 안 맞음)이 다 사라졌어요.
+        <b>"그건 잘랐다" 한 마디면 닫고 다시 안 올릴게요.</b></span></li>
+        <li><span class="box"></span><span class="t"><b>단국대 봉사 게시판에 글 하나 올릴까요</b> <span class="new">이번 주</span><br>
+        대외로 나가는 거라 로드가 직접 하셔야 해요. 문장은 위에 그대로 써뒀어요.</span></li>
+      </ul>
+      <p class="tip">둘 다 하신다면 <b>글 먼저, 신청 나중</b>이 나아요.</p>
+    </div>
+  </section>
+
+  <footer>
+    오늘 밖으로 나간 것은 없어요 — 읽기만 했습니다.<br>
+    확인 못 한 것은 확인 못 했다고 그대로 적었어요: 웰로·나비얌의 첫 수십 명이 어디서 왔는지,
+    사회적기업가 육성사업 요건, 소셜벤처 판별 조건, 지자체 일 따는 조건.
+  </footer>
+
+</div>
