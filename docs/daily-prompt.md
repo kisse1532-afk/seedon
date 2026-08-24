@@ -92,10 +92,21 @@ select p.id, p.title, p.category,
 > 청소년이 "죽고 싶다", "집을 나왔다", "맞고 있다"고 적어도 마찬가지다.
 > 알림 기능을 만드는 건 새 기능이라 로드가 정할 일이고, **그때까지는 사람이 매일 읽어서 메꾼다.**
 
+> **⚠️ 2026.08.24 보강.** 처음엔 "최근 2일치"를 봤는데, 운영 관점이 구멍을 찾았다 —
+> **데일리를 이틀 연속 건너뛰면 첫날 것은 창 밖으로 밀려나 영원히 안 읽힌다.**
+> 그래서 날짜로 자르지 않고 **"아직 처리 안 된 것 전부"**를 본다. 하루를 걸러도 안 새어나간다.
+
 ```sql
+-- 아직 아무도 손대지 않은 것 전부. 며칠이 밀렸든 다 올라온다
 select id, created_at, program_id, message, status
 from help_requests
-where created_at > now() - interval '2 days'
+where status is null or status not in ('contacted', 'completed')
+order by created_at desc;
+
+-- 제보도 같이 본다. 위기 신호일 가능성은 낮지만 안 보면 아무도 모르는 건 똑같다
+select id, created_at, source_type, content, status
+from reports
+where status is null or status <> 'done'
 order by created_at desc;
 ```
 
@@ -148,6 +159,13 @@ order by created_at desc;
 | 관점 | 자기 파일 | 부르기 전에 실장이 할 일 |
 |---|---|---|
 | **조사** | `기관명부` · `기관명부-기업재단` · `대학명부` · **`카드전문`** | 막혔다던 곳을 `fetch-pages.mjs`로 받아 경로를 넘긴다 |
+
+> **틀리면 위험한 칸은 더 자주 다시 연다 — 심리상담 · 주거는 2주에 한 번.**
+> 다른 칸은 한 달에 한 번이면 되지만, 이 둘은 **틀린 전화번호 하나가 갈 곳 없는
+> 청소년을 막다른 길로 보낸다.** 인천 청소년쉼터 8곳을 게시 직전에 내린 것이
+> 정확히 그 경우였다(원문이 2013년 것이었다).
+> 조사 관점이 2026.08.24에 미국 MyFriendBen에서 가져온 방식이다 — 그쪽은 자격 규칙을
+> 2주 주기로 갱신한다. 우리는 규모가 작으니 **위험한 칸만** 그 주기를 쓴다.
 | **제작** | `화면점검` | `shot.mjs`로 화면을 찍어 경로를 넘긴다 (**폰 390 필수**) |
 | **운영** | `약속점검` | 없음 |
 | **검토** | `기회달력` · **`카드전문`** | 없음 (`cards-dump.mjs`가 이미 만들어 뒀다) |

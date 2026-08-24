@@ -185,6 +185,21 @@ export default async function CategoryPage({
             </div>
           </div>
         ))}
+
+        {/* 카드가 두세 장뿐인 칸(주거 2 · 심리상담 3)은 마지막 카드 다음이 바로
+            푸터라 "여기가 끝인가"로 읽힌다. 왜 적은지는 위 안내문이 이미 말해주니
+            여기서는 다음에 할 행동만 준다.
+            검색이 아니라 맞춤추천으로 보낸다 — 빈 검색창은 "뭘 쳐야 하지"로 또 막히고,
+            맞춤추천은 지금 상황을 적기만 하면 되기 때문이다 (제작 관점 제안, 2026.08.24) */}
+        {items.length > 0 && items.length <= 3 && (
+          <Link
+            href="/recommend"
+            className="flex items-center justify-between rounded-2xl border border-dashed border-sage-border bg-white px-4 py-3.5 text-sm font-semibold text-primary-deep transition hover:border-primary/50"
+          >
+            찾는 게 없으면, 지금 상황을 적어보세요
+            <span aria-hidden>→</span>
+          </Link>
+        )}
       </div>
     </div>
   );

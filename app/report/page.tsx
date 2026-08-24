@@ -10,7 +10,10 @@ export default function ReportPage() {
     <div className="max-w-md mx-auto space-y-4">
       <h1 className="text-lg font-bold">제보하기</h1>
       <p className="text-sm text-ink-60">
-        알고 있는 지원 프로그램의 링크나 글을 붙여넣어 주세요. 관리자가 검토 후 등록할게요.
+        {/* 마이페이지에서는 "잘못된 정보 제보하기"로 들어오는데 여기는 새 프로그램
+            제안만 안내하고 있었다. 들어온 사람이 뭘 적어야 할지 몰랐다 (제작 관점, 2026.08.24) */}
+        몰랐던 지원 프로그램을 알려줘도 되고, 이미 올라온 것 중에 틀린 부분이나 안 열리는 링크를 알려줘도 돼요.
+        링크나 글을 붙여넣어 주세요.
       </p>
       <form action={formAction} className="space-y-3">
         <input
