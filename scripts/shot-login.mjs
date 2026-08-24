@@ -24,8 +24,11 @@
  * ----------
  * `seedon_shot` — 사람이 쓰지 않는다. 비밀번호는 이 도구가 처음 돌 때
  * 무작위로 만들어 `.shot-account.json`에 두고, 그 파일은 저장소에 안 올라간다.
- * 이 계정은 `internal_emails`에 미리 넣어둬서 **카드 성적표 집계에서 자동으로 빠진다**
- * (supabase/migrations/20260824_shot_account_internal.sql).
+ * 이 계정은 `internal_emails`에 넣어둬서 **카드 성적표 집계에서 빠진다**
+ * (20260824_shot_account_internal.sql + 20260824_exclude_internal_by_email.sql).
+ * 뒤엣것이 왜 필요했나: 운영자 표시는 프로필이 만들어질 때 붙는데, 이 계정은
+ * 가입만 하고 프로필을 안 만들어서 표시가 안 붙었다. 그래서 메일 주소 목록으로도
+ * 직접 거르게 고쳤다.
  *
  * 쓰는 법
  *   NODE_USE_ENV_PROXY=1 node scripts/shot-login.mjs /community /bookmarks
