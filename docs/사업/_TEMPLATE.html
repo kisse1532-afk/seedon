@@ -1,4 +1,4 @@
-<title>씨드온 데일리 MMDD</title>
+<title>씨드온 사업 보고 MMDD</title>
 <style>
   :root {
     --ground:#faf6ee; --surface:#fff; --mint:#e6f8ef; --line:#e7dfd0; --line-soft:#f0e9db;
@@ -120,132 +120,110 @@
 
   footer{font-size:11.5px;color:var(--meta);border-top:1px solid var(--line);padding-top:16px}
 </style>
+<style>
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+  th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+  th{background:var(--mint);color:var(--ink);font-weight:800;font-size:12px}
+  .wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+  .card + .card{margin-top:14px}
+  .card .h{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:8px;letter-spacing:-.02em}
+  .card p{margin:0;font-size:14px}
+  .card p + p{margin-top:9px}
+  .card.flag{border-left:3px solid var(--alert)}
+  .src{font-size:11.5px;color:var(--meta);margin-top:9px;padding-top:8px;border-top:1px solid var(--line-soft)}
+</style>
+
 
 <!--
-  씨드온 데일리 보고서 — 틀
+  씨드온 사업 보고 — 틀 (전략기획실 전용 · 매주 토요일)
 
-  쓰는 규칙은 docs/daily-prompt.md 5번. 요약하면:
+  왜 데일리와 나눴나 (2026.08.19 로드 지시)
+  ────────────────────────────────────────
+  "그 다섯 팀이랑 전략기획실에서 브리핑하는 거는 다른 자료로 가져와라."
 
-  ⓪ 로드가 모를 단어를 쓰지 않는다. 함수명·파일명·색코드·503·RLS·
-     "반려/제안/반영"·"절대규칙 N번" 전부 금지.
-     2026.08.19에 이걸 어겨 "뭔 개소리인지 하나도 이해가 안 가"를 들었고
-     브리핑을 통째로 다시 썼다. 08.16에도 같은 지적이 있었다.
-     로드가 알고 싶은 건 셋뿐이다 — 화면에서 뭐가 달라졌나 / 그게 왜 문제였나 /
-     나는 뭘 하면 되나. "실장이 한 일"이 아니라 "씨드온이 나아진 것"을 쓴다.
-     어제 문구와 오늘 문구를 나란히 놓는다(.ba 칸).
+  다섯 팀은 "오늘 화면에서 뭐가 달라졌나"이고, 전략기획실은 "씨드온이 어디로
+  가야 하나"다. 한 장에 섞었더니 "카드 문구 고쳤어요" 옆에 "지자체와 계약하려면"이
+  붙어서, 있지도 않은 결정을 로드에게 강요하게 됐다(지역 선정 건 — 통째로 폐기).
 
-  ① 두괄식. 표를 나열하는 건 보고가 아니다.
-     첫 시도가 구역 다섯에 표 여섯을 늘어놓은 것이었고 로드에게
-     "뭔말인지 너무 흩어져 있다"는 지적을 받았다.
-  ② 결정할 것은 하나로 좁힌다. 셋을 나란히 놓으면 셋 다 안 정해진다.
-  ③ 숫자는 판단에 필요한 것만. 다 보여주는 건 판단을 떠넘기는 것이다.
-  ④ 한 화면에서 스크롤 두세 번이면 끝나는 길이. 길면 안 읽힌다.
-  ⑤ 부서 보고를 그대로 옮기지 않는다. 근거 URL을 직접 열어 확인한 것만.
-     보고가 안 온 부서는 "보고 없음"이라고 그대로 쓴다 — 지어내지 말 것.
-
-  올리는 법:
-  1. 이 파일을 스크래치패드에 복사해 내용을 채운다
-  2. 라이트·다크·폰 세 가지로 찍어서 확인 (scratchpad/shot.mjs 방식)
-     — 가로로 밀리면 안 되고, 폰에서 잘리는 글자가 없어야 한다
-  3. Artifact 도구로 올리고 링크를 대화창에 준다
-  4. docs/daily/YYYY-MM-DD.html로 저장하고 커밋
+  쓰는 규칙
+  ────────
+  ⓪ 로드가 모를 단어를 쓰지 않는다. (docs/daily-prompt.md 5번의 표를 그대로 따른다)
+  ① 로드가 실제로 답할 수 있는 것만 묻는다. 근거·선택지·추천까지 다 채워서 낸다.
+     "정해주세요"만 던지면 그건 결정을 떠넘기는 것이다.
+  ② 결정할 것은 하나. 없으면 "이번 주엔 정할 게 없습니다"라고 쓰고 끝낸다.
+     매주 억지로 결정을 만들면 로드가 매주 결정에 시달린다.
+  ③ 마감이 3주 안으로 들어온 기회만 적는다. 그보다 급한 건 데일리에 한 줄로 넘긴다.
+  ④ "이건 원래 어떻게 하는 건가"는 반드시 실제 사례로 답한다. 일반론은 쓰지 않는다.
+  ⑤ 지난주에 로드가 정한 것이 어떻게 됐는지 먼저 적는다. 그게 없으면 보고가 아니라 제안일 뿐이다.
+  ⑥ A4 한 장. 올리기 전에 폰 390px로 찍어 확인한다.
 -->
 
 <div class="page">
 
   <header>
     <div class="top">
-      <span class="date">YYYY.MM.DD 요일 · 데일리</span>
-      <span class="runs">부서 <b>0/6</b> 보고 · 제안 <b>0</b>건 → 반영 <b>0</b> · 보류 <b>0</b></span>
+      <span class="date">YYYY.MM.DD 요일 · 사업 보고</span>
+      <span class="runs">지난주 결정 <b>N건</b> 중 <b>N건</b> 진행</span>
     </div>
-    <!-- 오늘 상태를 한 문장으로. "막힌 건 X다", "오늘 드러난 건 Y다".
-         em 태그는 그 문장에서 제일 중요한 조각 하나에만 쓴다 -->
+    <!-- 이번 주 씨드온이 사업으로서 어디쯤 와 있는지 한 문장 -->
     <h1>결론 한 문장<br><em>제일 중요한 조각</em></h1>
   </header>
 
-  <!-- 오늘의 발견 — 없으면 이 구역을 통째로 뺀다. 억지로 채우지 말 것 -->
+  <!-- ① 지난주에 정한 것이 어떻게 됐나 — 이게 맨 위다 -->
   <section>
-    <h2>오늘의 발견</h2>
-    <div class="finds">
-      <article class="find">
-        <div class="h">무엇이 잘못돼 있었나</div>
-        <p>청소년 입장에서 그게 왜 문제인지. 기술 용어를 쓰지 말 것.</p>
-        <div class="fix">고침 — 그래서 무엇이 달라지나</div>
-      </article>
-    </div>
-  </section>
-
-  <!-- 그래서 정할 것 — 반드시 하나. 결정할 게 없으면 구역을 뺀다 -->
-  <section>
-    <h2>그래서 정할 것 — 하나</h2>
-    <div class="decide">
-      <p class="q">물음 한 줄</p>
-      <p class="why">왜 이걸 정해야 하는지. 근거를 먼저, 부탁을 나중에.</p>
-      <div class="rec">
-        <span class="tag">추천</span>
-        <span class="num">추천하는 것 <span style="white-space:nowrap">(전화번호는 nowrap)</span></span>
-        <p class="note">추천하는 이유와 이걸 골랐을 때 로드가 실제로 할 일.</p>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>숫자</h2>
-    <!-- 판단에 필요한 것만. 안 움직인 숫자는 class="flat"으로 흐리게 -->
-    <div class="figs">
-      <div class="fig"><div class="n">0</div><div class="k">항목 <span style="color:var(--primary-deep)">+0</span></div></div>
-      <div class="fig flat"><div class="n">0</div><div class="k">항목</div></div>
-    </div>
-  </section>
-
-  <section>
-    <h2>팀별</h2>
-    <!-- 6줄 고정. score는 "반영 / 제안". 보고가 안 온 부서는 "보고 없음" -->
-    <div class="teams">
-      <div class="team">
-        <span class="name">리서치</span>
-        <span class="did">무엇을 했는지 한 줄</span>
-        <span class="score">0 / 0</span>
-      </div>
-      <div class="team">
-        <span class="name">전략기획실</span>
-        <span class="did"></span>
-        <span class="score">0 / 0</span>
-      </div>
-      <div class="team">
-        <span class="name">사업운영</span>
-        <span class="did"></span>
-        <span class="score">0 / 0</span>
-      </div>
-      <div class="team">
-        <span class="name">디자인</span>
-        <span class="did"></span>
-        <span class="score">0 / 0</span>
-      </div>
-      <div class="team">
-        <span class="name">CS</span>
-        <span class="did"></span>
-        <span class="score none">보관</span>
-      </div>
-      <div class="team">
-        <span class="name">마케팅</span>
-        <span class="did"></span>
-        <span class="score">0 / 0</span>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>로드가 할 일</h2>
+    <h2>지난주에 정한 것</h2>
     <div class="todo">
       <ul>
-        <li><span class="box"></span><span><b style="color:var(--ink)">제일 중요한 것</b> — 왜 이게 먼저인지</span></li>
-        <li><span class="box"></span><span>그 다음 것 <span class="new">오늘 새로</span></span></li>
+        <li><span class="box"></span><span><b style="color:var(--ink)">무엇을 정했나</b> — 그래서 어떻게 됐나</span></li>
       </ul>
-      <p class="tip">목록이 왜 남아 있는지 한 줄. 없으면 뺀다.</p>
+      <p class="tip">아무것도 안 움직였으면 그렇다고 쓴다. 왜 안 움직였는지도.</p>
     </div>
   </section>
 
-  <footer>부서 보고는 실장이 근거 URL을 직접 열어 확인한 것만 반영 · 숫자는 Supabase 실측치</footer>
+  <!-- ② 이번 주에 밖에서 알아온 것 — 실제 사례만 -->
+  <section>
+    <h2>밖에서 알아온 것</h2>
+    <div class="card">
+      <div class="h">무엇을 알아봤나</div>
+      <p>어디가 / 어떻게 했나 / 그래서 씨드온이 뭘 해야 하나까지.</p>
+      <div class="src">근거: 직접 열어서 문장까지 확인한 것만</div>
+    </div>
+  </section>
+
+  <!-- ③ 지금 열려 있는 기회 — 마감 3주 이상 남은 것만 -->
+  <section>
+    <h2>지금 넣을 수 있는 것</h2>
+    <div class="wrap"><table>
+      <tr><th>무엇</th><th>주최</th><th>마감</th><th>자격</th><th>로드가 할 일</th></tr>
+      <tr><td></td><td></td><td></td><td></td><td></td></tr>
+    </table></div>
+    <p style="font-size:13px;color:var(--meta)">없으면 "이번 주엔 없습니다"라고 쓴다. 억지로 채우지 않는다.</p>
+  </section>
+
+  <!-- ④ 정할 것 — 하나. 없으면 이 구역을 통째로 뺀다 -->
+  <section>
+    <h2>이번 주에 정할 것 — 하나</h2>
+    <div class="decide">
+      <p class="q">물음 한 줄</p>
+      <p class="why">왜 이걸 정해야 하는지. 근거를 먼저, 부탁을 나중에.
+        로드가 이 문단만 읽고 답할 수 있어야 한다.</p>
+      <div class="rec">
+        <span class="tag">제 추천</span>
+        <span class="num">추천하는 것</span>
+        <p class="note">왜 이걸 고르는지와, 정해졌을 때 로드가 실제로 할 일.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑤ 못 한 것 — 정직하게 -->
+  <section>
+    <h2>못 한 것</h2>
+    <div class="card flag">
+      <p>확인 못 한 것, 막힌 것, 틀렸던 것. 숨기지 않는다.</p>
+    </div>
+  </section>
+
+  <footer>근거는 기관·회사 공식 페이지에서 직접 열어 확인한 것만 · 못 본 것은 못 봤다고 적었습니다</footer>
 
 </div>

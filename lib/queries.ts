@@ -12,7 +12,14 @@ export async function fetchProgramsByCategory(category: Category): Promise<Progr
     .select("*")
     .eq("status", "published")
     .eq("category", category)
-    .or(`apply_deadline.is.null,apply_deadline.gte.${today}`);
+    .or(`apply_deadline.is.null,apply_deadline.gte.${today}`)
+    // 순서를 정하지 않으면 DB가 주는 대로 나온다. 교육 칸 11건에서 "이번 회차
+    // 끝남" 카드가 네 번째에, "상시 신청"이 첫 번째에 섞여 있었다. 카드가
+    // 늘수록 제일 급한 것이 아래로 묻힌다.
+    //   ① 지금 열려 있는 것 먼저 (reopen_note가 비어 있는 것)
+    //   ② 그 안에서 마감이 가까운 순. 마감일이 없는 상시 신청은 그 뒤로
+    .order("reopen_note", { ascending: true, nullsFirst: true })
+    .order("apply_deadline", { ascending: true, nullsFirst: false });
 
   if (error || !data) return [];
   return data as Program[];
@@ -45,7 +52,13 @@ export async function fetchProgramsByIds(ids: string[]): Promise<Program[]> {
 
 /** 게시된 프로그램 전부. 추천처럼 카테고리를 가리지 않고 훑어야 하는 화면이 쓴다. */
 export async function fetchPublishedPrograms(): Promise<Program[]> {
-  const { data, error } = await supabase.from("programs").select("*").eq("status", "published");
+  const { data, error } = await supabase
+    .from("programs")
+    .select("*")
+    .eq("status", "published")
+    // 검색 결과도 같은 이유로 순서를 준다 (위 fetchProgramsByCategory 주석 참고).
+    .order("reopen_note", { ascending: true, nullsFirst: true })
+    .order("apply_deadline", { ascending: true, nullsFirst: false });
   if (error || !data) return [];
   return data as Program[];
 }

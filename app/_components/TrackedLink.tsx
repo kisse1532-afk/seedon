@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { trackSource } from "@/lib/track-source";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 
 type TrackedEvent = "category_card_click" | "apply_page_view" | "apply_link_click";
@@ -32,6 +33,9 @@ async function fireTrack(event: TrackedEvent, programId?: string, category?: str
       program_id: programId || null,
       category: category || null,
       user_id: data.user?.id ?? null,
+      /* 우리가 화면을 찍을 때 생긴 기록은 집계에서 빠져야 한다.
+         (2026.08.19 — lib/track-source.ts 설명 참고) */
+      source: trackSource(),
     });
   } catch {
     // 트래킹 실패는 절대 사용자 경험에 영향을 주지 않는다

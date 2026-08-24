@@ -72,11 +72,15 @@ export default async function CategoryPage({
           적은 것이지 우리가 덜 채운 게 아니다. 그 사정을 로드와 실장만 아는
           내부 문서에 적어두고 정작 청소년이 보는 화면에는 안 적고 있었다
           (2026.08.18 디자인팀 지적). 채워지면(4건 이상) 저절로 사라진다. */}
-      {category.slug === "housing" && items.length > 0 && items.length <= 3 && (
-        <p className="rounded-xl border border-sage-border bg-cream px-3.5 py-2.5 text-xs leading-relaxed text-ink-60">
-          혼자서 신청할 수 있는 &lsquo;지낼 곳&rsquo;은 아직 많지 않아요. 계속 찾아서 채울게요.
-        </p>
-      )}
+      {(category.slug === "housing" || category.slug === "culture") &&
+        items.length > 0 &&
+        items.length <= 3 && (
+          <p className="rounded-xl border border-sage-border bg-cream px-3.5 py-2.5 text-xs leading-relaxed text-ink-60">
+            {category.slug === "housing"
+              ? "혼자서 신청할 수 있는 ‘지낼 곳’은 아직 많지 않아요. 계속 찾아서 채울게요."
+              : "지금 볼 수 있는 문화체험은 이만큼이에요. 계속 찾아서 채울게요."}
+          </p>
+        )}
 
       {/* 다른 카테고리로 옮겨 다니는 줄. 화면이 좁으면 옆으로 밀어서 본다. */}
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:px-0">
@@ -181,6 +185,21 @@ export default async function CategoryPage({
             </div>
           </div>
         ))}
+
+        {/* 카드가 두세 장뿐인 칸(주거 2 · 심리상담 3)은 마지막 카드 다음이 바로
+            푸터라 "여기가 끝인가"로 읽힌다. 왜 적은지는 위 안내문이 이미 말해주니
+            여기서는 다음에 할 행동만 준다.
+            검색이 아니라 맞춤추천으로 보낸다 — 빈 검색창은 "뭘 쳐야 하지"로 또 막히고,
+            맞춤추천은 지금 상황을 적기만 하면 되기 때문이다 (제작 관점 제안, 2026.08.24) */}
+        {items.length > 0 && items.length <= 3 && (
+          <Link
+            href="/recommend"
+            className="flex items-center justify-between rounded-2xl border border-dashed border-sage-border bg-white px-4 py-3.5 text-sm font-semibold text-primary-deep transition hover:border-primary/50"
+          >
+            찾는 게 없으면, 지금 상황을 적어보세요
+            <span aria-hidden>→</span>
+          </Link>
+        )}
       </div>
     </div>
   );

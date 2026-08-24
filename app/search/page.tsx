@@ -58,7 +58,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           type="text"
           name="q"
           defaultValue={query}
-          placeholder="지금 어떤 상황인지 적어보세요. 예: 학원비가 부담돼요"
+          placeholder="예: 학원비가 부담돼요"
           className="w-full rounded-control border border-sage-border bg-white px-5 py-3 text-sm text-body focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25"
         />
       </form>
