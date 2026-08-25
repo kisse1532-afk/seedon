@@ -58,13 +58,34 @@ const CAT = {
   "공모전·대회": "contest", "공모전": "contest",
 };
 
-/* 이름에서 id를 만든다. 한글은 못 쓰므로 도메인에서 딴다. */
-function makeId(name, site, notice) {
+/* 이름에서 id를 만든다. 한글은 못 쓰므로 도메인에서 딴다.
+   주소가 없는 곳(전화번호만 아는 자립지원관 등)은 지역+종류로 만든다 —
+   `org`, `org-2`처럼 번호만 붙으면 나중에 아무도 뭐가 뭔지 모른다. */
+const REGION = {
+  서울:"seoul", 부산:"busan", 대구:"daegu", 인천:"incheon", 광주:"gwangju", 대전:"daejeon",
+  울산:"ulsan", 세종:"sejong", 경기:"gyeonggi", 강원:"gangwon", 충북:"chungbuk", 충남:"chungnam",
+  전북:"jeonbuk", 전남:"jeonnam", 경북:"gyeongbuk", 경남:"gyeongnam", 제주:"jeju", 전국:"kr",
+};
+const KIND = [
+  ["자립지원관","jarip"], ["상담복지센터","counsel"], ["활동진흥센터","activity"],
+  ["청소년재단","youthfnd"], ["수련관","training"], ["장학재단","scholar"],
+  ["복지재단","welfare"], ["재단","fnd"], ["쉼터","shelter"], ["센터","center"],
+];
+
+function makeId(name, site, notice, region) {
   const host = (() => {
-    try { return new URL(site || notice).hostname.replace(/^www\./, ""); } catch { return ""; }
+    try { return new URL(site || notice).hostname; } catch { return ""; }
   })();
-  const base = host ? host.split(".")[0] : name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-  return (base || "org").slice(0, 40);
+  if (host) {
+    // www, www2 같은 앞머리는 버린다 — 그걸 id로 쓰면 뭐가 뭔지 모른다
+    // www·www2 같은 앞머리와 숫자만 있는 조각(1388.cbyouth.net의 "1388")은 버린다
+    const parts = host.split(".").filter((x) => !/^www\d*$/.test(x) && !/^\d+$/.test(x));
+    if (parts.length) return parts[0].slice(0, 40);
+  }
+  // 주소가 없으면 지역 + 종류로 만든다
+  const r = REGION[region] || "kr";
+  const k = KIND.find(([ko]) => name.includes(ko))?.[1] || "org";
+  return `${r}-${k}`;
 }
 
 const rows = [];
@@ -79,14 +100,16 @@ for (const line of raw.split(/\r?\n/)) {
 
   const categories = (cats || "").split(/\s*,\s*/).map((x) => CAT[x] || null).filter(Boolean);
   rows.push({
-    id: makeId(name, site, notice_url),
+    id: makeId(name, site, notice_url, region),
     name,
     org_type: org_type || "미상",
     region: region || "전국",
     categories: categories.length ? categories : null,
     site: site || null,
     notice_url: notice_url || null,
-    reachable: "unknown",
+    reachable: /실장 확인 200/.test(note || "") ? "open"
+             : /실장 확인 (503|연결 안 됨)/.test(note || "") ? "blocked"
+             : "unknown",
     harvest_cycle: "monthly",
     programs_found: 0,
     note: note || null,
