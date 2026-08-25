@@ -128,9 +128,21 @@ const JARGON = ["중위소득", "소득인정액", "가구원", "산정", "선�
 // 있었는데 설명·신청방법만 보던 때는 안 걸렸다 (2026.08.19).
 const textOf = (p) =>
   `${p.description || ""} ${p.apply_method || ""} ${JSON.stringify(p.apply_steps || "")}`;
-const hit = (words) => programs.filter((p) => words.some((w) => textOf(p).includes(w)));
+/* 제도 고유명사는 **풀어 쓰면 써도 된다**(CLAUDE.md 절대규칙 3):
+   "Wee센터에 가서 '의뢰서'라는 서류를 받아요"처럼.
+   그런데 기계는 단어만 보고 걸러내서, 이미 제대로 풀어 쓴 카드 하나가
+   며칠째 헛경보로 떠 있었다. 헛경보가 계속 뜨면 사람이 경보를 안 보게 된다.
+   그래서 **그 자리에서 풀어준 경우는 안 센다** — 따옴표로 묶여 있거나
+   바로 뒤에 "라는/이라는"이 붙으면 청소년이 뜻을 알 수 있다는 뜻이다. */
+const explained = (text, w) =>
+  new RegExp(`["'\u2018\u2019\u201c\u201d]${w}["'\u2018\u2019\u201c\u201d]|${w}(이)?라는`).test(text);
+const hit = (words, allowExplained = false) =>
+  programs.filter((p) => {
+    const t = textOf(p);
+    return words.some((w) => t.includes(w) && !(allowExplained && explained(t, w)));
+  });
 const stigma = hit(STIGMA);
-const jargon = hit(JARGON);
+const jargon = hit(JARGON, true);  // 풀어 쓴 것은 빼고 센다
 const formal = programs.filter((p) => /(합니다|됩니다|을 대상으로|를 대상으로)/.test(textOf(p)));
 
 console.log(`docs/카드전문.md 만들었어요 (${today})`);
