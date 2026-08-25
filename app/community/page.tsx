@@ -33,6 +33,20 @@ export default async function CommunityPage() {
         </p>
       </div>
 
+      {/* 글이 0개면 이 칸이 통째로 사라져서, 커뮤니티를 열었는데 "먼저 해본 친구들
+          이야기"라는 말만 위에 있고 그 자리에는 아무것도 없었다. 첫 사람이 쓸 수
+          있다는 말을 안 해주면 아무도 안 쓴다 (제작 관점, 2026.08.25).
+          문구는 새로 짓지 않고 프로그램 상세의 후기 칸에 이미 쓰던 것을 옮겼다. */}
+      {reviews.length === 0 && (
+        <section className="space-y-3">
+          <h2 className="text-sm font-semibold text-ink-60">먼저 해본 친구들 이야기</h2>
+          <p className="rounded-2xl border border-dashed border-sage-border bg-white px-4 py-8 text-center text-sm leading-relaxed text-meta">
+            아직 이야기가 없어요. 프로그램을 해봤다면 뒤에 올 친구를 위해
+            한두 줄 남겨줄래요? 프로그램을 열면 맨 아래에서 쓸 수 있어요.
+          </p>
+        </section>
+      )}
+
       {reviews.length > 0 && (
         <section className="space-y-3">
           <h2 className="text-sm font-semibold text-ink-60">먼저 해본 친구들 이야기</h2>

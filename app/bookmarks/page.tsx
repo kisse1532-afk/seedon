@@ -111,10 +111,22 @@ export default function BookmarksPage() {
 
 
       <div className="grid gap-3">
+        {/* "카드 오른쪽 위 책갈피를 누르라"고만 했는데 정작 이 화면에는 카드가
+            하나도 없다. 말만 하고 데려다주지 않으니 막다른 길이었다
+            (제작 관점, 2026.08.25). */}
         {loaded && programs.length === 0 && (
-          <p className="text-sm text-meta py-8 text-center">
-            아직 북마크한 프로그램이 없어요. 카드 오른쪽 위 책갈피 아이콘을 눌러 저장해보세요.
-          </p>
+          <div className="space-y-3 py-8 text-center">
+            <p className="text-sm text-meta">
+              아직 저장한 프로그램이 없어요. 마음에 드는 걸 찾으면
+              오른쪽 위 책갈피를 눌러 여기 모아둘 수 있어요.
+            </p>
+            <Link
+              href="/"
+              className="inline-block rounded-full bg-primary-deep px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-110"
+            >
+              프로그램 보러 가기 →
+            </Link>
+          </div>
         )}
         {programs.map((p) => {
           // 저장해둔 사이에 마감됐거나 내려간 것. 지우지는 않는다 — 본인이 저장한

@@ -45,7 +45,9 @@ const TYPE = { foundation:"재단", corporate:"기업재단", public:"공공", n
                socialventure:"소셜벤처", assoc:"협회", local:"지역거점", university:"대학" };
 const CAT  = { education:"교육", counseling:"심리상담", housing:"주거", living:"경제·생활비",
                career:"진로·취업", culture:"문화체험", contest:"공모전·대회" };
-const REACH= { open:"열림", blocked:"막힘", login:"로그인 필요", unknown:"미확인" };
+/* 'n/a' = 공고 게시판이 아예 없는 곳(예: 소비자용 앱). "미확인"으로 두면
+   부서가 없는 것을 영원히 찾아 헤맨다 (2026.08.25). */
+const REACH= { open:"열림", blocked:"막힘", login:"로그인 필요", "n/a":"게시판 없음", unknown:"미확인" };
 
 const today = new Date().toISOString().slice(0,10);
 const daysAgo = (d) => d ? Math.round((Date.parse(today) - Date.parse(d)) / 86400000) : null;
