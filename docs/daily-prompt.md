@@ -75,6 +75,16 @@ select p.id, p.title, p.category,
 ## 2. 헬스체크 + ⚠️ 자동 조임 확인
 
 - **가입자 수를 반드시 확인한다.** `org_system.md` 1-3의 자동 조임 규칙이 여기서 걸린다
+- **⚠️ 운영자 계정은 빼고 센다.** 2026.08.24에 화면 촬영용 계정을 하나 만들었더니
+  다음 날 "가입자 1명"으로 잡혔다. 그대로 셌으면 아무도 안 왔는데 자동 조임이
+  걸릴 뻔했다. **숫자가 늘면 먼저 누구인지부터 본다.**
+
+```sql
+select u.email, u.created_at,
+  exists(select 1 from public.internal_emails ie where lower(ie.email)=lower(u.email)) as 운영자목록에있나
+from auth.users u order by u.created_at desc;
+```
+
 
 | 조건 | 조치 (로드 승인 불필요, 즉시 적용) |
 |---|---|
