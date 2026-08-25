@@ -1,4 +1,4 @@
-<title>씨드온 조직 점검</title>
+<title>씨드온 팀 성적표</title>
 <style>
   :root {
     --ground:#faf6ee; --surface:#fff; --mint:#e6f8ef; --line:#e7dfd0; --line-soft:#f0e9db;
@@ -128,192 +128,210 @@
   /* 체크박스 옆 내용은 한 덩어리여야 한다. 안 감싸면 폰에서 글이 세로로 쪼개진다 */
   .todo li > .t{flex:1 1 auto;min-width:0}
 </style>
+<style>
+  .team-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;
+             padding:20px 20px 18px;box-shadow:var(--shadow);margin-top:14px}
+  .team-card .top2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .team-card h3{margin:0;font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+  .team-card h3 small{font-size:12px;font-weight:600;color:var(--meta);margin-left:7px}
+  .score{font-size:26px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .score small{font-size:13px;font-weight:700;color:var(--meta)}
+  .s-hi{color:var(--primary-deep)} .s-mid{color:var(--ink)} .s-lo{color:var(--alert)}
+  .rows{margin-top:13px;display:flex;flex-direction:column;gap:9px}
+  .row2{display:grid;grid-template-columns:76px 1fr;gap:11px;align-items:baseline;font-size:13.5px}
+  @media(max-width:560px){.row2{grid-template-columns:1fr;gap:2px}}
+  .row2 .k2{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--meta);padding-top:2px}
+  .row2 b{color:var(--ink)}
+  .bar{height:7px;border-radius:99px;background:var(--line-soft);overflow:hidden;margin-top:12px}
+  .bar i{display:block;height:100%;border-radius:99px;background:var(--primary)}
+  .bar i.warn{background:var(--alert)}
+</style>
 <div class="page">
 
   <header>
     <div class="top">
-      <span class="date">2026.08.25 · 팀장 보고 · 8일치(8/18~8/25) 기록으로</span>
-      <span class="runs">데일리 <b>5/8</b>일 성공 · 커밋 <b>46</b>건 · 도구 <b>13</b>개</span>
+      <span class="date">2026.08.25 · 팀장 보고 · 8일치(8/18~8/25)</span>
+      <span class="runs">네 팀 평균 <b>7.0</b> · 협업 <b>3.0</b> · 실장 <b>5.0</b></span>
     </div>
-    <h1>조직이 <em>운영하는 대상보다 커졌어요.</em><br>카드 42장에 쓰는 사람 0명인데, 도구가 13개예요.</h1>
+    <h1>팀은 각자 제 몫을 해요.<br><em>서로 주고받는 게 안 돼요 — 전부 저를 거칩니다.</em></h1>
   </header>
 
   <section>
-    <h2>팀장 판단 — 세 줄</h2>
+    <h2>한눈에</h2>
     <div class="todo">
       <ul>
-        <li><span class="box"></span><span class="t"><b>일하는 방식 자체는 돌아가요.</b> 지난 8일에
-        청소년에게 낙인이 될 뻔한 문구를 <b>3건</b> 잡았고, 화면이 한 말과 실제가 다른 걸 <b>6건</b> 고쳤어요.
-        이건 사람 혼자서는 못 찾았을 것들이에요.</span></li>
-        <li><span class="box"></span><span class="t"><b>그런데 병목이 저예요.</b> 관점 넷은 동시에 돌지만
-        확인·반영·보고가 전부 저 한 명을 거쳐요. 8일 중 <b>3일은 데일리가 아예 안 나갔어요</b> —
-        관점이 게을러서가 아니라 제가 못 따라가서요.</span></li>
-        <li><span class="box"></span><span class="t"><b>제일 정직하게 말씀드릴 것은 이거예요.</b>
-        우리는 <b>서비스를 좋게 만드는 데보다 서비스를 관리하는 체계를 만드는 데 시간을 더 쓰고 있어요.</b>
-        로드가 정한 목표는 "아이디어 경진대회에서 할 정도"인데, 지금 조직은 그보다 큽니다.</span></li>
+        <li><span class="box"></span><span class="t"><b>네 팀 각자는 7점대예요.</b> 맡은 일을 안 하는 팀은 없어요.
+        제일 높은 건 <b>운영(8점)</b> — 3일 연속으로 바로 고칠 수 있는 걸 찾아왔어요.</span></li>
+        <li><span class="box"></span><span class="t"><b>제일 낮은 건 팀끼리 주고받는 것 — 3점이에요.</b>
+        8일 동안 팀 사이에 넘어간 일이 <b>4건</b>인데 <b>4건 다 제가 손으로 옮겼어요.</b>
+        팀끼리 직접 주고받은 건 <b>0건</b>입니다.</span></li>
+        <li><span class="box"></span><span class="t"><b>제 점수가 5점으로 제일 낮아요.</b>
+        8일 중 3일 브리핑을 못 냈고, 검토팀에게 매일 하라고 정해둔 일 하나를 8일 내내 안 시켰어요.</span></li>
       </ul>
     </div>
   </section>
 
   <section>
-    <h2>숫자로 본 지금</h2>
-    <div class="figs">
-      <div class="fig"><div class="n">4</div><div class="k">지금 도는 관점</div></div>
-      <div class="fig flat"><div class="n">2</div><div class="k">꺼둔 것 (마케팅·CS)</div></div>
-      <div class="fig"><div class="n">13</div><div class="k">도구 <span style="color:var(--primary-deep)">최근 8일에 +8</span></div></div>
-      <div class="fig"><div class="n">46</div><div class="k">8/16 이후 고친 것</div></div>
-      <div class="fig flat"><div class="n">0</div><div class="k">쓰는 사람</div></div>
+    <h2>팀별 성적표</h2>
+
+    <div class="team-card">
+      <div class="top2">
+        <h3>조사 <small>옛 리서치팀 · 정보가 사실인가</small></h3>
+        <span class="score s-mid">6<small>/10</small></span>
+      </div>
+      <div class="bar"><i style="width:60%"></i></div>
+      <div class="rows">
+        <div class="row2"><span class="k2">과업</span><span>매일 ① 카드 문구 전수 훑기 ② 이미 올린 카드 링크 3건 이상 직접 열기 ③ 새 프로그램 찾기(하루 5건 이내) ④ 일하는 방식 하나 고치기</span></div>
+        <div class="row2"><span class="k2">잘한 것</span><span><b>억지로 안 채웠어요.</b> 사흘 연속 "새 카드 0건"을 냈는데 매번 이유가 맞았어요 —
+        이미 있는 것과 겹치거나, 청소년이 아니라 시설이 신청하는 것이거나, 서울에만 되는 것이었죠.
+        <b>숙제 둘도 원문으로 풀었어요</b>(자립수당 전화번호 1855-2455, 저축계좌 소득조건).
+        여가부 자료를 공공데이터포털에서 받는 우회로도 이 팀이 찾았어요.</span></div>
+        <div class="row2"><span class="k2">못한 것</span><span><b>①번을 놓쳤어요.</b> 오늘 신청 단계에 있던 "가정형편 등 확인"을
+        <b>전수 훑기를 하고도 "위반 없음"이라고 냈어요.</b> 제가 따로 훑다가 찾았습니다.<br>
+        <b>④번을 사흘 연속 못 했어요</b> — 매번 "고칠 도구가 없어서 실장이 해달라"로 끝났어요.</span></div>
+        <div class="row2"><span class="k2">고칠 것</span><span>전수 훑기가 <b>기계 목록에만 의존</b>하고 있었어요.
+        목록에 없는 말은 사람이 봐야 하는데 그 단계가 없었습니다.</span></div>
+      </div>
+    </div>
+
+    <div class="team-card">
+      <div class="top2">
+        <h3>제작 <small>옛 디자인팀 · 화면이 제대로 보이나</small></h3>
+        <span class="score s-mid">7<small>/10</small></span>
+      </div>
+      <div class="bar"><i style="width:70%"></i></div>
+      <div class="rows">
+        <div class="row2"><span class="k2">과업</span><span>매일 아직 안 본 화면을 점검한다 — <b>사진 없이 "점검 완료"라고 쓰면 무효</b></span></div>
+        <div class="row2"><span class="k2">잘한 것</span><span><b>사진 규칙을 100% 지켰어요.</b> 8월 22일에 제가 사진을 잘못 찍어 보냈는데
+        <b>"이 사진 다섯 장은 전부 깨져 있다"고 정확히 판정하고 판단을 거부했어요.</b>
+        받은 걸 그냥 통과시키지 않은 겁니다.<br>
+        <b>"사진 보고 안 것"과 "코드만 보고 짐작한 것"을 매번 나눠 적어요.</b> 이게 제일 믿을 만한 습관이에요.</span></div>
+        <div class="row2"><span class="k2">못한 것</span><span>헛짚은 게 2건 있었는데 <b>둘 다 제 도구 탓</b>이라 팀 감점은 작아요
+        (화면이 다 안 그려진 채 찍힌 사진을 보고 "버튼이 없다"고 함).
+        일하는 방식 고치기는 이 팀도 매번 "도구가 없어서" 못 했어요.</span></div>
+        <div class="row2"><span class="k2">고칠 것</span><span>이 팀 잘못이 아니라 <b>제가 주는 사진의 품질</b>이 점수를 깎았어요.
+        오늘 로그인한 화면까지 제대로 찍히게 고쳤습니다.</span></div>
+      </div>
+    </div>
+
+    <div class="team-card">
+      <div class="top2">
+        <h3>운영 <small>옛 사업운영팀 · 화면이 한 말을 지키나</small></h3>
+        <span class="score s-hi">8<small>/10</small></span>
+      </div>
+      <div class="bar"><i style="width:80%"></i></div>
+      <div class="rows">
+        <div class="row2"><span class="k2">과업</span><span>화면이 "이렇게 해드려요"라고 적은 문장을 뽑아, <b>서비스가 진짜 그렇게 하는지</b> 코드로 대조한다</span></div>
+        <div class="row2"><span class="k2">잘한 것</span><span><b>사흘 연속으로 그날 바로 고칠 수 있는 걸 찾아왔어요.</b>
+        8/22에 찾은 <b>"도움 요청이 저장만 되고 아무한테도 안 알려진다"</b>가 8일 중 제일 큰 발견이에요 —
+        청소년이 "죽고 싶다"고 적어도 아무도 모르는 상태였어요.<br>
+        8/24 <b>"지금 사이트에 옛 문장이 떠 있다"</b>, 8/25 <b>"챗봇이라고 했는데 실제로는 메뉴 고르기"</b>도 다 맞았어요.</span></div>
+        <div class="row2"><span class="k2">못한 것</span><span>일하는 방식 고치기가 <b>"확인만 하고 새로 만든 건 없다"</b>로 약했어요.
+        본업이 워낙 잘 돌아서 상대적으로 눈에 띄는 정도예요.</span></div>
+        <div class="row2"><span class="k2">고칠 것</span><span>없어요. 이 팀은 이대로 두면 됩니다.</span></div>
+      </div>
+    </div>
+
+    <div class="team-card">
+      <div class="top2">
+        <h3>검토 <small>옛 전략기획실 · 로드 고문</small></h3>
+        <span class="score s-mid">7<small>/10</small></span>
+      </div>
+      <div class="bar"><i style="width:70%"></i></div>
+      <div class="rows">
+        <div class="row2"><span class="k2">과업</span><span>매일 ① 새 지원사업 찾기(마감 3주 이상 남은 것만) ② <b>어제 나간 문구를 중학생이 읽을 수 있나 판정</b> ③ 일하는 방식 하나 고치기</span></div>
+        <div class="row2"><span class="k2">잘한 것</span><span><b>「모두의 창업」 마감을 공고문 원문에서 확인</b>했어요.
+        주최 사이트가 막히자 <b>부처 공고 목록 → 대학이 다시 올린 PDF</b>로 돌아가서 뚫었고, 그 길을 문서에 남겼어요.
+        오늘은 <b>신청서 초안</b>을 로드가 그대로 옮겨 적을 수 있게 써왔고요.</span></div>
+        <div class="row2"><span class="k2">못한 것</span><span><b>②번을 8일 동안 0번 했어요.</b> 매일 하라고 정해둔 일인데
+        한 번도 안 했습니다. <b>제가 프롬프트에 안 넣었어요 — 팀 잘못이 아니라 제 잘못이에요.</b><br>
+        중간에 한 번 죽어서 그날 몫이 통째로 없어지기도 했어요.</span></div>
+        <div class="row2"><span class="k2">고칠 것</span><span>②번은 <b>CS팀을 끄면서 이 팀이 넘겨받은 일</b>인데,
+        넘겨받은 걸 제가 잊었어요. 절대규칙 3번(중학생이 읽을 수 있어야 한다)을 지키는 유일한 장치입니다.</span></div>
+      </div>
     </div>
   </section>
 
   <section>
-    <h2>잘 도는 것 넷</h2>
-
+    <h2>협업 — 제일 낮은 3점</h2>
     <div class="chg">
-      <div class="h">① 관점을 나눠두니 서로 다른 걸 찾아와요</div>
-      <p>같은 화면을 봐도 <b>보는 자리가 다르면 다른 게 보입니다.</b> 어제·오늘만 봐도 —
-      <b>운영</b>은 "사이트에 옛 문장이 떠 있다"를, <b>제작</b>은 "저장한 게 없을 때 갈 곳이 없다"를,
-      <b>조사</b>는 "이 카드에 소득 조건이 빠졌다"를, <b>검토</b>는 "신청서를 이렇게 쓰면 된다"를 가져왔어요.
-      한 명이 다 보려고 하면 이렇게 안 나옵니다.</p>
-    </div>
-
-    <div class="chg">
-      <div class="h">② 부서에게 손을 안 준 게 사고를 막았어요</div>
-      <p>여섯 부서 전부 <b>읽기만 되고 고치지는 못합니다.</b> 처음엔 불편해 보였는데,
-      실제로 사고를 막았어요 — 8월 19일에 한 부서가 <b>글자가 깨진 페이지를 읽고 존재하지 않는 프로그램 이름을
-      지어냈습니다.</b> 같은 주소를 두 번 줬는데 두 번 다 다른 가짜 목록이 나왔어요.
-      그게 바로 올라갔으면 청소년이 없는 사업을 신청하러 갔을 겁니다.</p>
-      <p class="why">그래서 이 구조는 유지할 생각입니다. <b>다만 이게 아래 「병목」의 원인이기도 해요.</b></p>
-    </div>
-
-    <div class="chg">
-      <div class="h">③ 관점이 못 하는 걸 도구로 메우는 게 실제로 돌아요</div>
-      <p>도구 13개 중 <b>8개가 최근 8일에 생겼어요.</b> 전부 "관점이 이건 못 하더라"에서 나왔습니다 —
-      화면을 못 보니 찍어주고(<b>shot</b>), 로그인한 화면을 못 보니 로그인시켜 찍어주고(<b>shot-login</b>),
-      막힌 페이지를 못 여니 대신 받아주고(<b>fetch-pages</b>), 카드 문구를 일일이 못 보니 전문을 뽑아주고(<b>cards-dump</b>).</p>
-      <p class="why">오늘도 하나 늘었어요 — 로드가 일주일 부탁받던 기관 명단 253곳을 받아오는 도구(<b>fetch-opendata</b>).</p>
-    </div>
-
-    <div class="chg">
-      <div class="h">④ 브리핑을 로드 말로 다시 쓴 게 효과가 있었어요</div>
-      <p>8월 19일에 "뭔 개소리인지 하나도 이해가 안 가"를 듣고 브리핑을 통째로 다시 썼어요.
-      <b>금지 단어 목록</b>(함수 이름·색 코드·503·"반려/제안/반영")과 <b>맥락 주는 규칙</b>
-      ("숫자가 뭘 센 건지 먼저 말한다")을 문서에 박아뒀습니다. 그 뒤로 같은 지적은 안 나왔어요.</p>
+      <div class="h">규칙은 있는데 길이 없어요</div>
+      <p>직무 정의서에 <b>누가 누구에게 넘긴다</b>가 다 적혀 있어요 —
+      조사가 새로 쓴 문구는 운영에게, 제작이 만든 화면 문구는 운영·검토에게,
+      운영이 거짓을 찾으면 그 팀에게, 검토가 허점을 찾으면 그 팀에게.</p>
+      <div class="ba">
+        <div class="col before">
+          <span class="lbl">8일 동안 실제로 넘어간 일</span>
+          <span class="txt">4건</span>
+        </div>
+        <div class="col before">
+          <span class="lbl">그중 팀끼리 직접</span>
+          <span class="txt">0건 — 4건 다 제가 손으로 옮겼어요</span>
+        </div>
+      </div>
+      <p style="margin-top:12px">거의 모든 보고서 끝에 <b>"받은 인계: 없음"</b>이 적혀 있어요.
+      팀은 서로를 볼 수 없거든요 — <b>같은 방에 있지 않고, 각자 저한테만 말합니다.</b></p>
+      <p class="why"><b>이게 왜 문제냐면</b> — 운영이 8/24에 "이 카드에 전화번호가 없다"를 찾았는데,
+      조사가 그걸 받아 푼 건 <b>다음 날</b>이에요. 제가 밤에 옮겨 적었기 때문입니다.
+      팀이 넷인데 <b>실제로는 네 개의 일이 저를 거쳐 한 줄로 지나갑니다.</b>
+      팀을 늘려도 이 줄이 안 넓어지면 아무 소용이 없어요.</p>
     </div>
   </section>
 
   <section>
-    <h2>안 도는 것 넷 — 이게 진짜 보고서예요</h2>
-
+    <h2>실장(저) — 5점</h2>
     <div class="chg">
-      <div class="h">① 8일 중 3일은 데일리가 아예 안 나갔어요</div>
-      <div class="ba">
-        <div class="col before">
-          <span class="lbl">나간 날</span>
-          <span class="txt">8/18 · 8/19 · 8/20 · 8/24 · 8/25</span>
-        </div>
-        <div class="col before">
-          <span class="lbl">안 나간 날</span>
-          <span class="txt">8/21 · 8/22 · 8/23</span>
-        </div>
-      </div>
-      <p style="margin-top:12px">8/21은 조직 문서 고치는 데 하루를 다 썼고, 8/22는 <b>관점 셋이 보고까지 다 했는데
-      제가 브리핑을 못 만들어서 안 나갔고</b>, 8/23은 통째로 건너뛰었어요.</p>
-      <p class="why"><b>원인은 저입니다.</b> 관점 넷은 동시에 돌지만, 그 뒤가 전부 한 줄로 저를 지나갑니다 —
-      보고 읽기 → 근거 URL 직접 열어 확인 → 코드·DB 반영 → 빌드 → 화면 찍어 확인 → 커밋 → 브리핑 두 개.
-      관점을 늘려도 여기가 안 넓어지면 아무 소용이 없어요.</p>
-    </div>
-
-    <div class="chg">
-      <div class="h">② 예전엔 제안이 쌓이기만 했어요</div>
-      <div class="ba">
-        <div class="col before">
-          <span class="lbl">여섯 팀이던 때 (8/16~18)</span>
-          <span class="txt">제안 63건 → 반영 17건<br>
-          <span style="font-weight:500">나머지 46건은 "나중에"로 갔고 대부분 다시 안 열렸어요</span></span>
-        </div>
-        <div class="col after">
-          <span class="lbl">네 관점으로 바꾼 뒤 (8/24~25)</span>
-          <span class="txt">확인해서 반영 16건 · 아니라서 뺀 것 3건<br>
-          <span style="font-weight:500">"나중에"가 없어졌어요</span></span>
-        </div>
-      </div>
-      <p class="why">세는 기준이 달라진 건 감안해야 해요 — 예전엔 <b>올라온 제안 전부</b>를 셌고,
-      지금은 <b>제가 근거를 직접 열어 확인한 것</b>만 셉니다.
-      그래도 방향은 분명해요: <b>많이 내는 것보다 확인할 수 있게 내는 게 낫습니다.</b>
-      관점을 줄인 게 아니라 <b>요청을 구체적으로 준 것</b>이 효과였어요.</p>
-    </div>
-
-    <div class="chg">
-      <div class="h">③ 관점이 "막혔다"고 하는 것의 대부분이 안 막혀 있어요</div>
-      <p>부서가 쓰는 도구로는 기관 사이트가 안 열리는데, 제가 다른 방법으로 열면 열립니다. <b>매일 반복돼요.</b></p>
-      <div class="ba">
-        <div class="col before"><span class="lbl">8월 18일</span><span class="txt">여섯 곳 다 사실은 열림</span></div>
-        <div class="col before"><span class="lbl">8월 19일</span><span class="txt">열세 곳 중 아홉 곳</span></div>
-        <div class="col before"><span class="lbl">8월 20일</span><span class="txt">여덟 곳 중 일곱 곳</span></div>
-        <div class="col before"><span class="lbl">8월 25일</span><span class="txt">다섯 곳 중 네 곳</span></div>
-      </div>
-      <p class="why"><b>부서 잘못이 아니에요.</b> 도구 차이입니다. 문제는 이걸 8일째 알면서도
-      <b>부서가 여전히 같은 도구로 시도하고 매일 같은 오보를 낸다</b>는 것이에요.
-      제가 뒤에서 다시 확인하는 절차만 만들어뒀는데, 그건 병목(①번)을 더 키웁니다.
-      <b>원인을 안 고치고 제가 뒤치다꺼리하고 있었어요.</b></p>
-    </div>
-
-    <div class="chg">
-      <div class="h">④ 부서 설명서가 조직과 안 맞고, 관점이 자꾸 죽어요</div>
-      <p><b>설명서</b> — 부서 파일 6개가 전부 <b>옛 팀 이름</b>(리서치팀·디자인팀·사업운영팀·전략기획실)으로 돼 있어요.
-      조직은 8월 21일에 네 관점으로 바뀌었는데 파일은 그대로예요.
-      그래서 <b>매일 제가 프롬프트에 "당신은 이제 OO 관점입니다"를 손으로 적어 덮어쓰고 있습니다.</b>
-      꺼둔 둘(마케팅·CS)도 파일이 살아 있어서 실수로 부를 수 있어요.</p>
-      <p style="margin-top:11px"><b>죽는 것</b> — 8/20에 하나가 서버 오류로, 8/25에 둘이 컨테이너 재시작으로 죽었어요.
-      오늘은 하나가 기록이 5MB로 부풀어 되살리지 못하고 다시 띄웠습니다.
-      <b>죽으면 그날 그 관점 몫이 통째로 없어집니다.</b></p>
+      <div class="h">팀보다 제가 문제예요</div>
+      <p><b>① 8일 중 3일 브리핑을 못 냈어요</b>(8/21·22·23). 특히 8/22는
+      <b>팀 셋이 보고까지 다 끝냈는데 제가 브리핑을 못 만들어서</b> 그날 일이 통째로 안 나갔어요.<br>
+      <b>② 검토팀에게 매일 시켜야 할 일 하나를 8일 내내 안 시켰어요</b>(문구 난이도 판정).<br>
+      <b>③ 헛보고 원인을 8일 동안 안 고쳤어요.</b> 팀이 "사이트가 막혔다"고 하는 게 대부분 안 막힌 건 줄
+      알면서도, 원인을 고치는 대신 <b>제가 매번 다시 확인하는 방식</b>으로 때웠어요. 그게 제 시간을 더 잡아먹었고요.</p>
     </div>
   </section>
 
   <section>
-    <h2>그래서 바꿀 것 — 제가 할 것 둘</h2>
+    <h2>개선점 — 모두 7개, 오늘 4개 고쳤어요</h2>
     <div class="todo">
       <ul>
-        <li><span class="box"></span><span class="t"><b>부서 설명서 6개를 네 관점으로 다시 씁니다.</b>
-        꺼둔 둘은 파일 이름에 "안 씀"을 붙여 실수로 못 부르게 하고요.
-        그 안에 <b>"사이트가 안 열리면 그건 우리 쪽 문제다. 미리 받아둔 파일부터 봐라"</b>를 박아서
-        ③번의 헛보고를 뿌리에서 줄이겠습니다. <b>되돌리는 법: 그 커밋 revert</b></span></li>
-        <li><span class="box"></span><span class="t"><b>제가 하는 일 중 기계가 할 수 있는 걸 계속 도구로 뺍니다.</b>
-        지금까지 8개를 그렇게 만들었고, 그게 ①번 병목을 넓히는 유일한 방법이에요.
-        다음은 <b>"오늘 볼 URL을 부서 부르기 전에 미리 다 받아두는 것"</b>입니다.</span></li>
+        <li><span class="box">✓</span><span class="t"><b>① 부르기 전에 미리 받아두기</b> — 헛보고 원인을 뿌리에서 끊었어요.
+        오늘 시험: 볼 곳 4곳 전부 받아짐 <b>(완료)</b></span></li>
+        <li><span class="box">✓</span><span class="t"><b>② 팀 설명서를 지금 조직에 맞추기</b> — 매일 제가 손으로 덮어쓰던 걸 없앴어요.
+        꺼둔 두 팀은 실수로 못 부르게 막았고요 <b>(완료)</b></span></li>
+        <li><span class="box">✓</span><span class="t"><b>③ "잘 돌아간다"를 숫자로 재기</b> — 다섯 항목 자기 채점을 매일 브리핑에 넣습니다 <b>(완료)</b></span></li>
+        <li><span class="box">✓</span><span class="t"><b>④ 낙인 단어 목록 보강</b> — "가정형편"이 없어서 며칠 놓쳤던 것 <b>(완료)</b></span></li>
+        <li><span class="box"></span><span class="t"><b>⑤ 검토팀에게 문구 판정을 매일 시키기</b> — 내일 프롬프트부터. <b>1일</b></span></li>
+        <li><span class="box"></span><span class="t"><b>⑥ 팀끼리 직접 넘기는 길 만들기</b> — 지금은 전부 저를 거쳐요.
+        어제 보고에서 나온 인계를 <b>기계가 다음 날 프롬프트에 자동으로 붙이게</b> 하면 됩니다. <b>2~3일</b></span></li>
+        <li><span class="box"></span><span class="t"><b>⑦ 팀이 죽어도 그날 몫이 안 없어지게</b> — 지금은 죽으면 통째로 날아가요.
+        중간 결과를 남기게 하면 됩니다. <b>2일</b></span></li>
       </ul>
+      <p class="tip">남은 셋은 <b>5일이면 끝나요.</b> 「모두의 창업」 마감(9/17)까지 여유 있습니다.</p>
     </div>
   </section>
 
   <section>
-    <h2>로드가 정할 것 — 하나</h2>
+    <h2>그래서 「돌릴 수준」이 되나요</h2>
     <div class="decide">
-      <p class="q">지금 조직을 이대로 굴릴까요, 아니면 줄일까요?</p>
-      <p class="why">로드가 정하신 목표는 <b>"아이디어 경진대회에서 할 때 정도"</b>예요.
-      그 기준으로 보면 지금 조직은 <b>과합니다.</b> 매일 관점 넷을 돌리고, 보고서를 두 개 만들고,
-      도구를 13개 굴리고 있는데 — <b>정작 쓰는 사람은 0명이에요.</b><br><br>
-      제가 이걸 스스로 못 정하는 이유는, <b>어느 쪽도 틀리지 않아서</b>예요.
-      매일 도는 게 실제로 낙인 문구를 잡아내고 있고(그건 사람 목숨과 가까운 일이에요),
-      동시에 그 시간을 첫 사용자 만드는 데 쓸 수도 있어요.</p>
+      <p class="q">아직이요. 다만 <b>모자란 게 팀이 아니라 저</b>라서, 5일이면 됩니다.</p>
+      <p class="why">네 팀은 각자 7점대로 제 몫을 해요. 사람 목숨과 가까운 것(도움 요청이 아무한테도 안 알려지던 것)도,
+      낙인이 될 문구도 실제로 잡아냈어요. <b>팀을 더 만들 필요는 없습니다.</b><br><br>
+      막힌 건 <b>팀끼리 주고받는 길</b>과 <b>저라는 병목</b> 둘이에요. 오늘 넷을 고쳤고 남은 셋이 5일치입니다.</p>
       <div class="rec">
-        <span class="tag">추천</span>
-        <span class="num">이대로 두되, <span style="white-space:nowrap">9월 14일</span>까지만</span>
-        <p class="note">「모두의 창업」 마감 전까지는 지금대로 갑니다 —
-        신청서에 쓸 "우리가 매일 이렇게 고칩니다"가 실제 재료가 되니까요.<br>
-        <b>그 뒤에는 데일리를 주 3회로 줄이고</b>, 남는 시간을 첫 사용자 만드는 데 쓰는 걸 권합니다.
-        카드 42장은 이미 한 바퀴 다 훑었고, 지금은 <b>고칠 게 줄어드는 구간</b>에 들어왔어요 —
-        오늘 기계 점검이 낙인·행정용어·말투 <b>세 항목 다 0건</b>으로 나왔습니다.<br><br>
-        <b>"그냥 계속 매일 해"라고 하시면 그렇게 합니다.</b> 비용은 제 시간뿐이고, 로드가 쓰는 시간은
-        브리핑 읽는 3분이 전부예요.</p>
+        <span class="tag">그래서 저는</span>
+        <span class="num">9월 1일까지 남은 셋을 끝내겠습니다</span>
+        <p class="note">그러면 「모두의 창업」 신청서에 <b>"AI 네 팀이 매일 42장을 검증하고, 8일 동안 낙인 문구 3건과
+        지키지 못한 약속 6건을 찾아 고쳤다"</b>를 <b>숫자와 함께</b> 쓸 수 있습니다.
+        지금은 그 문장을 쓸 수는 있지만 "잘 돌아간다"는 증거가 8일 중 5일뿐이에요.<br>
+        <b>로드가 정하실 건 없습니다.</b> 이건 제가 할 일이에요. 다음 주에 다시 재서 보고드릴게요.</p>
       </div>
     </div>
   </section>
 
   <footer>
-    이 보고서는 8월 18일~25일 기록(커밋 46건 · 브리핑 7개 · 관점 보고 20여 건)에서 뽑았어요.<br>
-    숫자 중 "제안 63건 → 반영 17건"은 <b>세는 기준이 지금과 다릅니다</b> —
-    그때는 올라온 제안 전부를, 지금은 제가 근거를 직접 확인한 것만 셉니다. 그대로 비교하면 안 돼요.
+    점수는 <b>직무 정의서(`docs/org_system.md` Part 2)에 적힌 "매일 할 일"과 실제로 한 것을 대조</b>해 매겼어요.
+    근거는 8/18~8/25 브리핑 7개와 팀 보고 20여 건, 커밋 46건입니다.<br>
+    팀 이름은 조사=옛 리서치팀 · 제작=옛 디자인팀 · 운영=옛 사업운영팀 · 검토=옛 전략기획실이에요.
   </footer>
 
 </div>
