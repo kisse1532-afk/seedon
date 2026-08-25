@@ -32,7 +32,7 @@
  *   node scripts/orgs-add.mjs docs/새기관.txt --sql    # 마이그레이션 파일로 뽑기
  *   cat 목록.txt | node scripts/orgs-add.mjs - --sql
  */
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 
 const argv = process.argv.slice(2);
 const emit = argv.includes("--sql");
@@ -142,7 +142,10 @@ if (!emit) {
 
 const today = new Date().toISOString().slice(0, 10);
 const stamp = today.replace(/-/g, "");
-const out = `supabase/migrations/${stamp}_orgs_add.sql`;
+/* 같은 날 두 번 뽑으면 앞엣것을 덮는다 — 이미 적용한 마이그레이션이 덮이면
+   기록이 사라진다(2026.08.25에 실제로 한 번 덮었다). 있으면 번호를 붙인다. */
+let out = `supabase/migrations/${stamp}_orgs_add.sql`;
+for (let n = 2; existsSync(out); n++) out = `supabase/migrations/${stamp}_orgs_add_${n}.sql`;
 
 const undoIds = rows.map((r) => "'" + r.id + "'").join(", ");
 const body = rows.map((r) => `  (${[
