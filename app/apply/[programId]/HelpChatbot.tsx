@@ -116,8 +116,12 @@ export default function HelpChatbot({
             <span className="block text-sm font-bold text-sos-ink">
               혼자 신청하기 어려우신가요?
             </span>
+            {/* "챗봇에게 물어보세요"는 아무거나 타이핑해 물어봐도 답해준다는
+                기대를 만든다. 실제로는 정해진 네 갈래 중 고르는 방식이다.
+                요즘 청소년이 "챗봇"에서 기대하는 것과 어긋난다 (운영 관점, 2026.08.25).
+                거짓말은 아니었지만, 기대를 부풀리지 않는 말로 바꾼다. */}
             <span className="mt-0.5 block text-xs text-sos-sub">
-              눌러서 씨드온 챗봇에게 바로 물어보세요
+              눌러서 궁금한 것부터 골라보세요
             </span>
           </span>
           <span className="text-lg text-sos-num/60">›</span>
@@ -125,7 +129,7 @@ export default function HelpChatbot({
       ) : (
         <div className="p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-sos-ink">씨드온 챗봇</span>
+            <span className="text-xs font-medium text-sos-ink">씨드온 도우미</span>
             <button
               onClick={() => setOpen(false)}
               className="text-xs text-meta hover:text-ink"

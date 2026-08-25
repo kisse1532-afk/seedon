@@ -55,6 +55,20 @@ const catLine = Object.entries(CAT_NAME)
   .map(([k, name]) => [name, byCat[k] || 0])
   .sort((a, b) => b[1] - a[1]);
 
+/* 진짜 가입자 수. 자동 조임 규칙(1명 → 검증을 당일로, 10명 → 전 관점 되돌림)이
+   이 숫자로 걸린다. 사람이 눈으로 세면 운영자 계정을 빼는 걸 잊는다 —
+   2026.08.25에 화면 촬영용 계정이 "가입자 1명"으로 잡혀 조임이 걸릴 뻔했다.
+   그래서 운영자를 빼고 세는 일을 데이터베이스 쪽 함수에 맡긴다. */
+let signups = "못 셈 (권한)";
+try {
+  const r = await fetch(`${url}/rest/v1/rpc/real_signup_count`, {
+    method: "POST",
+    headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: "{}",
+  });
+  if (r.ok) signups = `${await r.json()}명`;
+} catch {}
+
 const tables = ["applications", "help_requests", "bookmarks", "program_reviews", "community_posts"];
 const counts = {};
 for (const t of tables) {
@@ -87,6 +101,7 @@ const out = `# 지금 씨드온은 이렇다 (자동 생성 — 손으로 고치
 
 | | |
 |---|---|
+| **가입한 사람** | **${signups}** (운영자 계정은 뺀 숫자) |
 | 게시 중인 프로그램 | **${published.count ?? published.rows.length}건** |
 | 신청 | ${counts.applications} |
 | 도움 요청 | ${counts.help_requests} |
@@ -112,5 +127,6 @@ ${commits || "(최근 2주 커밋 없음)"}
 
 writeFileSync("docs/team-now.md", out, "utf-8");
 console.log(`docs/team-now.md 새로 만들었어요 (${today})`);
+console.log(`  가입한 사람 ${signups} (운영자 뺀 숫자 — 자동 조임은 이 숫자로 건다)`);
 console.log(`  게시 ${published.count ?? published.rows.length}건 · ${catLine.map(([n, c]) => `${n}${c}`).join(" ")}`);
 if (thin.length) console.log(`  빈약한 칸: ${thin.join(", ")}`);
