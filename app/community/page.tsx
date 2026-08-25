@@ -40,10 +40,19 @@ export default async function CommunityPage() {
       {reviews.length === 0 && (
         <section className="space-y-3">
           <h2 className="text-sm font-semibold text-ink-60">먼저 해본 친구들 이야기</h2>
-          <p className="rounded-2xl border border-dashed border-sage-border bg-white px-4 py-8 text-center text-sm leading-relaxed text-meta">
-            아직 이야기가 없어요. 프로그램을 해봤다면 뒤에 올 친구를 위해
-            한두 줄 남겨줄래요? 프로그램을 열면 맨 아래에서 쓸 수 있어요.
-          </p>
+          <div className="space-y-3 rounded-2xl border border-dashed border-sage-border bg-white px-4 py-8 text-center">
+            <p className="text-sm leading-relaxed text-meta">
+              아직 이야기가 없어요. 프로그램을 해봤다면 뒤에 올 친구를 위해
+              한두 줄 남겨줄래요? 프로그램을 열면 맨 아래에서 쓸 수 있어요.
+            </p>
+            {/* 북마크 빈 화면에는 버튼을 줬는데 여기는 말만 있었다 (검토, 2026.08.25) */}
+            <Link
+              href="/"
+              className="inline-block rounded-full bg-primary-deep px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-110"
+            >
+              프로그램 보러 가기 →
+            </Link>
+          </div>
         </section>
       )}
 

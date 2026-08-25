@@ -25,8 +25,8 @@ export default function RecommendPage() {
         </button>
       </form>
       <p className="text-center text-[11px] leading-relaxed text-meta">
-        적어주신 말에 걸리는 프로그램을 찾아 순서대로 보여드려요. 못 알아들어도
-        빈손으로 돌려보내지 않고, 지금 신청할 수 있는 것부터 보여드릴게요.
+        적은 말에 걸리는 프로그램을 찾아 순서대로 보여줄게요. 못 알아들어도
+        빈손으로 돌려보내지 않고, 지금 신청할 수 있는 것부터 먼저 보여줄게요.
       </p>
     </div>
     </RequireLogin>

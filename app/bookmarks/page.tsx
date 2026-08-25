@@ -103,7 +103,9 @@ export default function BookmarksPage() {
         <Link href="/" className="text-sm text-meta hover:text-body">
           ← 홈으로
         </Link>
-        <h1 className="text-xl font-extrabold tracking-tight text-ink mt-2">북마크</h1>
+        {/* 제목은 "북마크", 본문은 "책갈피", 로그인 전 화면은 "저장한 프로그램" —
+            같은 것을 세 이름으로 불렀다. 제일 쉬운 말 하나로 통일한다 (검토, 2026.08.25) */}
+        <h1 className="text-xl font-extrabold tracking-tight text-ink mt-2">저장한 프로그램</h1>
         <p className="text-sm text-ink-60 mt-1">
           계정에 저장돼 있어요. 폰을 바꿔도 그대로 있어요.
         </p>
@@ -117,8 +119,8 @@ export default function BookmarksPage() {
         {loaded && programs.length === 0 && (
           <div className="space-y-3 py-8 text-center">
             <p className="text-sm text-meta">
-              아직 저장한 프로그램이 없어요. 마음에 드는 걸 찾으면
-              오른쪽 위 책갈피를 눌러 여기 모아둘 수 있어요.
+              아직 저장한 프로그램이 없어요. 마음에 드는 게 있으면
+              그 카드 오른쪽 위 책갈피 표시를 눌러 여기 모아둘 수 있어요.
             </p>
             <Link
               href="/"

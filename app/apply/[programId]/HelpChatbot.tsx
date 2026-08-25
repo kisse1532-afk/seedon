@@ -113,8 +113,10 @@ export default function HelpChatbot({
             </svg>
           </span>
           <span className="min-w-0 flex-1">
+            {/* "어려우신가요?"는 어른 손님에게 쓰는 높임이라 아랫줄("골라보세요")과
+                말투가 갈렸다. 한 버튼 안에서는 한 말투여야 한다 (검토 관점, 2026.08.25) */}
             <span className="block text-sm font-bold text-sos-ink">
-              혼자 신청하기 어려우신가요?
+              혼자 신청하기 어려워요?
             </span>
             {/* "챗봇에게 물어보세요"는 아무거나 타이핑해 물어봐도 답해준다는
                 기대를 만든다. 실제로는 정해진 네 갈래 중 고르는 방식이다.
