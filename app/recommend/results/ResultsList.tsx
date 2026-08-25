@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { rankPrograms, type Ranked } from "@/lib/recommend";
+import type { AiResult } from "@/lib/recommend-ai";
+import SosBanner from "@/app/_components/SosBanner";
 import { fetchProgramsByIds } from "@/lib/queries";
 import { loadBookmarks } from "@/lib/bookmarks";
 import { loadMyProfile } from "@/lib/consent";
@@ -18,7 +20,20 @@ import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
  * 되는데, 저장 목록은 로그인 세션이 있어야 읽을 수 있고 세션은 브라우저에만 있다.
  * 프로그램 목록 자체는 서버에서 미리 받아 넘겨주므로 화면이 비어 보이는 시간은 없다.
  */
-export default function ResultsList({ q, programs }: { q: string; programs: Program[] }) {
+/**
+ * ai가 오면(서버에서 AI가 골라줬으면) 그 순서와 이유를 쓰고,
+ * 없으면(키 미설정·실패·시간 초과) 기존 키워드 방식 그대로 돈다.
+ * AI가 "정말 맞는 게 없다"고 빈 목록을 내도 키워드 방식이 받아준다 — 빈손 금지.
+ */
+export default function ResultsList({
+  q,
+  programs,
+  ai,
+}: {
+  q: string;
+  programs: Program[];
+  ai?: AiResult | null;
+}) {
   const [likedCategories, setLikedCategories] = useState<Category[]>([]);
   const [region, setRegion] = useState<string | undefined>(undefined);
   const [personalized, setPersonalized] = useState(false);
@@ -47,12 +62,27 @@ export default function ResultsList({ q, programs }: { q: string; programs: Prog
     };
   }, []);
 
-  const { items, understood } = rankPrograms(q, programs, { likedCategories, region });
+  const byId = new Map(programs.map((p) => [p.id, p]));
+  const aiItems: Ranked[] =
+    ai?.picks
+      .map(({ id, reason }) => {
+        const program = byId.get(id);
+        return program ? ({ program, reason, score: 0 } as Ranked) : null;
+      })
+      .filter((x): x is Ranked => x !== null) ?? [];
+  const useAi = aiItems.length > 0;
+
+  const ranked = rankPrograms(q, programs, { likedCategories, region });
+  const items = useAi ? aiItems : ranked.items;
+  const understood = useAi ? true : ranked.understood;
 
   return (
     <>
       {/* 못 알아들었어도 빈손으로 돌려보내지 않는다. 자기 사정을 적은 청소년이
           "못 찾았어요"만 보고 나가면, 정보 비대칭을 없앤 게 아니라 하나 더 만든 것이다. */}
+      {/* 위기 신호가 보이면 목록보다 전화가 먼저다 */}
+      {ai?.crisis && <SosBanner />}
+
       <p
         className={`inline-flex w-fit items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold ${
           understood
@@ -60,9 +90,11 @@ export default function ResultsList({ q, programs }: { q: string; programs: Prog
             : "border-sage-border bg-white text-ink-60"
         }`}
       >
-        {understood
-          ? `${items.length}개를 찾았어요`
-          : "딱 맞는 걸 못 찾아서, 지금 신청할 수 있는 것부터 보여드려요"}
+        {useAi
+          ? `적어준 상황을 읽고 ${items.length}개를 골랐어요`
+          : understood
+            ? `${items.length}개를 찾았어요`
+            : "딱 맞는 걸 못 찾아서, 지금 신청할 수 있는 것부터 보여드려요"}
       </p>
 
       {personalized && understood && (

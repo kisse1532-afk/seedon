@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { fetchPublishedPrograms } from "@/lib/queries";
+import { aiRecommend } from "@/lib/recommend-ai";
 import ResultsList from "./ResultsList";
 import RequireLogin from "@/app/_components/RequireLogin";
 
@@ -10,6 +11,9 @@ export default async function RecommendResultsPage({
 }) {
   const { q } = await searchParams;
   const programs = await fetchPublishedPrograms();
+  /* AI가 골라준다 — 단 ANTHROPIC_API_KEY가 있을 때만. 없으면 null이 오고
+     아래 목록은 기존 키워드 방식 그대로 돈다. 켜는 법은 lib/recommend-ai.ts 맨 위 */
+  const ai = q ? await aiRecommend(q, programs) : null;
 
   return (
     <RequireLogin reason="적어준 상황에 맞는 걸 찾아드리려면 로그인이 필요해요. 저장해둔 것까지 같이 봐서 더 잘 골라줄 수 있어요.">
@@ -22,7 +26,7 @@ export default async function RecommendResultsPage({
         {q && <p className="mt-1 text-sm text-ink-60">&quot;{q}&quot;에 대해 찾아봤어요.</p>}
       </div>
 
-      <ResultsList q={q ?? ""} programs={programs} />
+      <ResultsList q={q ?? ""} programs={programs} ai={ai} />
 
       <p className="pt-2 text-center text-[11px] leading-relaxed text-meta">
         적어주신 말에 걸리는 프로그램을 찾아 순서대로 보여드려요. 딱 맞지 않을 수
