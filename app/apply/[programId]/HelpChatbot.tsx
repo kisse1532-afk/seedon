@@ -17,6 +17,9 @@ type Props = {
 
 type ViewState = "menu" | "eligibility" | "docs" | "howto" | "escalate" | "reserve";
 
+/* 말투는 ~해요체다. 처음엔 도우미 안쪽만 반말이었는데("안녕! 뭐가 궁금해?")
+   바깥 화면은 전부 존댓말이라 한 서비스에서 말투가 갈렸다.
+   로드 결정(2026.08.25): "반말은 안돼" — 서비스 전체 ~해요체로 통일. */
 export default function HelpChatbot({
   programTitle,
   description,
@@ -142,12 +145,12 @@ export default function HelpChatbot({
 
           {view === "menu" && (
             <>
-              <BotBubble>안녕! &quot;{programTitle}&quot;에 대해 뭐가 궁금해?</BotBubble>
+              <BotBubble>안녕하세요! &quot;{programTitle}&quot;에 대해 뭐가 궁금해요?</BotBubble>
               <div className="space-y-1.5">
-                <MenuButton label="이 프로그램, 나도 받을 수 있어?" onClick={() => setView("eligibility")} />
-                <MenuButton label="뭘 준비해야 해?" onClick={() => setView("docs")} />
-                <MenuButton label="신청은 어떻게 해?" onClick={() => setView("howto")} />
-                <MenuButton label="그래도 잘 모르겠어, 사람이 도와줬으면 좋겠어" onClick={() => setView("escalate")} />
+                <MenuButton label="이 프로그램, 나도 받을 수 있어요?" onClick={() => setView("eligibility")} />
+                <MenuButton label="뭘 준비해야 해요?" onClick={() => setView("docs")} />
+                <MenuButton label="신청은 어떻게 해요?" onClick={() => setView("howto")} />
+                <MenuButton label="그래도 잘 모르겠어요, 사람이 도와줬으면 좋겠어요" onClick={() => setView("escalate")} />
               </div>
             </>
           )}
@@ -162,7 +165,7 @@ export default function HelpChatbot({
           {view === "docs" && (
             <>
               <BotBubble>
-                {applyMethod || "이 프로그램은 아직 준비서류 안내가 등록되지 않았어요. 아래에서 사람 도움을 요청해줘!"}
+                {applyMethod || "이 프로그램은 아직 준비서류 안내가 등록되지 않았어요. 아래에서 사람 도움을 요청해주세요."}
               </BotBubble>
               <BackRow />
             </>
@@ -181,7 +184,7 @@ export default function HelpChatbot({
                     ))}
                   </ol>
                 ) : (
-                  "신청 절차가 아직 등록되지 않았어요. 아래에서 사람 도움을 요청해줘!"
+                  "신청 절차가 아직 등록되지 않았어요. 아래에서 사람 도움을 요청해주세요."
                 )}
               </BotBubble>
               <BackRow />
@@ -191,7 +194,7 @@ export default function HelpChatbot({
           {view === "escalate" && (
             <>
               <BotBubble>
-                괜찮아, 그럴 수 있어. 둘 중 편한 방법을 골라줘.
+                괜찮아요, 그럴 수 있어요. 둘 중 편한 방법을 골라주세요.
               </BotBubble>
               <div className="space-y-2">
                 <div className="rounded-xl border border-sos-line bg-white p-3 space-y-1.5">
@@ -228,7 +231,7 @@ export default function HelpChatbot({
 
           {view === "reserve" && (
             <>
-              <BotBubble>언제 연락받는 게 편해? 이름이랑 연락처만 남겨줘.</BotBubble>
+              <BotBubble>언제 연락받는 게 편해요? 이름이랑 연락처만 남겨주세요.</BotBubble>
               <form
                 id="help-reserve-form"
                 action={submitHelp}
@@ -263,7 +266,7 @@ export default function HelpChatbot({
                 <textarea
                   name="message"
                   rows={2}
-                  placeholder="언제가 편한지, 어떤 부분이 어려운지 알려주면 더 빨리 도와줄 수 있어 (선택)"
+                  placeholder="언제가 편한지, 어떤 부분이 어려운지 알려주면 더 빨리 도와드릴 수 있어요 (선택)"
                   className="w-full rounded-xl border border-sos-line bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sos-num/40"
                 />
                 <button
