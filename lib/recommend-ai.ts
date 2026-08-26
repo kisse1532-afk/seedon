@@ -27,11 +27,15 @@ import { categories, type Program } from "@/lib/data";
  *   추가해야 한다. 키를 켜기 전에 반드시. (lib/policy.ts)
  * - 우리 쪽에서는 적은 글을 계정과 묶어 저장하지 않는다 — 지금도 안 한다
  *
- * 비용 (2026.08 기준, claude-opus-5: 입력 $5/1M · 출력 $25/1M 토큰)
+ * 비용 (2026.08 기준, claude-haiku-4-5: 입력 $1/1M · 출력 $5/1M 토큰)
  * ----------------------------------------------------------------
- * 한 번 부를 때 카드 목록 ~6천 토큰 + 답 ~500 토큰 ≈ 4~5센트(약 60원).
- * 카드 목록에 캐시를 걸어뒀으므로 5분 안에 다음 사람이 부르면 ~1센트(약 15원).
- * 하루 100번 불려도 몇천 원 수준. 지금 사용자 0명이라 사실상 0원이다.
+ * 로드(2026.08.26): "비용이 안 드는 AI로 쓰고 싶은데" → 제일 싼 모델로 바꿨다.
+ * "42장 중에 골라줘"는 단순한 일이라 싼 모델로 충분하다.
+ * 한 번 부를 때 카드 목록 ~6천 토큰 + 답 ~500 토큰 ≈ 1센트(약 12원).
+ * 카드 목록에 캐시를 걸어뒀으므로 5분 안에 다음 사람이 부르면 약 4원.
+ * 하루 100번 불려도 천 원 수준. 지금 사용자 0명이라 사실상 0원이다.
+ * 완전 무료 AI(외부 무료판)는 쓰지 않는다 — 무료판은 보통 이용자가 적은 글을
+ * 그 회사가 학습에 쓰는 조건이라, 우리 개인정보 약속과 부딪힌다.
  */
 
 const PickSchema = z.object({
@@ -87,10 +91,10 @@ export async function aiRecommend(q: string, programs: Program[]): Promise<AiRes
   try {
     const client = new Anthropic({ timeout: 10_000, maxRetries: 0 });
     const response = await client.messages.parse({
-      model: "claude-opus-5",
+      model: "claude-haiku-4-5",
       max_tokens: 2000,
-      // 고르기만 하는 짧은 일이라 깊게 생각할 필요가 없다. 낮춰서 싸고 빠르게
-      output_config: { effort: "low", format: zodOutputFormat(PickSchema) },
+      // effort 옵션은 이 모델이 안 받는다(400 오류) — format만 준다
+      output_config: { format: zodOutputFormat(PickSchema) },
       system: [
         { type: "text", text: SYSTEM },
         // 카드 목록은 요청마다 같으므로 캐시를 건다. 5분 안의 다음 요청은 ~10% 값
