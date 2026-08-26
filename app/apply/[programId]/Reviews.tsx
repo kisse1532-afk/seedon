@@ -109,8 +109,9 @@ export default function Reviews({ programId }: { programId: string }) {
             className="w-full rounded-control border border-sage-border px-3.5 py-2.5 text-sm text-body transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 placeholder:text-meta"
           />
 
+          {/* 오류 안내 — 빨강은 브랜드 색 밖이라 긴급 안내에 쓰는 주황 계열로 통일 (제작 점검 2026.08.26) */}
           {error && (
-            <p className="rounded-control bg-red-50 px-3.5 py-2.5 text-xs leading-relaxed text-red-700">
+            <p className="rounded-control bg-sos-tile px-3.5 py-2.5 text-xs leading-relaxed text-sos-ink">
               {error}
             </p>
           )}

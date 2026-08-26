@@ -25,7 +25,13 @@ export default function ApplySteps({ steps }: { steps: ApplyStep[] }) {
                 className="absolute top-8 bottom-1 left-[13.5px] w-px bg-sage-line"
               />
             )}
-            <span className="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-mint text-[12.5px] font-extrabold text-primary-deep">
+            {/* 첫 단계만 채운 원 — "지금 할 것"과 "나중 참고용"을 눈으로 가른다.
+                단계가 4개 이상으로 늘어도 전부 같은 세기로 소리치지 않게 (토스 벤치마킹, 2026.08.26) */}
+            <span
+              className={`relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[12.5px] font-extrabold ${
+                i === 0 ? "bg-mint text-primary-deep" : "border border-mint bg-white text-ink-60"
+              }`}
+            >
               {i + 1}
             </span>
             <span className="min-w-0 pt-0.5">
