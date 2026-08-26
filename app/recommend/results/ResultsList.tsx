@@ -91,7 +91,8 @@ export default function ResultsList({
         }`}
       >
         {useAi
-          ? `적어준 상황을 읽고 ${items.length}개를 골랐어요`
+          ? // "적어준 상황"은 남이 대신 써준 것처럼 읽힌다 (검토 지적 2026.08.26)
+            `적어준 내용을 읽고 ${items.length}개를 골랐어요`
           : understood
             ? `${items.length}개를 찾았어요`
             : "딱 맞는 걸 못 찾아서, 지금 신청할 수 있는 것부터 보여드려요"}

@@ -155,9 +155,15 @@ export default function HelpChatbot({
             </>
           )}
 
+          {/* "나도 받을 수 있어요?"에 소개문만 돌려주면 제일 궁금한 걸 답하지 않은 것이다.
+              우리는 자격을 판정하지 않으므로(절대규칙 2), 대신 물어볼 곳을 준다 (검토 지적 2026.08.26) */}
           {view === "eligibility" && (
             <>
               <BotBubble>{description}</BotBubble>
+              <BotBubble>
+                내가 되는지 헷갈리면 아래 &quot;사람이 도와줬으면 좋겠어요&quot;를 눌러주세요. 청소년전화 1388에 물어봐도 돼요.
+              </BotBubble>
+              <MenuButton label="사람이 도와줬으면 좋겠어요" onClick={() => setView("escalate")} />
               <BackRow />
             </>
           )}
@@ -165,8 +171,13 @@ export default function HelpChatbot({
           {view === "docs" && (
             <>
               <BotBubble>
-                {applyMethod || "이 프로그램은 아직 준비서류 안내가 등록되지 않았어요. 아래에서 사람 도움을 요청해주세요."}
+                {applyMethod || "이 프로그램은 뭘 준비해야 하는지 아직 안 적혀 있어요. 사람한테 직접 물어볼 수 있어요."}
               </BotBubble>
+              {/* 안내가 없을 때 "아래에서 요청해주세요"라고만 하고 아래에 아무것도 없었다.
+                  막다른 길이 되지 않게 그 자리에 버튼을 같이 놓는다 */}
+              {!applyMethod && (
+                <MenuButton label="사람이 도와줬으면 좋겠어요" onClick={() => setView("escalate")} />
+              )}
               <BackRow />
             </>
           )}
@@ -184,9 +195,12 @@ export default function HelpChatbot({
                     ))}
                   </ol>
                 ) : (
-                  "신청 절차가 아직 등록되지 않았어요. 아래에서 사람 도움을 요청해주세요."
+                  "신청을 어떤 순서로 하는지 아직 안 적혀 있어요. 사람한테 직접 물어볼 수 있어요."
                 )}
               </BotBubble>
+              {!(applySteps && applySteps.length > 0) && (
+                <MenuButton label="사람이 도와줬으면 좋겠어요" onClick={() => setView("escalate")} />
+              )}
               <BackRow />
             </>
           )}
@@ -200,7 +214,8 @@ export default function HelpChatbot({
                 <div className="rounded-xl border border-sos-line bg-white p-3 space-y-1.5">
                   <p className="text-sm font-medium text-sos-ink">지금 바로 전화로 물어보기</p>
                   <p className="text-xs text-ink-60">
-                    청소년 상담 1388(국번없이, 24시간·무료)로 전화하면 지금 바로 대화할 수 있어요.
+                    {/* "국번없이"는 유선전화 시대 말이라 지금 중학생은 모른다 (검토 지적 2026.08.26) */}
+                    1388은 앞에 아무것도 안 붙이고 1388만 누르면 돼요. 밤이든 새벽이든 걸 수 있고 돈은 안 들어요.
                   </p>
                   <PhoneLink
                     number="1388"
@@ -213,9 +228,11 @@ export default function HelpChatbot({
                   </PhoneLink>
                 </div>
                 <div className="rounded-xl border border-sos-line bg-white p-3 space-y-1.5">
-                  <p className="text-sm font-medium text-sos-ink">씨드온 직원이 연락드릴게요</p>
+                  {/* "직원"은 없는 조직을 있는 것처럼 말한 것이고(로드 1인),
+                      언제 연락 오는지가 없으면 기다리다 놓친다 (검토 지적 2026.08.26) */}
+                  <p className="text-sm font-medium text-sos-ink">씨드온에서 연락드릴게요</p>
                   <p className="text-xs text-ink-60">
-                    이름과 연락처를 남기면, 편한 시간에 맞춰 직접 연락드리고 신청을 도와드려요.
+                    이름과 연락처를 남기면, 편한 시간에 맞춰 직접 연락드리고 신청을 도와드려요. 보통 하루 이틀 안에 연락드려요.
                   </p>
                   <button
                     onClick={() => setView("reserve")}
