@@ -49,11 +49,44 @@ const today = new Date().toISOString().slice(0, 10);
 
 // ── 지금 숫자 ────────────────────────────────────────────────
 const published = await q("programs?status=eq.published&select=id,category");
+
+/* ⚠️ 이 숫자가 제일 중요하다 (2026.08.25).
+   그동안 "게시 42건"만 보고 있었는데, 그건 **유지**하고 있다는 뜻이지
+   **새로 들어오고 있다**는 뜻이 아니다. 실제로 8월 17일 이후 8일 동안
+   새 카드가 한 장도 안 들어왔는데 아무도 못 알아챘다 — 42라는 숫자가
+   매일 똑같이 찍히니까 문제로 안 보였다.
+   로드: "42개를 검증하는 게 문제가 아니라 새로운 걸 맨날 받아오고 정리하고 하는 거잖아." */
+const since = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
+let fresh = { cards: "못 셈", orgs: "못 셈", lastCard: "못 셈" };
+try {
+  fresh.cards = (await q(`programs?created_at=gte.${since}&select=id`)).count ?? "못 셈";
+  fresh.orgs = (await q(`orgs?created_at=gte.${since}&select=id`)).count ?? "못 셈";
+  const last = await q("programs?select=created_at&order=created_at.desc&limit=1");
+  const d = last.rows?.[0]?.created_at?.slice(0, 10);
+  if (d) {
+    const days = Math.floor((Date.now() - Date.parse(d)) / 864e5);
+    fresh.lastCard = days === 0 ? "오늘" : `${d} (${days}일 전)`;
+  }
+} catch {}
 const byCat = {};
 for (const p of published.rows) byCat[p.category] = (byCat[p.category] || 0) + 1;
 const catLine = Object.entries(CAT_NAME)
   .map(([k, name]) => [name, byCat[k] || 0])
   .sort((a, b) => b[1] - a[1]);
+
+/* 진짜 가입자 수. 자동 조임 규칙(1명 → 검증을 당일로, 10명 → 전 관점 되돌림)이
+   이 숫자로 걸린다. 사람이 눈으로 세면 운영자 계정을 빼는 걸 잊는다 —
+   2026.08.25에 화면 촬영용 계정이 "가입자 1명"으로 잡혀 조임이 걸릴 뻔했다.
+   그래서 운영자를 빼고 세는 일을 데이터베이스 쪽 함수에 맡긴다. */
+let signups = "못 셈 (권한)";
+try {
+  const r = await fetch(`${url}/rest/v1/rpc/real_signup_count`, {
+    method: "POST",
+    headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: "{}",
+  });
+  if (r.ok) signups = `${await r.json()}명`;
+} catch {}
 
 const tables = ["applications", "help_requests", "bookmarks", "program_reviews", "community_posts"];
 const counts = {};
@@ -87,7 +120,11 @@ const out = `# 지금 씨드온은 이렇다 (자동 생성 — 손으로 고치
 
 | | |
 |---|---|
-| 게시 중인 프로그램 | **${published.count ?? published.rows.length}건** |
+| **최근 7일에 새로 들어온 카드** | **${fresh.cards}건** ← 이게 제일 중요한 숫자다 |
+| 마지막으로 카드가 들어온 날 | **${fresh.lastCard}** |
+| 최근 7일에 명부에 새로 넣은 기관 | **${fresh.orgs}곳** |
+| **가입한 사람** | **${signups}** (운영자 계정은 뺀 숫자) |
+| 게시 중인 프로그램 (총량) | ${published.count ?? published.rows.length}건 |
 | 신청 | ${counts.applications} |
 | 도움 요청 | ${counts.help_requests} |
 | 북마크 | ${counts.bookmarks} |
@@ -112,5 +149,8 @@ ${commits || "(최근 2주 커밋 없음)"}
 
 writeFileSync("docs/team-now.md", out, "utf-8");
 console.log(`docs/team-now.md 새로 만들었어요 (${today})`);
+console.log(`  ★ 최근 7일 새 카드 ${fresh.cards}건 · 마지막 유입 ${fresh.lastCard} · 새 기관 ${fresh.orgs}곳`);
+if (fresh.cards === 0) console.log(`  ⚠️ 일주일째 새 카드가 없다. 카드를 짜내지 말고 명부에 기관을 넣어라.`);
+console.log(`  가입한 사람 ${signups} (운영자 뺀 숫자 — 자동 조임은 이 숫자로 건다)`);
 console.log(`  게시 ${published.count ?? published.rows.length}건 · ${catLine.map(([n, c]) => `${n}${c}`).join(" ")}`);
 if (thin.length) console.log(`  빈약한 칸: ${thin.join(", ")}`);

@@ -122,15 +122,31 @@ for (const [cat, list] of byCategory) {
 writeFileSync("docs/카드전문.md", lines.join("\n"));
 
 // 여기서 자동으로 걸리는 것만 세어 준다. 판정은 사람(CS팀)이 한다.
-const STIGMA = ["저소득", "대상자", "취약계층", "결손가정", "차상위", "수급자"];
+/* "가정형편"은 2026.08.25에 추가했다. living-01의 단계 칸에
+   "선발 심사 / 가정형편 등 확인"이 며칠째 떠 있었는데 목록에 없어서 안 걸렸다.
+   단계는 화면에서 아이콘과 함께 크게 보이는 자리다 — 신청하려고 누른 청소년에게
+   "네 가정형편을 확인하겠다"가 붙어 있었던 셈이다. */
+const STIGMA = ["저소득", "대상자", "취약계층", "결손가정", "차상위", "수급자", "가정형편", "가정 형편"];
 const JARGON = ["중위소득", "소득인정액", "가구원", "산정", "선정", "이수", "연계", "의뢰서", "배분신청"];
 // 단계(apply_steps)도 같이 본다. 여기 "대상자 확인" 같은 판정형 라벨이 숨어
 // 있었는데 설명·신청방법만 보던 때는 안 걸렸다 (2026.08.19).
 const textOf = (p) =>
   `${p.description || ""} ${p.apply_method || ""} ${JSON.stringify(p.apply_steps || "")}`;
-const hit = (words) => programs.filter((p) => words.some((w) => textOf(p).includes(w)));
+/* 제도 고유명사는 **풀어 쓰면 써도 된다**(CLAUDE.md 절대규칙 3):
+   "Wee센터에 가서 '의뢰서'라는 서류를 받아요"처럼.
+   그런데 기계는 단어만 보고 걸러내서, 이미 제대로 풀어 쓴 카드 하나가
+   며칠째 헛경보로 떠 있었다. 헛경보가 계속 뜨면 사람이 경보를 안 보게 된다.
+   그래서 **그 자리에서 풀어준 경우는 안 센다** — 따옴표로 묶여 있거나
+   바로 뒤에 "라는/이라는"이 붙으면 청소년이 뜻을 알 수 있다는 뜻이다. */
+const explained = (text, w) =>
+  new RegExp(`["'\u2018\u2019\u201c\u201d]${w}["'\u2018\u2019\u201c\u201d]|${w}(이)?라는`).test(text);
+const hit = (words, allowExplained = false) =>
+  programs.filter((p) => {
+    const t = textOf(p);
+    return words.some((w) => t.includes(w) && !(allowExplained && explained(t, w)));
+  });
 const stigma = hit(STIGMA);
-const jargon = hit(JARGON);
+const jargon = hit(JARGON, true);  // 풀어 쓴 것은 빼고 센다
 const formal = programs.filter((p) => /(합니다|됩니다|을 대상으로|를 대상으로)/.test(textOf(p)));
 
 console.log(`docs/카드전문.md 만들었어요 (${today})`);

@@ -24,8 +24,11 @@
  * ----------
  * `seedon_shot` — 사람이 쓰지 않는다. 비밀번호는 이 도구가 처음 돌 때
  * 무작위로 만들어 `.shot-account.json`에 두고, 그 파일은 저장소에 안 올라간다.
- * 이 계정은 `internal_emails`에 미리 넣어둬서 **카드 성적표 집계에서 자동으로 빠진다**
- * (supabase/migrations/20260824_shot_account_internal.sql).
+ * 이 계정은 `internal_emails`에 넣어둬서 **카드 성적표 집계에서 빠진다**
+ * (20260824_shot_account_internal.sql + 20260824_exclude_internal_by_email.sql).
+ * 뒤엣것이 왜 필요했나: 운영자 표시는 프로필이 만들어질 때 붙는데, 이 계정은
+ * 가입만 하고 프로필을 안 만들어서 표시가 안 붙었다. 그래서 메일 주소 목록으로도
+ * 직접 거르게 고쳤다.
  *
  * 쓰는 법
  *   NODE_USE_ENV_PROXY=1 node scripts/shot-login.mjs /community /bookmarks
@@ -215,6 +218,79 @@ await S("Page.addScriptToEvaluateOnNewDocument", {
 });
 }
 
+/* ── 브라우저 대신 Node가 바깥에 다녀온다 ────────────────────────
+   이 환경의 크롬은 바깥으로 못 나간다(프록시를 못 씀 — scripts/shot.mjs 맨 위 주석).
+   그래서 로그인한 척 해놔도 화면이 자기 정보를 못 읽어와서 영원히 "불러오는 중"에
+   멈춘다. 2026.08.25에 북마크 화면이 텅 빈 걸 보고 "버그인가" 했는데,
+   재보니 브라우저가 수파베이스에 못 닿는 것이었다.
+
+   Node는 프록시를 쓸 수 있으니, 브라우저가 보내려는 요청을 가로채서
+   Node가 대신 다녀오고 결과만 돌려준다. */
+await S("Fetch.enable", {
+  patterns: [{ urlPattern: "*supabase.co*", requestStage: "Request" }],
+});
+
+let inFlight = 0;   // 브라우저가 기다리고 있는 요청 수. 0이 돼야 화면이 다 그려진 것이다
+const HOP = new Set(["host", "connection", "content-length", "accept-encoding"]);
+const CORS = {
+  "access-control-allow-origin": "*",
+  "access-control-allow-headers": "*",
+  "access-control-allow-methods": "GET,POST,PATCH,DELETE,OPTIONS",
+  "access-control-expose-headers": "*",
+};
+
+ws.addEventListener("message", async (ev) => {
+  const msg = JSON.parse(ev.data);
+  if (msg.method !== "Fetch.requestPaused") return;
+  const { requestId, request } = msg.params;
+  inFlight++;
+  const debug = (extra) => {
+    if (process.env.SHOT_DEBUG) console.log(`    ↔ ${request.method} ${request.url.slice(0, 80)} ${extra}`);
+  };
+
+  // 미리 물어보는 요청(OPTIONS)은 그 자리에서 답해준다
+  if (request.method === "OPTIONS") {
+    await S("Fetch.fulfillRequest", {
+      requestId, responseCode: 204,
+      responseHeaders: Object.entries(CORS).map(([name, value]) => ({ name, value })),
+    }).catch(() => {});
+    inFlight--;
+    return;
+  }
+
+  try {
+    const headers = {};
+    for (const [k, v] of Object.entries(request.headers)) {
+      if (!HOP.has(k.toLowerCase())) headers[k] = v;
+    }
+    const res = await fetch(request.url, {
+      method: request.method,
+      headers,
+      body: request.postData ?? undefined,
+      redirect: "follow",
+    });
+    const buf = Buffer.from(await res.arrayBuffer());
+    debug(`→ ${res.status} · ${buf.length}바이트`);
+    const out = { ...CORS };
+    for (const [k, v] of res.headers.entries()) {
+      const lk = k.toLowerCase();
+      if (lk === "content-encoding" || lk === "content-length" || lk.startsWith("access-control-")) continue;
+      out[k] = v;
+    }
+    await S("Fetch.fulfillRequest", {
+      requestId,
+      responseCode: res.status,
+      responseHeaders: Object.entries(out).map(([name, value]) => ({ name, value })),
+      body: buf.toString("base64"),
+    });
+  } catch (e) {
+    debug(`→ 실패: ${e.message}`);
+    await S("Fetch.failRequest", { requestId, errorReason: "Failed" }).catch(() => {});
+  } finally {
+    inFlight--;
+  }
+});
+
 const made = [];
 for (const p of paths) {
   const url = p.startsWith("http") ? p : base + p;
@@ -239,7 +315,7 @@ for (const p of paths) {
       returnByValue: true,
     });
     const st = JSON.parse(result.value);
-    if (st.ready && !st.spinning && st.len === last && st.len > 0) {
+    if (st.ready && !st.spinning && inFlight === 0 && st.len === last && st.len > 0) {
       if (++stable >= 2) break;
     } else {
       stable = 0;
@@ -274,7 +350,14 @@ for (const p of paths) {
 
 ws.close();
 proc.kill();
-rmSync(profile, { recursive: true, force: true });
+/* 크롬이 완전히 죽기 전에 지우면 ENOTEMPTY로 도구 자체가 죽는다.
+   찍은 그림은 이미 다 저장된 뒤라, 정리에 실패했다고 죽을 이유가 없다. */
+await new Promise((r) => setTimeout(r, 500));
+try {
+  rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 300 });
+} catch {
+  /* 다음 실행이 어차피 새로 지우고 만든다 */
+}
 
 console.log(`\n${made.length}장 찍었어요.`);
 console.log(`부서에게 이렇게 넘기세요 — "Read 도구로 아래 그림을 직접 보고 판단해라":`);

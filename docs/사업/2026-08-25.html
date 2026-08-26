@@ -1,0 +1,270 @@
+<title>씨드온 사업 보고 0825</title>
+<style>
+  :root {
+    --ground:#faf6ee; --surface:#fff; --mint:#e6f8ef; --line:#e7dfd0; --line-soft:#f0e9db;
+    --ink:#2a2a24; --body:#576351; --meta:#9dac92;
+    --primary:#2bbe8c; --primary-deep:#17916a; --sprout:#72cf5e;
+    --alert:#c2702a; --alert-tile:#fff4e9; --alert-line:#f5dfc6;
+    --shadow:0 1px 2px rgba(42,42,36,.04), 0 12px 32px -20px rgba(42,42,36,.3);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+      --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+      --primary:#47d5a3; --primary-deep:#6fe0b6; --sprout:#8fe07c;
+      --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#141b14; --surface:#1b241b; --mint:#1d3128; --line:#2f3d2f; --line-soft:#263126;
+    --ink:#f2efe6; --body:#c3cdbc; --meta:#8b9a86;
+    --primary:#47d5a3; --primary-deep:#6fe0b6; --sprout:#8fe07c;
+    --alert:#f0a86a; --alert-tile:#2e2318; --alert-line:#4a3623;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -20px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--body);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard Variable",
+                Pretendard,"Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+    font-size:15px; line-height:1.68; -webkit-font-smoothing:antialiased;
+    word-break:keep-all; overflow-wrap:break-word;
+  }
+  .page{max-width:900px;margin:0 auto;padding:44px 22px 76px;display:flex;flex-direction:column;gap:34px}
+
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .date{font-size:11.5px;font-weight:700;letter-spacing:.16em;color:var(--meta)}
+  .runs{font-size:11.5px;color:var(--meta)}
+  .runs b{color:var(--primary-deep);font-weight:700}
+
+  h1{margin:8px 0 0;font-size:clamp(24px,4.4vw,34px);line-height:1.3;letter-spacing:-.03em;
+     font-weight:800;color:var(--ink);text-wrap:balance}
+  h1 em{font-style:normal;color:var(--alert)}
+
+  h2{margin:0 0 14px;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--meta)}
+
+  /* 오늘의 발견 */
+  .finds{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:660px){.finds{grid-template-columns:1fr}}
+  .find{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--alert);
+        border-radius:14px;padding:18px 18px 16px;box-shadow:var(--shadow)}
+  .find .h{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em;margin-bottom:6px}
+  .find p{margin:0;font-size:13.5px}
+  .find .fix{margin-top:10px;padding-top:9px;border-top:1px solid var(--line-soft);
+             font-size:12px;color:var(--primary-deep);font-weight:700}
+
+  /* 정할 것 */
+  .decide{background:var(--mint);border:1px solid var(--primary);border-radius:18px;
+          padding:24px 22px;box-shadow:var(--shadow)}
+  .decide .q{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin:0 0 12px}
+  .decide .why{margin:0 0 16px;font-size:14px;max-width:62ch}
+  .rec{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .rec .tag{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--primary-deep);display:block;margin-bottom:5px}
+  .rec .num{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+  .rec .note{font-size:12.5px;margin-top:5px}
+
+  /* 숫자 */
+  .figs{display:flex;flex-wrap:wrap;gap:8px}
+  .fig{flex:1 1 108px;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+       padding:14px 14px 12px}
+  .fig .n{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.02em;
+          font-variant-numeric:tabular-nums;line-height:1.15}
+  .fig .k{font-size:11px;color:var(--meta);margin-top:2px}
+  .fig.flat .n{color:var(--meta)}
+
+  /* 팀별 */
+  .teams{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;
+         overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+  .team{display:grid;grid-template-columns:88px 1fr auto;gap:14px;align-items:baseline;
+        padding:13px 16px;border-bottom:1px solid var(--line-soft)}
+  .team:last-child{border-bottom:none}
+  @media(max-width:600px){
+    .team{grid-template-columns:1fr auto;gap:4px 10px}
+    .team .name{grid-column:1/-1}
+  }
+  .team .name{font-size:13px;font-weight:800;color:var(--ink)}
+  .team .did{font-size:13px}
+  .team .score{font-size:11.5px;font-weight:700;white-space:nowrap;color:var(--primary-deep)}
+  .team .score.none{color:var(--meta)}
+
+  /* 로드 할 일 */
+  .todo{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .todo ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+  .todo li{font-size:13.5px;display:flex;gap:10px;align-items:baseline}
+  .todo .box{flex:none;width:13px;height:13px;border:1.5px solid var(--line);border-radius:3.5px;
+             display:inline-block;transform:translateY(1px)}
+  .todo .new{font-size:10.5px;font-weight:800;letter-spacing:.06em;color:var(--alert);
+             background:var(--alert-tile);border:1px solid var(--alert-line);border-radius:999px;
+             padding:1px 7px;margin-left:2px}
+  .todo .tip{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line-soft);
+             font-size:12.5px;color:var(--meta)}
+
+  /* 전/후 비교 — 말로 열 줄 설명하는 것보다 나란히 놓는 게 빠르다 (2026.08.19) */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media(max-width:600px){.ba{grid-template-columns:1fr}}
+  .ba .col{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:var(--ground)}
+  .ba .col.after{border-color:var(--primary);background:var(--mint)}
+  .ba .lbl{font-size:10.5px;font-weight:800;letter-spacing:.1em;color:var(--meta);display:block;margin-bottom:7px}
+  .ba .col.after .lbl{color:var(--primary-deep)}
+  .ba .txt{font-size:13.5px;color:var(--ink);font-weight:600;line-height:1.5}
+  .ba .col.before .txt{color:var(--alert)}
+
+  /* 오늘 바뀐 것 한 덩어리 */
+  .chg{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--primary);
+       border-radius:14px;padding:20px 20px 18px;box-shadow:var(--shadow)}
+  .chg + .chg{margin-top:14px}
+  .chg .h{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:8px}
+  .chg p{margin:0;font-size:14px}
+  .chg .why{margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--meta)}
+
+  footer{font-size:11.5px;color:var(--meta);border-top:1px solid var(--line);padding-top:16px}
+
+  /* 브리핑에 끼워 넣는 화면 캡처. 폭을 안 묶으면 폰에서 가로로 밀린다 */
+  .one{border:2px solid var(--primary);border-radius:12px;overflow:hidden;
+       background:var(--surface);margin-top:12px}
+  .one img{display:block;width:100%;height:auto}
+  img{max-width:100%;height:auto}
+  /* 체크박스 옆 내용은 한 덩어리여야 한다. 안 감싸면 폰에서 글이 세로로 쪼개진다 */
+  .todo li > .t{flex:1 1 auto;min-width:0}
+</style>
+<div class="page">
+
+  <header>
+    <div class="top">
+      <span class="date">2026.08.25 화 · 사업 보고</span>
+      <span class="runs">고문 관점 · <b>신청서 초안 나옴</b></span>
+    </div>
+    <h1>「모두의 창업」 신청서를 <em>대신 써뒀어요.</em><br>그대로 옮겨 적으면 신청은 끝나요.</h1>
+  </header>
+
+  <section>
+    <h2>두 줄</h2>
+    <div class="todo">
+      <ul>
+        <li><span class="box"></span><span class="t"><b>"낼까 말까"는 이제 안 여쭤볼게요.</b> 안 낼 이유가 없어요 —
+        서류가 한 장도 없고(홈페이지에 직접 적는 게 전부), 사업자등록이 없어야 자격인데 지금 우리가 그 상태고,
+        24일 남았어요. <b>급하게 만들어 내는 게 아니라 이미 있는 걸 옮겨 적는 일</b>이에요.</span></li>
+        <li><span class="box"></span><span class="t"><b>정할 건 하나예요 — 지금 낼까, 3주 뒤에 낼까.</b>
+        초안에서 제일 약한 줄이 "아직 쓴 사람이 0명"인데, 3주 안에 한 명이라도 실제로 신청까지 갔다면
+        그 줄을 바꿔서 낼 수 있어요.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>신청서 초안 — 그대로 옮겨 적으셔도 돼요</h2>
+
+    <div class="chg">
+      <div class="h">1. 한 줄 소개</div>
+      <p>이미 존재하지만 청소년에게 닿지 않는 지원제도를, 청소년이 눈치 보지 않고 쓸 수 있게 연결하는 정보 플랫폼입니다.</p>
+    </div>
+
+    <div class="chg">
+      <div class="h">2. 어떤 문제를 푸나</div>
+      <p>교육 불평등은 흔히 "기회가 없어서" 생긴다고 말합니다. 그런데 실제로 들여다보면 상당 부분은
+      <b>이미 있는 지원제도를 몰라서, 신청이 번거로워서, 낙인이 두려워서</b> 못 쓰는 것입니다.
+      나라와 지자체와 기업이 청소년 지원에 쓰는 예산은 이미 있는데, 정작 그 돈이 필요한 청소년은
+      그런 제도가 있다는 것조차 모릅니다. 안다고 해도 안내문이 행정용어로 쓰여 있어서 자기가 해당되는지
+      알 수 없고, 알아도 "나 이거 받아도 되는 애인가" 싶어 손을 내밀지 못합니다.
+      저희는 이 세 가지 장벽만 없앱니다.</p>
+    </div>
+
+    <div class="chg">
+      <div class="h">3. 무엇을 만들었나</div>
+      <p>청소년이 신청할 수 있는 지원제도 <b>42개</b>를 한 곳에 모아 seedon.vercel.app에서 운영하고 있습니다.
+      교육 11개, 경제·생활비 9개, 공모전·대회 8개, 진로·취업 5개, 문화체험 4개, 심리상담 3개, 주거 2개입니다.
+      나눈 기준은 기관이 그 사업을 뭐라고 부르는지가 아니라, <b>청소년이 그 칸을 눌렀을 때 무엇을 기대하는지</b>입니다.
+      학용품에 쓰라고 주는 돈은 교육 칸에, 먹고사는 데 쓰라고 주는 돈은 경제·생활비 칸에 넣습니다.</p>
+    </div>
+
+    <div class="chg">
+      <div class="h">4. 뭐가 다른가 — 어제오늘 실제로 고친 세 가지</div>
+      <p>같은 정보를 모아둔 곳은 있습니다. 저희가 다른 건 <b>모은 뒤에 문장을 다시 쓴다</b>는 점입니다.</p>
+      <p style="margin-top:11px"><b>하나, 판정하는 말투를 없앱니다.</b> 방과후아카데미 카드의 신청 단계에
+      "선발 심사 / 가정형편 등 확인"이라고 적혀 있던 걸 오늘 <b>"자리보다 신청이 많으면 순서를 정해요"</b>로
+      고쳤습니다. 조건을 숨긴 게 아닙니다. 조건은 그대로 두고, 청소년을 심사 대상으로 부르는 말투만 없앤 것입니다.</p>
+      <p style="margin-top:11px"><b>둘, 행정용어를 실제 금액으로 바꿔 씁니다.</b> 청년내일저축계좌 카드에
+      소득 조건이 빠져 있어 오늘 넣었는데, "기준 중위소득 50% 이하"라고 쓰지 않고
+      <b>"4명이 사는 집이면 한 달 수입이 324만원쯤보다 적을 때"</b>라고 썼습니다.
+      중학생이 사전 없이 읽고 자기가 해당되는지 판단할 수 있어야 신청까지 이어집니다.</p>
+      <p style="margin-top:11px"><b>셋, 막다른 길을 만들지 않습니다.</b> 자립수당 카드에는 물어볼 전화번호가
+      아예 없었습니다. 오늘 자립준비청년 상담센터 <b>1855-2455</b>를 찾아 넣었습니다.
+      먼저 자립을 겪은 선배들이 받는 곳입니다. 물어볼 어른이 마땅치 않은 청소년에게는
+      전화번호 한 줄이 유일한 길입니다.</p>
+    </div>
+
+    <div class="chg">
+      <div class="h">5. 돈은 어디서 버나</div>
+      <p><b>청소년에게는 끝까지 무료이고 광고도 넣지 않습니다.</b> 그래야 눈치 보지 않고 쓰는 곳이 됩니다.
+      돈은 두 곳에서 받습니다. 하나는 지자체·교육청·학교 같은 공공기관으로, 관내 청소년에게 지원제도를
+      실제로 닿게 하는 일을 맡는 방식입니다. 다른 하나는 기업의 사회공헌 부서로, 이미 하고 있는
+      청소년 지원사업을 저희 쪽에 실어 실제로 닿게 하는 방식입니다.
+      <b>두 곳 다 이미 청소년 지원에 예산을 쓰고 있는데, 그게 청소년에게 안 닿는 것이 바로 그들의 고민입니다.</b>
+      저희가 푸는 문제가 곧 그들의 문제라서 값을 매길 수 있습니다.</p>
+    </div>
+
+    <div class="chg">
+      <div class="h">6. 팀</div>
+      <p>단국대 재학생 1인이 만들고 운영하고 있습니다. 사업자등록은 아직 없습니다.
+      정보를 모으고, 문장을 다시 쓰고, 링크와 전화번호가 살아 있는지 확인하는 일을
+      매일 반복하는 구조로 운영합니다.</p>
+    </div>
+
+    <div class="chg">
+      <div class="h">7. 지금 상태와 앞으로 3개월</div>
+      <p><b>아직 쓴 사람은 0명입니다.</b> 지금은 사람을 모으기 전에, 올린 정보가 진짜 맞는지부터 확인하는
+      단계입니다. 매일 카드를 열어 링크가 살아 있는지, 금액이 기관 홈페이지에 실제로 적힌 숫자인지,
+      문장이 중학생이 읽을 수 있는 말인지 확인해서 고칩니다. 3년 넘은 자료의 전화번호와 주소는 쓰지 않습니다 —
+      지낼 곳이 없어 전화를 거는 청소년에게 끊긴 번호를 주면 안 되기 때문입니다.
+      앞으로 3개월은 ① 42개 카드의 사실 확인을 끝내고 ② 실제 청소년에게 써보게 해서 어디서 막히는지를 보고
+      ③ 지자체·학교 한 곳에 먼저 제안해보는 순서로 갑니다.</p>
+    </div>
+
+    <p style="margin:14px 0 0;font-size:13px;color:var(--meta)">
+      ⚠️ <b>실제 신청서 칸 이름은 확인 못 했어요.</b> 주최 사이트가 우리 쪽 접속을 계속 거절해서
+      입력칸 이름·글자 수 제한을 못 봤습니다. 위는 일반적인 구성으로 썼으니, 실제 칸 이름이 다르면
+      내용을 잘라 붙이시면 돼요.
+    </p>
+  </section>
+
+  <section>
+    <h2>약한 곳을 어떻게 썼나</h2>
+    <div class="chg">
+      <div class="h">"0명"을 숨기지 않고, 순서를 바꿨어요</div>
+      <p>심사위원 셋이 서류만 보고 판단하는 자리예요. 사용자 수를 흐리게 쓰면 그게 먼저 보입니다.
+      그래서 <b>7번에 "아직 쓴 사람은 0명입니다"를 그대로 썼어요.</b>
+      대신 그 뒤에 <b>왜 지금 0명인지</b>를 붙였습니다 — 사람을 못 모은 게 아니라 <b>아직 안 모으는 중</b>이고,
+      이유가 "틀린 정보로 청소년을 움직이게 하면 안 되기 때문"이라는 것입니다.</p>
+      <p class="why">이건 꾸며낸 말이 아니라 매일 실제로 하고 있는 일이에요.
+      4번의 세 가지 예(가정형편 문구, 324만원, 1855-2455)가 <b>증거로 앞에 먼저 나오기 때문에</b>,
+      7번의 "0명"이 변명이 아니라 순서로 읽힙니다.
+      <b>약점을 먼저 말하고 증거를 대는 게 아니라, 증거를 먼저 보여주고 약점을 뒤에 말하는 배치</b>입니다.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>정할 것 — 하나</h2>
+    <div class="decide">
+      <p class="q">마감까지 남은 3주를, 신청서 다듬는 데 쓸까요 첫 사용자 만드는 데 쓸까요?</p>
+      <p class="why">초안은 오늘 나왔고 서류는 없어요. 신청서를 더 다듬어서 얻는 건 크지 않습니다.
+      반대로 <b>9월 17일 전에 청소년 다섯 명이 써보고 한 명이 실제로 신청까지 갔다면,
+      7번의 "0명"을 그 한 줄로 바꿔서 낼 수 있어요.</b> 그 한 줄이 나머지 전체보다 셉니다.</p>
+      <div class="rec">
+        <span class="tag">추천</span>
+        <span class="num">3주 쓰고 <span style="white-space:nowrap">9월 14일</span>에 낸다</span>
+        <p class="note">마감일(9/17 16시)에 몰아 내면 사이트가 안 열릴 수 있어서 <b>9월 14일을 우리 마감</b>으로 잡는 걸 권해요.<br>
+        <b>확인 못 한 게 하나 있어요</b> — 낸 뒤에 고칠 수 있는지는 주최 사이트가 막혀서 못 봤습니다.
+        고칠 수 있다면 <b>지금 내고 나중에 채우는 것</b>도 되니까, 로드가 신청 화면을 한 번만 열어봐 주시면
+        이 선택이 확실해져요.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    오늘 밖으로 나간 것은 없어요 — 초안만 썼고 아직 아무것도 제출하지 않았습니다.<br>
+    대학리그(결선 22개 팀은 2라운드 우선 선발) 공고는 <b>아직 못 찾았어요.</b>
+    로드가 단국대 재학생이라 해당될 수 있어서 계속 찾아볼게요.
+  </footer>
+
+</div>
