@@ -133,6 +133,44 @@ const officialTone = programs.filter((p) => {
   return m.length > 0 && !/(요|다)\s*[.!]?$/.test(m);
 });
 
+/* ── 9~11. 청소년이 읽는 글의 말투와 낱말 (2026-10-02 추가) ─────────────────
+   로드 지시: "그 부분들은 맨날 고치도록 조정해놓자." 가족돌봄 카드에 "네가 대신"이
+   한 달 넘게 떠 있었는데 아무도 못 봤다. 사람 눈에 맡기면 이렇게 된다.
+   그래서 카드에 들어가는 글 전부(제목·설명·신청 방법·단계·다음 회차 안내)를 매일 훑는다.
+
+   따옴표로 감싼 낱말은 뺀다. CLAUDE.md 절대규칙 3이 허용하는 방식 —
+   "Wee센터에 가서 \"의뢰서\"라는 서류를 받아요" — 이 그대로 걸리면 매일 헛경보가 뜨고,
+   그러면 이 목록을 아무도 안 믿게 된다. */
+const QUOTED = /\\?["“]([^"“”\\]{1,20})\\?["”]/g;
+const youthText = (p) => {
+  let text = [p.title, p.description, p.apply_method, p.reopen_note, p.apply_link_label,
+    JSON.stringify(p.apply_steps ?? "")].filter(Boolean).join(" ");
+  // 카드 어딘가에서 따옴표로 한 번 풀어 쓴 낱말은, 그 카드 안의 다른 자리(신청 단계
+  // 제목 "의뢰서 받기" 같은 곳)에 나와도 이미 설명된 것으로 본다.
+  const explained = [...text.matchAll(QUOTED)].map((m) => m[1].trim()).filter(Boolean);
+  for (const w of explained) text = text.split(w).join(" ");
+  return text;
+};
+
+/* 9. 낙인 문구 — 절대규칙 1. 하나라도 있으면 그날 바로 고친다. */
+const STIGMA = /저소득층|지원대상자|취약계층|결손가정|차상위|수급자/;
+const stigma = programs.filter((p) => STIGMA.test(youthText(p)));
+
+/* 10. 반말 — 로드 결정(2026-08-25): 서비스 전체 "~해요"체, 반말 금지.
+   "너/네가"로 부르는 말과, 문장이 반말로 끝나는 것(…해. …돼. …줘.)을 잡는다. */
+const BANMAL =
+  /(^|[\s,(])(네가|너는|너의|너도|너한테|니가)(?=[\s,])|(^|[가-힣\s])(해|돼|줘|봐|거든|있어|없어|했어|할게|하자)[.!?](?=\s|$)/;
+const banmal = programs.filter((p) => BANMAL.test(youthText(p)));
+
+/* 11. 행정용어·기관 말투 — 절대규칙 3. 중학생이 사전 없이 읽을 수 있어야 한다.
+   "의뢰서"처럼 꼭 써야 하는 말은 따옴표로 감싸고 무슨 서류인지 풀어 쓰면 통과한다. */
+const ADMIN =
+  /중위소득|소득인정액|가구원|산정|선정 기준|의뢰서|배분신청|이수|연계|[을를] 대상으로|[가-힣](합니다|됩니다|입니다|습니다)/;
+const adminWords = programs
+  .map((p) => ({ p, m: youthText(p).match(ADMIN) }))
+  .filter((x) => x.m)
+  .map((x) => ({ ...x.p, title: `${x.p.title} — "${x.m[0]}"` }));
+
 function report(title, rows, hint) {
   if (rows.length === 0) return;
   console.log(`\n## ${title} (${rows.length}건)`);
@@ -151,6 +189,12 @@ report("신청 방법이 청소년에게 하는 말이 아님 — \"~해요\"로
   "\"…온라인 신청\"처럼 명사로 끝나면 기관 문서를 옮겨온 거예요. 청소년이 할 행동을 적으면 문장이 저절로 \"~해요\"로 끝납니다(절대규칙 3 + 게시 기준).");
 report("⚠️ 확인 못 했다면서 숫자가 적혀 있음 — 지금 빼야 함", unverifiedWithMoney,
   "\"찾았으면 바로 올린다\"의 유일한 안전벨트가 이겁니다. 공식 페이지에서 그 숫자를 직접 보지 못했으면 지우고 \"그해 공고에서 확인하세요\"로 바꿀 것.");
+report("🚨 낙인 문구가 들어 있음 — 오늘 고칠 것", stigma,
+  "절대규칙 1. 이 말 대신 조건을 실제 금액·나이로 풀어 쓸 것.");
+report("반말이 섞여 있음 — 오늘 고칠 것", banmal,
+  "로드 결정: 서비스 전체 \"~해요\"체. \"네가 대신\" → 주어를 빼거나 \"내가\"로. 고친 뒤 review_note에 이전 문장을 남길 것.");
+report("행정용어·기관 말투 — 쉬운 말로 풀 것", adminWords,
+  "절대규칙 3. 꼭 써야 하는 말이면 따옴표로 감싸고 무엇인지 한 문장으로 풀어 쓰면 통과해요.");
 report("금액이 적힌 카드 — 공식 페이지에 그 숫자가 있는지 확인", withMoney, "근거 없는 금액은 없는 것보다 나빠요. 매년 1월 기준액 갱신 때도 이 목록을 봅니다.");
 
 if (fix && expired.length > 0) {
@@ -167,6 +211,7 @@ if (fix && expired.length > 0) {
 }
 
 if (expired.length + ageSuspect.length + noEnrollment.length + infoLinks.length +
-    unverifiedWithMoney.length + leakedNote.length + officialTone.length === 0) {
+    unverifiedWithMoney.length + leakedNote.length + officialTone.length +
+    stigma.length + banmal.length + adminWords.length === 0) {
   console.log("\n손볼 게 없어요.");
 }
