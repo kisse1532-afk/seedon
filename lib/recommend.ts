@@ -234,10 +234,17 @@ export function rankPrograms(
     return { program: p, score, reason };
   });
 
+  /* 지금 열린 것이 언제나 먼저다 (2026-10-02).
+     위에서 이번 회차가 끝난 것에 -5를 주지만, 점수만으로는 부족했다.
+     "학원비"를 치면 설명에 "학원비"가 들어 있는 '학교 밖 청소년 장학지원사업
+     (올해 선발 완료)'이 맨 위에 오고, 지금 신청할 수 있는 '위기청소년 특별지원'은
+     그 아래로 밀렸다. 점수를 아무리 맞춰도 다음 카드에서 또 뒤집힐 수 있으니,
+     점수 비교 전에 "지금 신청할 수 있나"로 먼저 가른다. */
+  const closed = (r: Ranked) => (r.program.reopen_note ? 1 : 0);
   return {
     items: ranked
       .filter((r) => r.score >= 0)
-      .sort((a, b) => b.score - a.score)
+      .sort((a, b) => closed(a) - closed(b) || b.score - a.score)
       .slice(0, limit),
     understood,
   };
