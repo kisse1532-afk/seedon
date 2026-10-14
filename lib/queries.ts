@@ -114,6 +114,27 @@ export async function fetchCategoryCounts(): Promise<Record<string, number>> {
   return counts;
 }
 
+/**
+ * 홈 맨 위 "지금 신청할 수 있는 지원 N개"에 들어가는 숫자.
+ *
+ * 왜 따로 세나 (2026-10-02): 위 fetchCategoryCounts를 그대로 더해 썼더니
+ * "이번 회차 끝남"(reopen_note가 있는 것)까지 들어가서, 실제로는 25개인데
+ * 36개라고 말하고 있었다. 카테고리 칸 숫자는 그 칸을 열었을 때 보이는 개수라
+ * 마감된 것도 세는 게 맞지만, "지금 신청할 수 있는"이라는 말에는 지금 열린
+ * 것만 들어가야 한다. 화면이 한 말을 지킨다.
+ */
+export async function fetchOpenNowCount(): Promise<number> {
+  const today = new Date().toISOString().slice(0, 10);
+  const { count, error } = await supabase
+    .from("programs")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "published")
+    .is("reopen_note", null)
+    .or(`apply_deadline.is.null,apply_deadline.gte.${today}`);
+  if (error || count === null) return 0;
+  return count;
+}
+
 // --- 홈: 지금 신청할 수 있는 프로그램 ---
 // reopen_note가 있는 프로그램(= 이번 회차 모집 종료)은 두 목록 모두에서 제외한다.
 // 카테고리·검색에는 계속 보이되, 지금 신청 못 하는 걸 신청 가능한 것처럼 띄우지 않기 위함.

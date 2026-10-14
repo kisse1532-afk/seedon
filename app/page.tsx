@@ -3,7 +3,12 @@ import Link from "next/link";
 import { categories, emergencyContacts } from "@/lib/data";
 import PhoneLink from "@/app/_components/PhoneLink";
 import CategoryIcon from "@/app/_components/CategoryIcon";
-import { fetchAlwaysOpenPrograms, fetchCategoryCounts, fetchDeadlinePrograms } from "@/lib/queries";
+import {
+  fetchAlwaysOpenPrograms,
+  fetchCategoryCounts,
+  fetchDeadlinePrograms,
+  fetchOpenNowCount,
+} from "@/lib/queries";
 import ProgramRow from "@/app/_components/ProgramRow";
 import type { Category } from "@/lib/data";
 import { OG_IMAGE_PATH, OG_ALT } from "@/lib/og-card";
@@ -70,15 +75,17 @@ const trustPoints = [
 ];
 
 export default async function HomePage() {
-  const [counts, deadline, always] = await Promise.all([
+  const [counts, deadline, always, totalOpen] = await Promise.all([
     fetchCategoryCounts(),
     fetchDeadlinePrograms(6),
     fetchAlwaysOpenPrograms(8),
+    // 맨 위 숫자는 "지금 열린 것"만 센다. 이번 회차가 끝난 것까지 더하면
+    // 화면이 실제보다 큰 숫자를 말하게 된다 (lib/queries.ts 설명 참고).
+    fetchOpenNowCount(),
   ]);
 
   const today = new Date();
   const todayLabel = `${today.getMonth() + 1}월 ${today.getDate()}일`;
-  const totalOpen = Object.values(counts).reduce((sum, n) => sum + n, 0);
 
   return (
     <div className="space-y-10 sm:space-y-14">
