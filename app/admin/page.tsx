@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { categories } from "@/lib/data";
 import { fetchAllPrograms, fetchReports } from "@/lib/queries";
-import { fetchHelpRequests, fetchEventStats, fetchApplications, fetchPendingReviews, fetchCardReach, fetchCardFunnel } from "@/lib/queries-admin";
+import { fetchHelpRequests, fetchEventStats, fetchApplications, fetchPendingReviews, fetchCardReach, fetchCardFunnel, fetchDailyCounts } from "@/lib/queries-admin";
 import { hasAdminKey } from "@/lib/supabase-admin";
 import { deleteProgram, dismissReport, logout, markHelpRequestContacted, markHelpRequestCompleted, markApplicationContacted, markApplicationCompleted, publishReview, rejectReview } from "./actions";
 
@@ -18,7 +18,7 @@ export default async function AdminPage({
 }) {
   const { status, category, q } = await searchParams;
 
-  const [programs, reports, helpRequests, eventStats, applications, pendingReviews, cardReach, cardFunnel] = await Promise.all([
+  const [programs, reports, helpRequests, eventStats, applications, pendingReviews, cardReach, cardFunnel, dailyCounts] = await Promise.all([
     fetchAllPrograms(),
     fetchReports(),
     fetchHelpRequests(),
@@ -27,6 +27,7 @@ export default async function AdminPage({
     fetchPendingReviews(),
     fetchCardReach(30),
     fetchCardFunnel(30),
+    fetchDailyCounts(14),
   ]);
 
   const programTitle = new Map(programs.map((p) => [p.id, p.title]));
@@ -263,6 +264,41 @@ export default async function AdminPage({
               아직 아무 카드도 열리지 않았어요. 흐린 글씨는 열린 적 없는 카드예요.
             </p>
           )}
+        </div>
+      </section>
+
+      {/* 날짜별 숫자 (인계함 2026.10.16 [결정] 제품 과업 4).
+          합계만 있으면 "파일럿 시작한 날 숫자가 움직였나"를 볼 수 없다. */}
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold text-neutral-500">날짜별 숫자 (최근 14일)</h2>
+        <p className="text-[11px] leading-relaxed text-neutral-400">
+          한국 시간 기준이에요. 우리가 점검하느라 연 것과 운영자 계정은 빼고 셉니다.
+          누가 했는지는 보지 않고 횟수만 세요.
+        </p>
+        <div className="overflow-x-auto rounded-2xl border border-neutral-200 bg-white">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-neutral-100 text-xs text-neutral-400">
+                <th className="px-4 py-2.5 text-left font-medium">날짜</th>
+                <th className="px-3 py-2.5 text-right font-medium">카드 열기</th>
+                <th className="px-3 py-2.5 text-right font-medium">신청 버튼</th>
+                <th className="px-4 py-2.5 text-right font-medium">신청 접수</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dailyCounts.map((d) => {
+                const empty = d.pageViews === 0 && d.applyClicks === 0 && d.submissions === 0;
+                return (
+                  <tr key={d.date} className={`border-b border-neutral-50 last:border-0 ${empty ? "text-neutral-300" : "text-neutral-700"}`}>
+                    <td className="px-4 py-2 tabular-nums">{d.date.slice(5).replace("-", "/")}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">{d.pageViews}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">{d.applyClicks}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{d.submissions}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </section>
 
