@@ -10,6 +10,8 @@ import { submitHelpRequest } from "./actions";
 import ApplySteps from "./ApplySteps";
 import HelpChatbot from "./HelpChatbot";
 import Reviews from "./Reviews";
+import CardReportButton from "./CardReportButton";
+import { submitCardReport } from "./report-actions";
 import TrackPageView from "@/app/_components/TrackPageView";
 import { OG_IMAGE_PATH, OG_ALT } from "@/lib/og-card";
 
@@ -60,6 +62,7 @@ export default async function ApplyPage({
   if (!program) return notFound();
 
   const submitHelp = submitHelpRequest.bind(null, programId);
+  const reportCard = submitCardReport.bind(null, programId);
 
   // 번호로 시작하는 값만 실제 전화번호로 본다. "1544-3412", "120 (다산콜센터)"는
   // 걸리고, "학교 진로진학상담교사에게 문의" 같은 안내문은 걸리지 않는다.
@@ -178,6 +181,9 @@ export default async function ApplyPage({
       />
 
       <Reviews programId={program.id} />
+
+      {/* 카드마다 「정보가 틀렸어요」 (인계함 2026.10.16 제품 과업 6) */}
+      <CardReportButton action={reportCard} />
     </div>
   );
 }
