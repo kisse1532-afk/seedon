@@ -5,6 +5,7 @@ import Link from "next/link";
 import { rankPrograms, type Ranked } from "@/lib/recommend";
 import type { AiResult } from "@/lib/recommend-ai";
 import SosBanner from "@/app/_components/SosBanner";
+import { hasCrisisSignal } from "@/lib/crisis";
 import { fetchProgramsByIds } from "@/lib/queries";
 import { loadBookmarks } from "@/lib/bookmarks";
 import { loadMyProfile } from "@/lib/consent";
@@ -80,8 +81,9 @@ export default function ResultsList({
     <>
       {/* 못 알아들었어도 빈손으로 돌려보내지 않는다. 자기 사정을 적은 청소년이
           "못 찾았어요"만 보고 나가면, 정보 비대칭을 없앤 게 아니라 하나 더 만든 것이다. */}
-      {/* 위기 신호가 보이면 목록보다 전화가 먼저다 */}
-      {ai?.crisis && <SosBanner />}
+      {/* 위기 신호가 보이면 목록보다 전화가 먼저다.
+          AI가 꺼져 있거나 실패해도 뜨도록 기계 판별(lib/crisis.ts)을 같이 본다 (2026.10.16) */}
+      {(ai?.crisis || hasCrisisSignal(q)) && <SosBanner />}
 
       <p
         className={`inline-flex w-fit items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold ${

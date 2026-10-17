@@ -6,6 +6,8 @@ import EnrollmentBadge from "@/app/_components/EnrollmentBadge";
 import CategoryIcon from "@/app/_components/CategoryIcon";
 import { categories } from "@/lib/data";
 import { matchCategory, rankPrograms } from "@/lib/recommend";
+import SosBanner from "@/app/_components/SosBanner";
+import { hasCrisisSignal } from "@/lib/crisis";
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
@@ -62,6 +64,10 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           className="w-full rounded-control border border-sage-border bg-white px-5 py-3 text-sm text-body focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25"
         />
       </form>
+
+      {/* 검색창에도 자기 상황을 적는다("예: 학원비가 부담돼요"). 위기 말이 보이면
+          검색 결과보다 전화번호가 먼저다 (인계함 2026.10.16 제품 과업 2) */}
+      {hasCrisisSignal(query) && <SosBanner />}
 
       {!query && (
         <p className="text-sm text-meta py-8 text-center">
