@@ -337,3 +337,80 @@ export async function fetchCardFunnel(windowDays = 30): Promise<CardFunnelRow[]>
     return a.title.localeCompare(b.title, "ko");
   });
 }
+
+
+/**
+ * 날짜별 숫자 — "어느 날 몇 번 열렸고, 몇 번 신청 버튼까지 갔나."
+ *
+ * 왜 (인계함 2026.10.16 [결정] 제품 과업 4 「관리자 숫자 화면」)
+ * ------------------------------------------------------------
+ * 위의 숫자들은 전부 "최근 30일 합계"라서, 파일럿을 시작한 날이나 학교에
+ * 안내가 나간 날 숫자가 움직였는지를 볼 수 없었다. 날짜별로 펼친다.
+ *
+ * 세는 것은 셋뿐이다 — 카드 열기, 신청 버튼 누르기, 신청 접수. 누가 했는지는
+ * 읽지 않는다(건수만 센다). 칸 이름에도 사람을 나누는 말을 붙이지 않는다
+ * (절대규칙 1 관리자 화면 원칙: 카테고리·프로그램 기준으로만 집계).
+ *
+ * 날짜는 한국 시간 기준으로 자른다. 서버 시간(UTC)으로 자르면 밤 9시 이후
+ * 기록이 다음 날로 넘어간다.
+ */
+export type DailyCount = {
+  /** YYYY-MM-DD (한국 시간) */
+  date: string;
+  pageViews: number;
+  applyClicks: number;
+  submissions: number;
+};
+
+const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+
+function kstDate(iso: string): string {
+  return new Date(new Date(iso).getTime() + KST_OFFSET_MS).toISOString().slice(0, 10);
+}
+
+export async function fetchDailyCounts(days = 14): Promise<DailyCount[]> {
+  // 오늘(한국 시간)부터 거꾸로 days일. 기록이 없는 날도 0으로 보여준다 —
+  // 빈 날이 빠지면 "매일 조금씩 있었다"로 잘못 읽힌다.
+  const todayKst = kstDate(new Date().toISOString());
+  const dates: string[] = [];
+  for (let i = 0; i < days; i++) {
+    const d = new Date(`${todayKst}T00:00:00Z`);
+    d.setUTCDate(d.getUTCDate() - i);
+    dates.push(d.toISOString().slice(0, 10));
+  }
+  const rows = new Map<string, DailyCount>(
+    dates.map((date) => [date, { date, pageViews: 0, applyClicks: 0, submissions: 0 }])
+  );
+  if (!supabaseAdmin) return [...rows.values()];
+
+  // 가장 오래된 날의 한국 시간 0시 = 전날 15:00 UTC
+  const oldestStartUtc = new Date(
+    new Date(`${dates[dates.length - 1]}T00:00:00Z`).getTime() - KST_OFFSET_MS
+  ).toISOString();
+  const since = oldestStartUtc > MEASURE_SINCE ? oldestStartUtc : MEASURE_SINCE;
+
+  const [{ data: events }, { data: apps }] = await Promise.all([
+    supabaseAdmin
+      .from("program_events_counted")
+      .select("event_type, created_at")
+      .in("event_type", ["apply_page_view", "apply_link_click"])
+      .gte("created_at", since)
+      .limit(10000),
+    // 신청은 건수만 본다. 이름·연락처 칸은 읽지 않는다
+    supabaseAdmin.from("applications").select("created_at").gte("created_at", since).limit(10000),
+  ]);
+
+  for (const e of events || []) {
+    const ev = e as { event_type: string; created_at: string };
+    const row = rows.get(kstDate(ev.created_at));
+    if (!row) continue;
+    if (ev.event_type === "apply_page_view") row.pageViews += 1;
+    else if (ev.event_type === "apply_link_click") row.applyClicks += 1;
+  }
+  for (const a of apps || []) {
+    const row = rows.get(kstDate((a as { created_at: string }).created_at));
+    if (row) row.submissions += 1;
+  }
+
+  return [...rows.values()]; // 최근 날짜가 위
+}
