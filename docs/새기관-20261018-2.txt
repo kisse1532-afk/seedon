@@ -1,0 +1,40 @@
+# 2026-10-18 (2) 로드 결정: "사회공헌팀이 있을 수도 있으니 데이터는 많이 담아두자"
+# 기업재단·기업은 청소년 사업이 있는지 아직 모른다 → 메모에 "청소년 사업 확인 전", 점검 주기는 분기(quarterly)
+# 형식: 이름 | 종류 | 지역 | 대문주소 | 공고주소 | 칸 | 메모
+DB김준기문화재단 | 기업재단 | 전국 | https://www.dbfoundation.or.kr | https://www.dbfoundation.or.kr/news/notice/notice | 교육,공모전·대회 | 실장 확인 200 (2026-10-18) · 장학금 신청·보험금융공모전 메뉴 있음
+LG연암문화재단 | 기업재단 | 전국 | https://foundation.lg.or.kr | https://foundation.lg.or.kr/category/notice/ |  | 실장 확인 200 (2026-10-18) · LG재단 통합 사이트 · 청소년 사업 확인 전
+CJ문화재단 | 기업재단 | 전국 | https://www.cjazit.org | https://www.cjazit.org/support/learnfare | 문화체험 | 실장 확인 200 (2026-10-18) · CJ음악장학사업
+KDB나눔재단 | 기업재단 | 전국 | https://foundation.kdb.co.kr |  |  | 다음 검색으로 주소 확인, 클라우드에서는 안 열림 · 청소년 사업 확인 전
+롯데문화재단 | 기업재단 | 서울 | https://www.lotteconcerthall.com |  | 문화체험 | 실장 확인 200 (2026-10-18) · 롯데콘서트홀 운영 · 청소년 사업 확인 전
+동행복지재단 | 기업재단 | 전국 | http://donghaengfoundation.or.kr | http://donghaengfoundation.or.kr/sub/sub03_01.php |  | 실장 확인 200 (2026-10-18) · 청소년 사업 확인 전
+송은문화재단 | 기업재단 | 서울 | https://www.songeunartspace.org |  | 문화체험 | 실장 확인 200 (2026-10-18) · 미술관 · 청소년 사업 확인 전
+일우재단 | 기업재단 | 전국 | https://www.ilwoo.org |  |  | 실장 확인 200 (2026-10-18) · 청소년 사업 확인 전
+일주학술문화재단 | 기업재단 | 전국 | https://www.iljufoundation.org | https://www.iljufoundation.org/html/educationWelfare.do?contentType=1 | 교육 | 실장 확인 200 (2026-10-18) · 장학·교육복지 사업
+두산연강재단 | 기업재단 | 전국 | https://www.yonkang.org |  | 교육 | 실장 확인 200 (2026-10-18) · 청소년 사업 확인 전
+SBS 서암윤세영재단 | 기업재단 | 전국 | https://seoam.foundation.sbs.co.kr |  | 교육 | 실장 확인 200 (2026-10-18) · 옛 SBS문화재단 · 청소년 사업 확인 전
+금호문화재단 | 기업재단 | 전국 | http://www.kacf.net |  | 문화체험 | 실장 확인 200 (2026-10-18) · 영재 음악 지원으로 알려짐 · 청소년 사업 확인 전
+네이버 해피빈 | 기업재단 | 전국 | https://happybean.naver.com | https://happybean.naver.com/introduction/NoticeList |  | 실장 확인 200 (2026-10-18) · 네이버문화재단 · 청소년 사업 확인 전
+대림문화재단 | 기업재단 | 서울 | https://www.daelimmuseum.org |  | 문화체험 | 실장 확인 200 (2026-10-18) · 디뮤지엄 · 청소년 사업 확인 전
+대산문화재단 | 기업재단 | 전국 | https://www.daesan.or.kr | https://www.daesan.or.kr/business.html?d_code=5464 | 교육,공모전·대회 | 실장 확인 200 (2026-10-18) · 장학 및 청소년 육성 사업 메뉴 있음
+세아이운형문화재단 | 기업재단 | 전국 | http://www.woonhyungleefoundation.org | http://www.woonhyungleefoundation.org/bbs/board.php?bo_table=notice | 문화체험 | 실장 확인 200 (2026-10-18) · 청소년 사업 확인 전
+세화문화재단 | 기업재단 | 전국 | http://www.shcfound.com |  |  | 다음 검색으로 주소 확인, 클라우드에서는 안 열림 · 청소년 사업 확인 전
+송암문화재단 OCI미술관 | 기업재단 | 서울 | https://www.ocimuseum.org | https://www.ocimuseum.org/board/notice | 문화체험 | 실장 확인 200 (2026-10-18) · 청소년 사업 확인 전
+시티문화재단 | 기업재단 | 전국 | https://cityfoundation.org |  |  | 실장 확인 200 (2026-10-18) · 청소년 사업 확인 전
+KT그룹희망나눔재단 | 기업재단 | 전국 | https://ktgf.or.kr | https://ktgf.or.kr/news/news.php |  | 실장 확인 200 (2026-10-18) · KT 사회공헌 담당 재단 · 청소년 사업 확인 전
+한화문화재단 퐁피두센터 한화 | 기업재단 | 서울 | https://www.centrepompidou-hanwha.kr | https://www.centrepompidou-hanwha.kr/notice/list | 문화체험 | 실장 확인 200 (2026-10-18) · 청소년 사업 확인 전
+행복그린넷 | 기업재단 | 전국 | https://happygr.org |  |  | 실장 확인 200 (2026-10-18) · 청소년 사업 확인 전
+행복ICT | 기업재단 | 전국 | https://www.happyict.co.kr | https://www.happyict.co.kr/business/contribution.do | 교육 | 실장 확인 200 (2026-10-18) · IT 사회공헌 · 청소년 사업 확인 전
+행복커넥트 | 기업재단 | 전국 | http://happyconnect.co.kr |  |  | 실장 확인 200 (2026-10-18) · 청소년 사업 확인 전
+포니정재단 | 기업재단 | 전국 | https://www.ponychung.org |  | 교육 | 실장 확인 200 (2026-10-18) · 장학 · 청소년 사업 확인 전
+포스코교육재단 | 기업재단 | 전국 | https://www.posef.or.kr |  | 교육 | 실장 확인 200 (2026-10-18) · 학교 운영 재단 · 청소년 사업 확인 전
+하나금융공익재단 | 기업재단 | 전국 | https://www.hanafoundation.or.kr | https://www.hanafoundation.or.kr/bbs/board.php?bo_table=notice |  | 실장 확인 200 (2026-10-18) · 청소년 사업 확인 전
+호반문화재단 | 기업재단 | 전국 | http://hobancf.or.kr |  | 문화체험 | 다음 검색으로 주소 확인, 클라우드에서는 안 열림 · 청소년 사업 확인 전
+라이나전성기재단 | 기업재단 | 전국 | https://www.junsungki.com | https://www.junsungki.com/practice/youth.do | 심리상담 | 실장 확인 200 (2026-10-18) · 청소년 대상 신청·참여 메뉴 있음 (라이나생명)
+서울관광재단 | 공공 | 서울 | https://www.sto.or.kr | https://www.sto.or.kr/notice |  | 실장 확인 200 (2026-10-18) · 모집공고 칸은 직원 채용 위주 · 청소년 사업 확인 전
+LX인터내셔널 | 기업 | 전국 | https://www.lxinternational.com | https://www.lxinternational.com/kr/esg |  | 실장 확인 200 (2026-10-18) · ESG(사회공헌) 페이지 · 청소년 사업 확인 전
+LX판토스 | 기업 | 전국 | https://www.lxpantos.com |  |  | 실장 확인 200 (2026-10-18) · 사회공헌 페이지 못 찾음 · 청소년 사업 확인 전
+매일유업 | 기업 | 전국 | https://www.maeil.com | https://www.maeil.com/contribution/nanumList.jsp |  | 실장 확인 200 (2026-10-18) · 사회공헌 나눔소식 · 청소년 사업 확인 전
+하나투어 | 기업 | 전국 | https://www.hanatour.com |  |  | 실장 확인 200 (2026-10-18) · 사회공헌 페이지 못 찾음 · 청소년 사업 확인 전
+한국무역보험공사 | 공공 | 전국 | https://www.ksure.or.kr |  |  | 실장 확인 200 (2026-10-18) · 사회공헌 페이지 못 찾음 · 청소년 사업 확인 전
+KMI한국의학연구소 | 민간 | 전국 | https://www.kmi.or.kr | https://www.kmi.or.kr/RCH/CONTRI |  | 실장 확인 200 (2026-10-18) · 사회공헌 페이지 · 청소년 사업 확인 전
+법무법인(유) 세종 | 기업 | 서울 | https://www.shinkim.com | https://www.shinkim.com/kor/about/contribution |  | 실장 확인 200 (2026-10-18) · 사회공헌 페이지 (사단법인 나눔과이음) · 청소년 사업 확인 전
