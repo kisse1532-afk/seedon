@@ -1,0 +1,42 @@
+# 2026-10-18 로드가 준 기관 이름 목록에서 청소년 관련 기관만 골라 공식 사이트를 확인한 것
+# (이름만 받았다. 사람 이름·연락처는 가져오지 않았다)
+# 형식: 이름 | 종류 | 지역 | 대문주소 | 공고주소 | 칸 | 메모
+한국YMCA전국연맹 | 민간 | 전국 | https://www.ymcakorea.kr | https://ymcakorea.kr/notice | 문화체험 | 실장 확인 200 (2026-10-18)
+서울YMCA | 민간 | 서울 | https://www.seoulymca.or.kr |  | 문화체험 | 실장 확인 200 (2026-10-18) · 공지 게시판 링크는 자동으로 못 찾음
+한국YWCA연합회 | 민간 | 전국 | http://www.ywca.or.kr |  | 문화체험 | 다음 검색으로 주소 확인, 클라우드에서는 안 열림
+한국청소년쉼터협의회 | 민간 | 전국 | http://www.jikimi.or.kr |  | 주거 | 실장 확인 200 (2026-10-18) · 공지 게시판 링크는 자동으로 못 찾음
+한국아동청소년그룹홈협의회 | 민간 | 전국 | https://www.grouphome.kr |  | 주거 | 다음 검색으로 주소 확인, 클라우드에서는 보안 인증서 오류
+한국청소년연맹 | 민간 | 전국 | https://koya.or.kr | https://koya.or.kr/community/notice | 문화체험,공모전·대회 | 실장 확인 200 (2026-10-18)
+한국청소년동아리연맹 | 민간 | 전국 | http://www.kyca.net |  | 문화체험 | 실장 확인 200 (2026-10-18) · 공지 게시판 링크는 자동으로 못 찾음
+이주배경청소년지원재단 무지개청소년센터 | 공공 | 전국 | https://www.rainbowyouth.or.kr | https://www.rainbowyouth.or.kr/posts/rwdboard/list.do | 교육,심리상담 | 실장 확인 200 (2026-10-18)
+한꿈학교 | 민간 | 경기 | http://www.greatvision.or.kr |  | 교육 | 다음 검색으로 주소 확인, 클라우드에서는 안 열림
+서울시 학교밖청소년지원센터 | 공공 | 서울 | https://seoulallnet.org | https://seoulallnet.org/board/notice | 교육 | 실장 확인 200 (2026-10-18) · 학업비·인턴십 신청 화면 있음
+들꽃청소년세상 | 민간 | 전국 | http://www.wahaha.or.kr |  | 주거 | 실장 확인 200 (2026-10-18) · 공지 게시판 링크는 자동으로 못 찾음
+서울시립 강북청소년드림센터 | 공공 | 서울 | http://www.gbdream.or.kr |  | 교육 | 실장 확인 200 (2026-10-18) · 공지 게시판 링크는 자동으로 못 찾음
+함께걷는아이들 | 민간 | 서울 | http://www.withu.or.kr |  | 교육 | 다음 검색으로 주소 확인, 클라우드에서는 안 열림
+아동복지실천회 세움 | 민간 | 전국 | https://iseum.or.kr |  | 심리상담 | 다음 검색으로 주소 확인, 클라우드에서는 안 열림
+홀트아동복지회 | 민간 | 전국 | https://love.holt.or.kr | https://love.holt.or.kr/join/support/ | 경제·생활비 | 실장 확인 200 (2026-10-18)
+안산시글로벌청소년센터 | 공공 | 경기 | https://www.globalansan.com |  | 교육 | 실장 확인 200 (2026-10-18) · 공지 게시판 링크는 자동으로 못 찾음
+한국언론진흥재단 | 공공 | 전국 | https://www.kpf.or.kr |  | 교육 | 실장 확인 200 (2026-10-18) · 공모/신청은 대문 탭 안에 있음
+세종문화회관 | 공공 | 서울 | https://www.sejongpac.or.kr | https://www.sejongpac.or.kr/portal/bbs/B0000062/list.do?menuNo=200333 | 문화체험 | 실장 확인 200 (2026-10-18)
+한국중앙자원봉사센터 | 공공 | 전국 | http://www.v1365.or.kr |  | 문화체험 | 다음 검색으로 주소 확인, 클라우드에서는 안 열림
+두을장학재단 | 기업재단 | 전국 | http://www.dooeul.or.kr | http://www.dooeul.or.kr/home/main/board/bbsNormalList.do?encMenuId=456e4a7650636263787265524c786556464e424c4e773d3d | 교육 | 실장 확인 200 (2026-10-18) · 대상 나이 확인 필요
+우리다문화장학재단 | 기업재단 | 전국 | https://woorifoundation.or.kr | https://woorifoundation.or.kr/html/apply/sch | 교육 | 실장 확인 200 (2026-10-18)
+KT&G장학재단 | 기업재단 | 전국 | https://scholarship.ktngtogether.com | https://scholarship.ktngtogether.com/bbsctt/list.do?key=2309040011 | 교육 | 실장 확인 200 (2026-10-18)
+아산사회복지재단 | 기업재단 | 전국 | https://www.asanfoundation.or.kr |  | 경제·생활비 | 다음 검색으로 주소 확인, 클라우드에서는 안 열림
+하나금융나눔재단 | 기업재단 | 전국 | https://www.hana-nanum.com |  | 교육 | 다음 검색으로 주소 확인, 클라우드에서는 안 열림
+KB금융공익재단 | 기업재단 | 전국 | https://www.kbfoundation.or.kr | https://www.kbfoundation.or.kr/course/offline.do | 교육 | 실장 확인 200 (2026-10-18) · 교육신청
+호반장학재단 | 기업재단 | 전국 | https://www.hobansf.or.kr | https://www.hobansf.or.kr/kr/news/notice/list | 교육 | 실장 확인 200 (2026-10-18) · 대상 나이 확인 필요
+우정교육문화재단 | 기업재단 | 전국 | https://www.woojungedu.co.kr | https://www.woojungedu.co.kr/boards/4 | 교육 | 실장 확인 200 (2026-10-18) · 대상 나이 확인 필요
+미래에셋박현주재단 | 기업재단 | 전국 | https://foundation.miraeasset.com |  | 교육 | 실장 확인 200 (2026-10-18) · 공지 게시판 링크는 자동으로 못 찾음
+이랜드복지재단 | 기업재단 | 전국 | https://www.elandcsr.or.kr | https://www.elandcsr.or.kr/Community/NoticeList | 경제·생활비 | 실장 확인 200 (2026-10-18)
+웅진재단 | 기업재단 | 전국 | https://www.wjf.kr | https://www.wjf.kr/inform/notice_list.aspx | 교육 | 실장 확인 200 (2026-10-18) · 수학·과학·예술 영재 장학
+대교문화재단 | 기업재단 | 전국 | https://dkculture.org | https://dkculture.org/ko/news/newslist.aspx | 교육 | 실장 확인 200 (2026-10-18)
+엔씨문화재단 | 기업재단 | 전국 | https://www.ncfoundation.or.kr |  | 문화체험 | 실장 확인 200 (2026-10-18) · 공지 게시판 링크는 자동으로 못 찾음
+넷마블문화재단 | 기업재단 | 전국 | https://www.netmarblefoundation.org |  | 문화체험,공모전·대회 | 실장 확인 200 (2026-10-18) · 공지 게시판 링크는 자동으로 못 찾음
+오리온재단 | 기업재단 | 전국 | http://www.orionfoundation.or.kr |  | 교육 | 다음 검색으로 주소 확인, 클라우드에서는 안 열림
+농협재단 | 기업재단 | 전국 | https://jaedan.nonghyup.com |  | 교육 | 다음 검색으로 주소 확인, 클라우드에서는 안 열림
+한국타이어나눔재단 | 기업재단 | 전국 | https://hankooktirefoundation.or.kr | https://hankooktirefoundation.or.kr/bbs/board.php?bo_table=B31 | 경제·생활비 | 실장 확인 200 (2026-10-18)
+경남은행사랑나눔재단 | 기업재단 | 경남 | https://www.knbnanum.or.kr | https://www.knbnanum.or.kr/bbs/board.php?bo_table=scnotice | 교육 | 실장 확인 200 (2026-10-18) · 장학회 공지
+파라다이스복지재단 | 기업재단 | 전국 | https://paradise.or.kr |  | 경제·생활비 | 실장 확인 200 (2026-10-18) · 공지 게시판 링크는 자동으로 못 찾음
+지엠한마음재단코리아 | 기업재단 | 인천 | https://www.gmkorea-foundation.or.kr |  | 경제·생활비 | 실장 확인 200 (2026-10-18)
