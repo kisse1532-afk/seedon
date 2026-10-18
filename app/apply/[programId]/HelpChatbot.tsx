@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import type { ApplyStep } from "@/lib/data";
+import { submitHelperQuestion, type HelperQuestionState } from "./helper-question-actions";
 import PhoneLink from "@/app/_components/PhoneLink";
 import { clearMyInfo, loadMyInfo, onMyInfoChange, saveMyInfo } from "@/lib/my-info";
 import SavedInfoNote from "@/app/_components/SavedInfoNote";
@@ -15,7 +16,7 @@ type Props = {
   submitHelp: (formData: FormData) => void;
 };
 
-type ViewState = "menu" | "eligibility" | "docs" | "howto" | "escalate" | "reserve";
+type ViewState = "menu" | "eligibility" | "docs" | "howto" | "other" | "escalate" | "reserve";
 
 /* 말투는 ~해요체다. 처음엔 도우미 안쪽만 반말이었는데("안녕! 뭐가 궁금해?")
    바깥 화면은 전부 존댓말이라 한 서비스에서 말투가 갈렸다.
@@ -29,6 +30,12 @@ export default function HelpChatbot({
 }: Props) {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<ViewState>("menu");
+
+  /* 카드 밖 질문 — 답하지 않고 다른 곳을 안내한다. 남긴 질문은 CS 할 일이 된다 (인계함 2026.10.18). */
+  const [questionState, questionAction, questionPending] = useActionState<HelperQuestionState, FormData>(
+    submitHelperQuestion.bind(null, programTitle),
+    null,
+  );
 
   /* 자동 채움. 도움 요청은 "혼자 하기 어렵다"고 말한 사람이 쓰는 창구라,
      여기서 또 처음부터 적게 하면 안 된다. 화면이 뜬 뒤에 채운다(서버 렌더 때는
@@ -150,6 +157,7 @@ export default function HelpChatbot({
                 <MenuButton label="이 프로그램, 나도 받을 수 있어요?" onClick={() => setView("eligibility")} />
                 <MenuButton label="뭘 준비해야 해요?" onClick={() => setView("docs")} />
                 <MenuButton label="신청은 어떻게 해요?" onClick={() => setView("howto")} />
+                <MenuButton label="여기 없는 걸 물어보고 싶어요" onClick={() => setView("other")} />
                 <MenuButton label="그래도 잘 모르겠어요, 사람이 도와줬으면 좋겠어요" onClick={() => setView("escalate")} />
               </div>
             </>
@@ -200,6 +208,55 @@ export default function HelpChatbot({
               </BotBubble>
               {!(applySteps && applySteps.length > 0) && (
                 <MenuButton label="사람이 도와줬으면 좋겠어요" onClick={() => setView("escalate")} />
+              )}
+              <BackRow />
+            </>
+          )}
+
+          {/* 카드 밖 질문. 도우미는 이 카드에 적힌 것만 말한다 — 모르는 걸 지어내면
+              청소년이 틀린 정보로 움직인다(콘텐츠 규칙 1). 대신 물어볼 곳을 준다.
+              로드 결정(2026.10.18): "카드 밖에 말은 아직 대답하지마 다른데서 물어보라고 해" */}
+          {view === "other" && (
+            <>
+              <BotBubble>
+                저는 이 카드에 적힌 것만 알려드릴 수 있어요. 다른 제도나 다른 궁금한 건 여기서는 아직 답을 못 해요.
+              </BotBubble>
+              <BotBubble>
+                청소년전화 1388에 물어보면 돼요. 1388만 누르면 되고, 밤이든 새벽이든 돈 안 들어요. 내가 사는 동네 주민센터에 물어봐도 제일 정확해요.
+              </BotBubble>
+              <PhoneLink
+                number="1388"
+                className="inline-block text-xs bg-sos-num text-white rounded-full px-4 py-1.5 hover:brightness-110"
+              >
+                1388 전화하기
+              </PhoneLink>
+
+              {questionState?.ok ? (
+                <BotBubble>고마워요. 다음엔 여기서도 답할 수 있게 채워 둘게요.</BotBubble>
+              ) : (
+                <form action={questionAction} className="space-y-2 pt-1">
+                  <p className="text-xs text-ink-60">
+                    뭐가 궁금했는지 한 줄 남겨주면, 다음에 답할 수 있게 채워 둘게요. (선택)
+                  </p>
+                  <textarea
+                    name="question"
+                    rows={2}
+                    maxLength={200}
+                    placeholder="예: 기숙사비도 받을 수 있는 게 있어요?"
+                    className="w-full rounded-xl border border-sos-line bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sos-num/40"
+                  />
+                  <p className="text-[10px] text-sos-meta">이름이나 연락처는 적지 마세요. 누가 남겼는지는 저장하지 않아요.</p>
+                  {questionState?.error && (
+                    <p className="text-xs text-sos-num">{questionState.error}</p>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={questionPending}
+                    className="text-xs border border-sos-num/50 text-sos-sub rounded-full px-4 py-1.5 hover:bg-sos-tile disabled:opacity-60"
+                  >
+                    {questionPending ? "보내는 중…" : "궁금한 거 남기기"}
+                  </button>
+                </form>
               )}
               <BackRow />
             </>

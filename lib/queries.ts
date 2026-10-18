@@ -87,7 +87,7 @@ export async function fetchReports() {
   if (error) return [];
   return data as {
     id: string;
-    source_type: "link" | "text";
+    source_type: "link" | "text" | "helper_question";
     content: string;
     status: string;
     created_at: string;
