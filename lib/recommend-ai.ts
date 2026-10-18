@@ -28,10 +28,18 @@ import { categories, type Program } from "@/lib/data";
  *   키를 켤 때 방침을 또 고칠 필요 없다.
  * - 우리 쪽에서는 적은 글을 계정과 묶어 저장하지 않는다 — 지금도 안 한다
  *
- * 비용 (2026.08 기준, claude-haiku-4-5: 입력 $1/1M · 출력 $5/1M 토큰)
+ * 모델 · 비용
  * ----------------------------------------------------------------
+ * 로드(2026.10.18): "클로드 콘솔로 해서 되면 하이쿠 5.5로, 지금은 월 만원까지로
+ * 상한선을 맞춰보자" → claude-haiku-5-5로 바꿨다(이전: claude-haiku-4-5).
+ * 월 상한 1만원은 코드가 아니라 Claude 콘솔(console.anthropic.com)의
+ * 결제 설정에서 로드가 직접 건다. 상한에 닿으면 API가 거절하고, 이 함수는
+ * null을 돌려 기존 키워드 방식으로 그대로 돈다 — 화면은 안 막힌다.
+ * 토큰당 가격은 콘솔 요금표에서 확인한다(여기 숫자를 적어 두면 오래되면 틀린다).
+ *
  * 로드(2026.08.26): "비용이 안 드는 AI로 쓰고 싶은데" → 제일 싼 모델로 바꿨다.
  * "42장 중에 골라줘"는 단순한 일이라 싼 모델로 충분하다.
+ * (아래 원 단위 어림은 haiku-4-5 가격 기준이다. 5.5 가격은 확인 전이라 그대로 둔다)
  * 한 번 부를 때 카드 목록 ~6천 토큰 + 답 ~500 토큰 ≈ 1센트(약 12원).
  * 카드 목록에 캐시를 걸어뒀으므로 5분 안에 다음 사람이 부르면 약 4원.
  * 하루 100번 불려도 천 원 수준. 지금 사용자 0명이라 사실상 0원이다.
@@ -102,7 +110,7 @@ export async function aiRecommend(q: string, programs: Program[]): Promise<AiRes
   try {
     const client = new Anthropic({ timeout: 10_000, maxRetries: 0 });
     const response = await client.messages.parse({
-      model: "claude-haiku-4-5",
+      model: "claude-haiku-5-5",
       max_tokens: 2000,
       // effort 옵션은 이 모델이 안 받는다(400 오류) — format만 준다
       output_config: { format: zodOutputFormat(PickSchema) },
