@@ -537,7 +537,7 @@ export default async function AdminPage({
             <div key={r.id} className="p-4 flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <span className="text-[10px] text-neutral-400">
-                  {r.source_type === "link" ? "링크" : "직접입력"}
+                  {r.source_type === "link" ? "링크" : r.source_type === "helper_question" ? "도우미 질문" : "직접입력"}
                 </span>
                 <p className="text-sm text-neutral-700 break-words">{r.content}</p>
               </div>
