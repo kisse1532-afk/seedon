@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
 import BottomNav from "@/app/_components/BottomNav";
+import ChatWidget from "@/app/_components/ChatWidget";
 import Logo from "@/app/_components/Logo";
 import PhoneLink from "@/app/_components/PhoneLink";
 import { emergencyContacts } from "@/lib/data";
@@ -141,6 +142,7 @@ export default function RootLayout({
           </div>
         </footer>
 
+        <ChatWidget />
         <BottomNav />
       </body>
     </html>
