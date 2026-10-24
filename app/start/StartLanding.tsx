@@ -197,8 +197,7 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
             <span className="rounded-full bg-primary-deep px-3 py-1.5 text-[12.5px] font-bold text-white">찾기</span>
           </div>
           {/* 배치: 검색창은 위, 지원 목록은 카드 아래쪽에 붙인다(카드마다 모양이 달라 보이게) */}
-          <div className="min-h-2 flex-1" />
-          <div className="mb-1.5 flex items-center gap-1.5 text-[11.5px] font-bold text-ink-60">
+          <div className="mb-2 mt-4 flex items-center gap-1.5 text-[11.5px] font-bold text-ink-60">
             <span className="h-[6px] w-[6px] rounded-full bg-[#c0392b]" />
             마감이 가까운 지원
           </div>
@@ -206,7 +205,7 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
             {programs.map((p) => (
               <div
                 key={p.id}
-                className="flex items-center gap-2.5 rounded-[13px] border border-brand-border bg-white px-2.5 py-2 shadow-[0_1px_0_rgba(67,64,58,0.04)]"
+                className="flex items-center gap-2.5 rounded-[13px] border border-brand-border bg-white px-2.5 py-2.5 shadow-[0_1px_0_rgba(67,64,58,0.04)]"
               >
                 <span
                   className={`inline-flex h-[34px] min-w-[44px] items-center justify-center rounded-[10px] px-1.5 text-[11.5px] font-extrabold ${
@@ -247,8 +246,7 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
           </div>
 
           {/* AI 챗봇 — 작은 대화 창 모양 */}
-          <div className="min-h-2 flex-1" />
-          <div className="overflow-hidden rounded-[14px] border border-brand-border bg-[#fbfaf7]">
+          <div className="mt-2.5 overflow-hidden rounded-[14px] border border-brand-border bg-[#fbfaf7]">
             <div className="flex items-center gap-1.5 border-b border-brand-border bg-white px-2.5 py-1.5">
               <span className="inline-flex h-[22px] w-[22px] items-center justify-center rounded-full bg-mint">
                 <SeedonSymbol height={10} />
@@ -276,9 +274,9 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
         </SceneCard>
 
         <SceneCard n={3} title="신청까지 한 번에" sub="사이트 여러 곳 돌지 않고, 씨드온 안에서 끝내요.">
-          <ol className="relative mt-0.5 flex flex-1 flex-col justify-between pb-1">
+          <ol className="relative mt-1 flex flex-col gap-[21px]">
             {/* 세로 연결선 */}
-            <span aria-hidden className="absolute bottom-5 left-[17px] top-5 w-[2px] rounded bg-gradient-to-b from-primary-deep/60 to-[#8fdc6a]/60" />
+            <span aria-hidden className="absolute bottom-6 left-[21px] top-6 w-[2px] rounded bg-gradient-to-b from-primary-deep/60 to-[#8fdc6a]/60" />
             <TimelineStep icon="📝" title="씨드온에서 「신청하기」" />
             <TimelineStep icon="🔔" title="어른 허락이 필요하면" desc="도와줄 어른에게 알림이 가요" />
             <TimelineStep icon="✅" title="신청 완료 알림" />
@@ -397,7 +395,7 @@ function SceneCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-[368px] flex-[0_0_86%] snap-center flex-col rounded-[22px] border border-[#ece5d6] bg-white px-4 pb-4 pt-4 shadow-[0_12px_28px_-14px_rgba(55,86,47,0.35)]">
+    <div className="flex flex-[0_0_86%] snap-center flex-col rounded-[22px] border border-[#ece5d6] bg-white px-4 pb-4 pt-4 shadow-[0_12px_28px_-14px_rgba(55,86,47,0.35)]">
       <div className="flex items-center gap-2 text-[17px] font-extrabold tracking-[-0.01em]">
         <span className="inline-flex h-[24px] w-[24px] items-center justify-center rounded-full bg-primary-deep text-[12.5px] text-white">
           {n}
@@ -423,12 +421,12 @@ function TimelineStep({
     <li className="relative flex items-center gap-3">
       <span
         aria-hidden
-        className="relative z-10 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e3efe6] bg-mint text-[16px]"
+        className="relative z-10 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#e3efe6] bg-mint text-[19px]"
       >
         {icon}
       </span>
-      <div className="flex-1 rounded-[13px] border border-brand-border bg-[#fbfaf7] px-3 py-2">
-        <div className="text-[13px] font-semibold leading-[1.35]">{title}</div>
+      <div className="flex min-h-[48px] flex-1 flex-col justify-center rounded-[13px] border border-brand-border bg-[#fbfaf7] px-3 py-2.5">
+        <div className="text-[13.5px] font-semibold leading-[1.35]">{title}</div>
         {desc && <div className="text-[11.5px] leading-[1.4] text-ink-60">{desc}</div>}
       </div>
     </li>
