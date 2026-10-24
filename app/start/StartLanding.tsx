@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Logo from "@/app/_components/Logo";
+import Logo, { SeedonSymbol } from "@/app/_components/Logo";
 import { supabase } from "@/lib/supabase";
 
 export type SceneProgram = {
@@ -191,21 +191,46 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
           <p className="mb-2.5 mt-1.5 text-[13.5px] leading-normal text-ink-60">
             어려운 공고, 중학생도 읽을 수 있게 바꿔요.
           </p>
-          <div className="rounded-[10px] bg-[#f3f3f1] px-2.5 py-2 text-[12px] leading-[1.45] text-[#888]">
-            <div className="mb-0.5 text-[10.5px] font-bold">공고에 흔히 쓰는 말 (예시)</div>
-            만 24세 이하 내국인에 한함. 관람 시 연령 확인이 가능한 신분증 등 증빙 지참 요망.
-          </div>
-          <div className="mt-1.5 rounded-[10px] bg-mint px-2.5 py-2 text-[13px] leading-normal">
-            <div className="mb-0.5 text-[10.5px] font-bold text-primary-deep">씨드온 쉬운 말</div>
-            만 24세 이하면 돈 내지 않고 볼 수 있어요. 나이 확인할 수 있는 신분증만 챙겨 가요.
-          </div>
-          <div className="mt-auto flex flex-col gap-[5px] border-t border-dashed border-brand-border pt-2">
-            <span className="text-[10.5px] font-bold text-[#8a5d00]">챗봇 · 만들고 있어요</span>
-            <div className="self-end rounded-[13px_13px_4px_13px] bg-primary-deep px-[11px] py-1.5 text-[12.5px] text-white">
-              저 고2인데 신청할 수 있어요?
+          {/* 공고 말 → 쉬운 말: 한 장 안에서 위→아래로 바뀌는 모습 */}
+          <div className="rounded-[12px] border border-brand-border">
+            <div className="rounded-t-[12px] bg-[#f5f4f0] px-2.5 py-[7px] text-[11.5px] leading-[1.45] text-[#999]">
+              <span className="mr-1 rounded-[5px] bg-[#e9e7e1] px-1 py-px text-[10px] font-bold text-[#888]">공고 원문</span>
+              <span className="line-through decoration-[#ccc]">만 24세 이하 내국인에 한함. 연령 확인 가능한 신분증 등 증빙 지참 요망.</span>
             </div>
-            <div className="max-w-[88%] self-start rounded-[13px_13px_13px_4px] bg-[#f1f1ee] px-[11px] py-1.5 text-[12.5px] leading-[1.45]">
-              2008~2010년생이 들어가는 캠프가 있어요. 마감은 11월 11일이에요.
+            <div className="flex items-start gap-1.5 rounded-b-[12px] bg-mint px-2.5 py-[7px] text-[12.5px] font-semibold leading-[1.45] text-warm-brown">
+              <span aria-hidden>✨</span>
+              <span>
+                <span className="mr-1 rounded-[5px] bg-white px-1 py-px text-[10px] font-bold text-primary-deep">씨드온 쉬운 말</span>
+                만 24세 이하면 무료예요. 나이 보이는 신분증만 챙겨 가요.
+              </span>
+            </div>
+          </div>
+
+          {/* AI 챗봇 — 작은 대화 창 모양 */}
+          <div className="min-h-2 flex-1" />
+          <div className="overflow-hidden rounded-[14px] border border-brand-border bg-[#fbfaf7]">
+            <div className="flex items-center gap-1.5 border-b border-brand-border bg-white px-2.5 py-1.5">
+              <span className="inline-flex h-[20px] w-[20px] items-center justify-center rounded-full bg-mint">
+                <SeedonSymbol height={9} />
+              </span>
+              <span className="text-[12px] font-extrabold text-warm-brown">씨드온 AI 챗봇</span>
+              <span className="ml-auto flex items-center gap-1 text-[10.5px] text-ink-60">
+                <span className="h-[6px] w-[6px] rounded-full bg-[#2bbe8c]" />
+                궁금한 걸 적어 봐요
+              </span>
+            </div>
+            <div className="flex flex-col gap-1.5 px-2.5 py-2">
+              <div className="self-end rounded-[13px_13px_4px_13px] bg-primary-deep px-[11px] py-1.5 text-[12.5px] text-white">
+                저 고2인데 신청할 수 있어요?
+              </div>
+              <div className="flex max-w-[96%] items-end gap-1.5 self-start">
+                <span className="inline-flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-full bg-mint">
+                  <SeedonSymbol height={9} />
+                </span>
+                <div className="rounded-[13px_13px_13px_4px] bg-white px-[11px] py-1.5 text-[12.5px] leading-[1.45] shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
+                  2008~2010년생이 들어가는 캠프가 있어요. 마감은 11월 11일이에요.
+                </div>
+              </div>
             </div>
           </div>
         </SceneCard>
@@ -315,7 +340,7 @@ function SceneCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-[338px] flex-[0_0_86%] snap-center flex-col rounded-[18px] border border-brand-border bg-white px-[15px] pb-3.5 pt-[15px]">
+    <div className="flex h-[352px] flex-[0_0_86%] snap-center flex-col rounded-[18px] border border-brand-border bg-white px-[15px] pb-3.5 pt-[15px]">
       <div className="flex items-center gap-[7px] text-[16.5px] font-extrabold">
         <span className="inline-flex h-[23px] w-[23px] items-center justify-center rounded-full bg-mint text-[13px] text-primary-deep">
           {n}
