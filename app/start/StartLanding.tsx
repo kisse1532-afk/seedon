@@ -130,79 +130,118 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
   });
 
   return (
-    <div className="mx-auto min-h-screen max-w-md bg-cream text-warm-brown">
+    <div className="relative mx-auto min-h-screen max-w-md overflow-hidden bg-cream text-warm-brown">
+      <style>{`
+        @keyframes sd-up { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+        @keyframes sd-sheet { from { transform: translateY(100%) } to { transform: none } }
+        @keyframes sd-fade { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes sd-sway { 0%,100% { transform: rotate(-4deg) } 50% { transform: rotate(4deg) } }
+        @keyframes sd-dot { 0%,80%,100% { opacity: .25 } 40% { opacity: 1 } }
+        .sd-up { animation: sd-up .6s cubic-bezier(.2,.7,.2,1) both }
+        .sd-sheet { animation: sd-sheet .32s cubic-bezier(.2,.8,.2,1) both }
+        .sd-fade { animation: sd-fade .25s ease both }
+        .sd-sway { transform-origin: 50% 100%; animation: sd-sway 4s ease-in-out infinite }
+        .sd-dot { animation: sd-dot 1.2s infinite }
+        @media (prefers-reduced-motion: reduce) {
+          .sd-up, .sd-sheet, .sd-fade, .sd-sway, .sd-dot { animation: none }
+        }
+      `}</style>
+
       {/* ── 맨 위 ─────────────────────────────── */}
-      <section className="bg-seed-900 px-5 pb-6 pt-4 text-white">
+      <section className="relative overflow-hidden bg-seed-900 px-5 pb-9 pt-5 text-white">
+        {/* 배경 장식: 은은한 빛 두 덩이 + 큰 새싹 잎 실루엣 (글자 읽기를 방해하지 않게 옅게) */}
+        <div aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-dark-primary/25 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-10 h-56 w-56 rounded-full bg-[#8fdc6a]/15 blur-3xl" />
+        <svg aria-hidden viewBox="0 0 100 100" className="sd-sway pointer-events-none absolute -right-3 top-10 h-36 w-36 opacity-[0.13]">
+          <path d="M50 98 C50 70 50 55 50 40" stroke="#b6f5d8" strokeWidth="3" fill="none" strokeLinecap="round" />
+          <path d="M50 52 C30 52 14 38 12 16 C34 16 50 30 50 52 Z" fill="#b6f5d8" />
+          <path d="M50 42 C66 42 82 30 86 8 C66 8 50 22 50 42 Z" fill="#b6f5d8" />
+        </svg>
+
         {/* 손으로 그린 알약 모양 대신 진짜 로고(토글 + 새싹 잎)를 쓴다.
             어두운 배경용 색이라 잎이 묻히지 않는다(2026.10.24 로드 "나뭇잎 표시가 안 보여"). */}
-        <div className="mb-[18px]">
+        <div className="relative mb-7">
           <Logo tone="dark" height={24} />
         </div>
-        <h1 className="text-[28px] font-extrabold leading-[1.28]">
+        <h1 className="sd-up relative text-[31px] font-extrabold leading-[1.25] tracking-[-0.02em]">
           이미 있는 지원,
           <br />
-          <span className="text-dark-primary">신청까지 한 번에</span>
+          <span className="bg-gradient-to-r from-dark-primary to-[#b6f0a0] bg-clip-text text-transparent">
+            신청까지 한 번에
+          </span>
         </h1>
-        <p className="mt-2.5 text-[14.5px] leading-[1.55] text-seed-mint">
-          장학금·캠프·교육비·상담.
-          <br />
+        <p className="sd-up relative mt-3 text-[14.5px] leading-[1.6] text-seed-mint [animation-delay:.08s]">
           흩어진 지원을 모아 쉬운 말로 알려 줄게요.
         </p>
+        <div className="sd-up relative mt-4 flex flex-wrap gap-1.5 [animation-delay:.16s]">
+          {["🎓 장학금", "⛺ 캠프", "📚 교육비", "💬 상담"].map((t) => (
+            <span
+              key={t}
+              className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[12.5px] font-semibold text-white/90 backdrop-blur-sm"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
       </section>
 
       {/* ── 장면 카드 3장 (옆으로 넘김) ─────────── */}
       <div
         ref={trackRef}
         onScroll={onScroll}
-        className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-1.5 pt-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="sd-up relative -mt-5 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-3 pt-0 [animation-delay:.22s] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         aria-label="씨드온이 하는 일 세 가지"
       >
-        <SceneCard n={1} title="한눈에 보기">
-          <p className="mb-2.5 mt-1.5 text-[13.5px] leading-normal text-ink-60">
-            흩어진 지원을 한곳에 모았어요. 문장으로 적어도 찾아 줘요.
-          </p>
-          <div className="mb-2 flex gap-1.5" aria-hidden>
-            <div className="flex-1 rounded-[10px] border border-brand-border px-3 py-2 text-[13px] text-[#555]">
-              진로가 고민이에요
-            </div>
-            <div className="rounded-[10px] bg-primary-deep px-3 py-2 text-[13px] font-bold text-white">찾기</div>
+        <SceneCard n={1} title="한눈에 보기" sub="흩어진 지원을 한곳에 모았어요. 문장으로 적어도 찾아 줘요.">
+          <div className="mb-2.5 flex items-center gap-2 rounded-full border border-brand-border bg-[#fbfaf7] py-1 pl-3 pr-1" aria-hidden>
+            <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-ink-60" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="9" cy="9" r="6" />
+              <path d="M14 14l4 4" strokeLinecap="round" />
+            </svg>
+            <span className="flex-1 truncate text-[13px] text-[#555]">진로가 고민이에요</span>
+            <span className="rounded-full bg-primary-deep px-3 py-1.5 text-[12.5px] font-bold text-white">찾기</span>
           </div>
-          {programs.map((p) => (
-            <div
-              key={p.id}
-              className="mb-1.5 flex items-center gap-2.5 rounded-[11px] border border-brand-border px-2.5 py-2 text-[13px]"
-            >
-              <span
-                className={`whitespace-nowrap rounded-[7px] px-1.5 py-[3px] text-[11px] font-extrabold ${
-                  p.urgent ? "bg-[#fdecea] text-[#c0392b]" : "bg-mint text-primary-deep"
-                }`}
+          <div className="flex flex-col gap-1.5">
+            {programs.map((p) => (
+              <div
+                key={p.id}
+                className="flex items-center gap-2.5 rounded-[13px] border border-brand-border bg-white px-2.5 py-2 shadow-[0_1px_0_rgba(67,64,58,0.04)]"
               >
-                {p.badge}
-              </span>
-              <div className="min-w-0">
-                <div className="truncate">{p.title}</div>
-                <div className="truncate text-[11.5px] text-ink-60">{p.org}</div>
+                <span
+                  className={`inline-flex h-[34px] min-w-[44px] items-center justify-center rounded-[10px] px-1.5 text-[11.5px] font-extrabold ${
+                    p.urgent ? "bg-[#fdecea] text-[#c0392b]" : "bg-mint text-primary-deep"
+                  }`}
+                >
+                  {p.badge}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-[13px] font-semibold">{p.title}</div>
+                  <div className="truncate text-[11.5px] text-ink-60">{p.org}</div>
+                </div>
+                <svg aria-hidden viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-[#c9c3b6]" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M8 5l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </SceneCard>
 
-        <SceneCard n={2} title="쉬운 말로 풀어 줘요">
-          <p className="mb-2.5 mt-1.5 text-[13.5px] leading-normal text-ink-60">
-            어려운 공고, 중학생도 읽을 수 있게 바꿔요.
-          </p>
+        <SceneCard n={2} title="쉬운 말로 풀어 줘요" sub="어려운 공고, 중학생도 읽을 수 있게 바꿔요.">
           {/* 공고 말 → 쉬운 말: 한 장 안에서 위→아래로 바뀌는 모습 */}
-          <div className="rounded-[12px] border border-brand-border">
-            <div className="rounded-t-[12px] bg-[#f5f4f0] px-2.5 py-[7px] text-[11.5px] leading-[1.45] text-[#999]">
-              <span className="mr-1 rounded-[5px] bg-[#e9e7e1] px-1 py-px text-[10px] font-bold text-[#888]">공고 원문</span>
-              <span className="line-through decoration-[#ccc]">만 24세 이하 내국인에 한함. 연령 확인 가능한 신분증 등 증빙 지참 요망.</span>
+          <div className="relative overflow-hidden rounded-[14px] border border-brand-border">
+            <div className="bg-[#f5f4f0] px-3 pb-3 pt-2 text-[11.5px] leading-[1.45] text-[#9a968d]">
+              <span className="mb-0.5 block text-[10px] font-bold tracking-wide text-[#aaa59a]">공고 원문</span>
+              <span className="line-through decoration-[#cfcac0]">만 24세 이하 내국인에 한함. 연령 확인 가능한 신분증 등 증빙 지참 요망.</span>
             </div>
-            <div className="flex items-start gap-1.5 rounded-b-[12px] bg-mint px-2.5 py-[7px] text-[12.5px] font-semibold leading-[1.45] text-warm-brown">
-              <span aria-hidden>✨</span>
-              <span>
-                <span className="mr-1 rounded-[5px] bg-white px-1 py-px text-[10px] font-bold text-primary-deep">씨드온 쉬운 말</span>
-                만 24세 이하면 무료예요. 나이 보이는 신분증만 챙겨 가요.
-              </span>
+            <span
+              aria-hidden
+              className="absolute left-1/2 top-1/2 z-10 inline-flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary-deep text-[12px] text-white shadow-[0_2px_6px_rgba(23,145,106,0.35)]"
+            >
+              ↓
+            </span>
+            <div className="bg-mint px-3 pb-2 pt-3 text-[12.5px] font-semibold leading-[1.45] text-warm-brown">
+              <span className="mb-0.5 block text-[10px] font-bold tracking-wide text-primary-deep">✨ 씨드온 쉬운 말</span>
+              만 24세 이하면 무료예요. 나이 보이는 신분증만 챙겨 가요.
             </div>
           </div>
 
@@ -210,8 +249,8 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
           <div className="min-h-2 flex-1" />
           <div className="overflow-hidden rounded-[14px] border border-brand-border bg-[#fbfaf7]">
             <div className="flex items-center gap-1.5 border-b border-brand-border bg-white px-2.5 py-1.5">
-              <span className="inline-flex h-[20px] w-[20px] items-center justify-center rounded-full bg-mint">
-                <SeedonSymbol height={9} />
+              <span className="inline-flex h-[22px] w-[22px] items-center justify-center rounded-full bg-mint">
+                <SeedonSymbol height={10} />
               </span>
               <span className="text-[12px] font-extrabold text-warm-brown">씨드온 AI 챗봇</span>
               <span className="ml-auto flex items-center gap-1 text-[10.5px] text-ink-60">
@@ -224,10 +263,10 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
                 저 고2인데 신청할 수 있어요?
               </div>
               <div className="flex max-w-[96%] items-end gap-1.5 self-start">
-                <span className="inline-flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-full bg-mint">
-                  <SeedonSymbol height={9} />
+                <span className="inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-mint">
+                  <SeedonSymbol height={10} />
                 </span>
-                <div className="rounded-[13px_13px_13px_4px] bg-white px-[11px] py-1.5 text-[12.5px] leading-[1.45] shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
+                <div className="rounded-[13px_13px_13px_4px] bg-white px-[11px] py-1.5 text-[12.5px] leading-[1.45] shadow-[0_1px_3px_rgba(0,0,0,0.07)]">
                   2008~2010년생이 들어가는 캠프가 있어요. 마감은 11월 11일이에요.
                 </div>
               </div>
@@ -235,25 +274,19 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
           </div>
         </SceneCard>
 
-        <SceneCard n={3} title="신청까지 한 번에">
-          <p className="mb-2.5 mt-1.5 text-[13.5px] leading-normal text-ink-60">
-            사이트 여러 곳 돌지 않고, 씨드온 안에서 끝내요.
-          </p>
-          <Step icon="📝">씨드온에서 「신청하기」</Step>
-          <Arrow />
-          <Step icon="🔔">
-            어른 허락이 필요하면
-            <br />
-            부모님·선생님께 알림이 가요
-          </Step>
-          <Arrow />
-          <Step icon="✅">신청 완료 알림</Step>
-          <Arrow />
-          <Step icon="🎉">뽑혔는지까지 알려 줘요</Step>
+        <SceneCard n={3} title="신청까지 한 번에" sub="사이트 여러 곳 돌지 않고, 씨드온 안에서 끝내요.">
+          <ol className="relative mt-0.5">
+            {/* 세로 연결선 */}
+            <span aria-hidden className="absolute bottom-5 left-[17px] top-5 w-[2px] rounded bg-gradient-to-b from-primary-deep/60 to-[#8fdc6a]/60" />
+            <TimelineStep icon="📝" title="씨드온에서 「신청하기」" />
+            <TimelineStep icon="🔔" title="어른 허락이 필요하면" desc="부모님·선생님께 알림이 가요" />
+            <TimelineStep icon="✅" title="신청 완료 알림" />
+            <TimelineStep icon="🎉" title="뽑혔는지까지 알려 줘요" last />
+          </ol>
         </SceneCard>
       </div>
 
-      <div className="flex justify-center gap-1.5 pb-3 pt-1" role="tablist" aria-label="장면 고르기">
+      <div className="flex items-center justify-center gap-1.5 pb-2 pt-1" role="tablist" aria-label="장면 고르기">
         {Array.from({ length: SCENES }).map((_, i) => (
           <button
             key={i}
@@ -262,21 +295,31 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
             aria-selected={scene === i}
             aria-label={`${i + 1}번째 장면`}
             onClick={() => goScene(i)}
-            className={`h-[7px] rounded-full transition-all ${scene === i ? "w-[18px] bg-primary-deep" : "w-[7px] bg-[#cfd3cc]"}`}
+            className={`h-[7px] rounded-full transition-all duration-300 ${scene === i ? "w-[20px] bg-primary-deep" : "w-[7px] bg-[#d6d9d1]"}`}
           />
         ))}
       </div>
+      <p className="pb-36 text-center text-[11.5px] text-ink-60">
+        {scene < SCENES - 1 ? "옆으로 넘겨 보세요 →" : "이게 씨드온이 하려는 일이에요"}
+      </p>
 
-      {/* ── 버튼 하나 ───────────────────────────── */}
-      <div className="px-5 pb-10">
-        <button
-          type="button"
-          onClick={openSheet}
-          className="block w-full rounded-[14px] bg-primary-deep px-4 py-[15px] text-center text-[17px] font-extrabold text-white active:opacity-90"
-        >
-          신청까지 한 번에 해 보기
-          <span className="mt-0.5 block text-[12px] font-medium opacity-85">내 상황에 맞는 지원 찾고 바로 신청</span>
-        </button>
+      {/* ── 버튼 하나 (화면 아래에 늘 떠 있음) ───────── */}
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40">
+        <div className="pointer-events-auto mx-auto max-w-md bg-gradient-to-t from-cream via-cream/95 to-transparent px-5 pb-[max(18px,env(safe-area-inset-bottom))] pt-8">
+          <button
+            type="button"
+            onClick={openSheet}
+            className="group relative block w-full overflow-hidden rounded-[16px] bg-gradient-to-r from-primary-deep to-[#1fa97b] px-4 py-[15px] text-center text-white shadow-[0_8px_20px_-6px_rgba(23,145,106,0.55)] transition active:scale-[0.98]"
+          >
+            <span className="flex items-center justify-center gap-1.5 text-[17px] font-extrabold">
+              신청까지 한 번에 해 보기
+              <svg aria-hidden viewBox="0 0 20 20" className="h-[18px] w-[18px] transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="2.4">
+                <path d="M4 10h11M11 5l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+            <span className="mt-0.5 block text-[12px] font-medium opacity-85">내 상황에 맞는 지원 찾고 바로 신청</span>
+          </button>
+        </div>
       </div>
 
       {/* ── 가짜 문: "아직 만들고 있어요" 창 ─────── */}
@@ -286,22 +329,32 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
             type="button"
             aria-label="닫기"
             onClick={closeSheet}
-            className="absolute inset-0 h-full w-full cursor-default bg-black/45"
+            className="sd-fade absolute inset-0 h-full w-full cursor-default bg-[#1d2a1a]/55 backdrop-blur-[2px]"
           />
-          <div className="absolute inset-x-0 bottom-0 mx-auto max-w-md rounded-t-[22px] bg-white px-5 pb-[max(26px,env(safe-area-inset-bottom))] pt-[22px] text-center">
+          <div className="sd-sheet absolute inset-x-0 bottom-0 mx-auto max-w-md rounded-t-[26px] bg-white px-6 pb-[max(26px,env(safe-area-inset-bottom))] pt-[22px] text-center shadow-[0_-10px_30px_rgba(0,0,0,0.12)]">
             <button
               type="button"
               onClick={closeSheet}
               aria-label="창 닫기"
-              className="mx-auto -mt-2 mb-4 block h-1 w-10 rounded-sm bg-[#ddd]"
+              className="mx-auto -mt-2 mb-5 block h-1 w-10 rounded-sm bg-[#ddd]"
             />
-            <div aria-hidden className="text-[38px]">
-              🛠️
+            {/* 새싹이 자라는 중 — 아직 만드는 중이라는 뜻 */}
+            <div aria-hidden className="relative mx-auto mb-3 flex h-[76px] w-[76px] items-center justify-center rounded-full bg-mint">
+              <span className="absolute inset-0 rounded-full ring-8 ring-mint/50" />
+              <span className="sd-sway inline-block">
+                <SeedonSymbol height={30} />
+              </span>
             </div>
-            <h2 id="start-sheet-title" className="mb-2 mt-1.5 text-[21px] font-extrabold text-warm-brown">
+            <div className="mb-1 flex items-center justify-center gap-1 text-[12px] font-bold text-primary-deep">
+              만드는 중
+              <span className="sd-dot">.</span>
+              <span className="sd-dot [animation-delay:.2s]">.</span>
+              <span className="sd-dot [animation-delay:.4s]">.</span>
+            </div>
+            <h2 id="start-sheet-title" className="mb-2 text-[22px] font-extrabold tracking-[-0.01em] text-warm-brown">
               앗, 아직 만들고 있어요
             </h2>
-            <p className="mb-4 text-[14.5px] leading-[1.6] text-[#444]">
+            <p className="mb-5 text-[14.5px] leading-[1.65] text-[#555]">
               「신청까지 한 번에」는 지금 만드는 중이에요.
               <br />
               눌러 줘서 고마워요! 이게 진짜 필요한지
@@ -312,12 +365,12 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
               type="button"
               onClick={goNotify}
               disabled={leaving}
-              className="block w-full rounded-[14px] bg-primary-deep px-4 py-[15px] text-center text-[17px] font-extrabold text-white disabled:opacity-70"
+              className="block w-full rounded-[16px] bg-gradient-to-r from-primary-deep to-[#1fa97b] px-4 py-[15px] text-center text-white shadow-[0_8px_20px_-6px_rgba(23,145,106,0.55)] transition active:scale-[0.98] disabled:opacity-70"
             >
-              {leaving ? "여는 중…" : "열리면 제일 먼저 알림 받기"}
+              <span className="block text-[17px] font-extrabold">{leaving ? "여는 중…" : "🔔 열리면 제일 먼저 알림 받기"}</span>
               <span className="mt-0.5 block text-[12px] font-medium opacity-85">연락처 하나만 · 30초</span>
             </button>
-            <p className="mt-2.5 text-[11.5px] leading-normal text-ink-60">
+            <p className="mt-3 text-[11.5px] leading-normal text-ink-60">
               다음 화면에서 「알림만」 또는 「설문도 같이」를 고를 수 있어요
               <br />
               알림 말고는 연락하지 않아요
@@ -333,40 +386,51 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
 function SceneCard({
   n,
   title,
+  sub,
   children,
 }: {
   n: number;
   title: string;
+  sub: string;
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-[352px] flex-[0_0_86%] snap-center flex-col rounded-[18px] border border-brand-border bg-white px-[15px] pb-3.5 pt-[15px]">
-      <div className="flex items-center gap-[7px] text-[16.5px] font-extrabold">
-        <span className="inline-flex h-[23px] w-[23px] items-center justify-center rounded-full bg-mint text-[13px] text-primary-deep">
+    <div className="flex h-[372px] flex-[0_0_86%] snap-center flex-col rounded-[22px] border border-[#ece5d6] bg-white px-4 pb-4 pt-4 shadow-[0_12px_28px_-14px_rgba(55,86,47,0.35)]">
+      <div className="flex items-center gap-2 text-[17px] font-extrabold tracking-[-0.01em]">
+        <span className="inline-flex h-[24px] w-[24px] items-center justify-center rounded-full bg-primary-deep text-[12.5px] text-white">
           {n}
         </span>
         {title}
       </div>
+      <p className="mb-3 mt-1.5 text-[13px] leading-normal text-ink-60">{sub}</p>
       {children}
     </div>
   );
 }
 
-function Step({ icon, children }: { icon: string; children: React.ReactNode }) {
+function TimelineStep({
+  icon,
+  title,
+  desc,
+  last,
+}: {
+  icon: string;
+  title: string;
+  desc?: string;
+  last?: boolean;
+}) {
   return (
-    <div className="flex items-center gap-[9px] rounded-[11px] border border-dashed border-[#cfd8cf] px-2.5 py-2 text-[13px] leading-[1.35]">
-      <span aria-hidden className="text-[16px]">
+    <li className={`relative flex items-center gap-3 ${last ? "" : "mb-3"}`}>
+      <span
+        aria-hidden
+        className="relative z-10 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e3efe6] bg-mint text-[16px]"
+      >
         {icon}
       </span>
-      <span>{children}</span>
-    </div>
-  );
-}
-
-function Arrow() {
-  return (
-    <div aria-hidden className="text-center text-[12px] leading-[1.1] text-[#aab]">
-      ↓
-    </div>
+      <div className="flex-1 rounded-[13px] border border-brand-border bg-[#fbfaf7] px-3 py-2">
+        <div className="text-[13px] font-semibold leading-[1.35]">{title}</div>
+        {desc && <div className="text-[11.5px] leading-[1.4] text-ink-60">{desc}</div>}
+      </div>
+    </li>
   );
 }
