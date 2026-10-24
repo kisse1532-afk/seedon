@@ -196,6 +196,12 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
             <span className="flex-1 truncate text-[13px] text-[#555]">진로가 고민이에요</span>
             <span className="rounded-full bg-primary-deep px-3 py-1.5 text-[12.5px] font-bold text-white">찾기</span>
           </div>
+          {/* 배치: 검색창은 위, 지원 목록은 카드 아래쪽에 붙인다(카드마다 모양이 달라 보이게) */}
+          <div className="flex-1" />
+          <div className="mb-1.5 flex items-center gap-1.5 text-[11.5px] font-bold text-ink-60">
+            <span className="h-[6px] w-[6px] rounded-full bg-[#c0392b]" />
+            마감이 가까운 지원
+          </div>
           <div className="flex flex-col gap-1.5">
             {programs.map((p) => (
               <div
@@ -270,13 +276,13 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
         </SceneCard>
 
         <SceneCard n={3} title="신청까지 한 번에" sub="사이트 여러 곳 돌지 않고, 씨드온 안에서 끝내요.">
-          <ol className="relative mt-0.5">
+          <ol className="relative mt-0.5 flex flex-1 flex-col justify-between pb-1">
             {/* 세로 연결선 */}
             <span aria-hidden className="absolute bottom-5 left-[17px] top-5 w-[2px] rounded bg-gradient-to-b from-primary-deep/60 to-[#8fdc6a]/60" />
             <TimelineStep icon="📝" title="씨드온에서 「신청하기」" />
-            <TimelineStep icon="🔔" title="어른 허락이 필요하면" desc="부모님·선생님께 알림이 가요" />
+            <TimelineStep icon="🔔" title="어른 허락이 필요하면" desc="도와줄 어른에게 알림이 가요" />
             <TimelineStep icon="✅" title="신청 완료 알림" />
-            <TimelineStep icon="🎉" title="뽑혔는지까지 알려 줘요" last />
+            <TimelineStep icon="🎉" title="뽑혔는지까지 알려 줘요" />
           </ol>
         </SceneCard>
       </div>
@@ -407,15 +413,13 @@ function TimelineStep({
   icon,
   title,
   desc,
-  last,
 }: {
   icon: string;
   title: string;
   desc?: string;
-  last?: boolean;
 }) {
   return (
-    <li className={`relative flex items-center gap-3 ${last ? "" : "mb-3"}`}>
+    <li className="relative flex items-center gap-3">
       <span
         aria-hidden
         className="relative z-10 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e3efe6] bg-mint text-[16px]"
