@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
 import BottomNav from "@/app/_components/BottomNav";
+import ChromeGate, { MainFrame } from "@/app/_components/ChromeGate";
 import Logo from "@/app/_components/Logo";
 import PhoneLink from "@/app/_components/PhoneLink";
 import { emergencyContacts } from "@/lib/data";
@@ -87,6 +88,8 @@ export default function RootLayout({
       </head>
       {/* overflow-x-hidden: 홈 히어로의 full-bleed(w-screen)가 스크롤바 폭만큼 넘치는 것 방지 */}
       <body className="antialiased min-h-screen overflow-x-hidden bg-sage text-body">
+        {/* /start(광고 랜딩페이지)에서는 머리·꼬리·아래 메뉴를 숨긴다 — ChromeGate.tsx 설명 */}
+        <ChromeGate>
         <header className="bg-seed-950">
           <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between">
             <Link href="/" aria-label="씨드온 홈">
@@ -97,9 +100,11 @@ export default function RootLayout({
             </Link>
           </div>
         </header>
+        </ChromeGate>
 
-        <main className="mx-auto max-w-5xl px-4 py-6">{children}</main>
+        <MainFrame>{children}</MainFrame>
 
+        <ChromeGate>
         <footer className="bg-seed-950 text-seed-mint mt-8 pb-24">
           <div className="mx-auto max-w-5xl px-4 pt-8 pb-5">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
@@ -142,6 +147,7 @@ export default function RootLayout({
         </footer>
 
         <BottomNav />
+        </ChromeGate>
       </body>
     </html>
   );
