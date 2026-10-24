@@ -149,14 +149,9 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
 
       {/* ── 맨 위 ─────────────────────────────── */}
       <section className="relative overflow-hidden bg-seed-900 px-5 pb-9 pt-5 text-white">
-        {/* 배경 장식: 은은한 빛 두 덩이 + 큰 새싹 잎 실루엣 (글자 읽기를 방해하지 않게 옅게) */}
+        {/* 배경 장식: 은은한 빛 두 덩이 (오른쪽 큰 잎 그림은 10/24 로드가 뺌) */}
         <div aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-dark-primary/25 blur-3xl" />
         <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-10 h-56 w-56 rounded-full bg-[#8fdc6a]/15 blur-3xl" />
-        <svg aria-hidden viewBox="0 0 100 100" className="sd-sway pointer-events-none absolute -right-3 top-10 h-36 w-36 opacity-[0.13]">
-          <path d="M50 98 C50 70 50 55 50 40" stroke="#b6f5d8" strokeWidth="3" fill="none" strokeLinecap="round" />
-          <path d="M50 52 C30 52 14 38 12 16 C34 16 50 30 50 52 Z" fill="#b6f5d8" />
-          <path d="M50 42 C66 42 82 30 86 8 C66 8 50 22 50 42 Z" fill="#b6f5d8" />
-        </svg>
 
         {/* 손으로 그린 알약 모양 대신 진짜 로고(토글 + 새싹 잎)를 쓴다.
             어두운 배경용 색이라 잎이 묻히지 않는다(2026.10.24 로드 "나뭇잎 표시가 안 보여"). */}
