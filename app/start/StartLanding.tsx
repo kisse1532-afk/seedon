@@ -197,7 +197,7 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
             <span className="rounded-full bg-primary-deep px-3 py-1.5 text-[12.5px] font-bold text-white">찾기</span>
           </div>
           {/* 배치: 검색창은 위, 지원 목록은 카드 아래쪽에 붙인다(카드마다 모양이 달라 보이게) */}
-          <div className="flex-1" />
+          <div className="min-h-2 flex-1" />
           <div className="mb-1.5 flex items-center gap-1.5 text-[11.5px] font-bold text-ink-60">
             <span className="h-[6px] w-[6px] rounded-full bg-[#c0392b]" />
             마감이 가까운 지원
@@ -230,7 +230,7 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
         <SceneCard n={2} title="쉬운 말로 풀어 줘요" sub="어려운 공고, 중학생도 읽을 수 있게 바꿔요.">
           {/* 공고 말 → 쉬운 말: 한 장 안에서 위→아래로 바뀌는 모습 */}
           <div className="relative overflow-hidden rounded-[14px] border border-brand-border">
-            <div className="bg-[#f5f4f0] px-3 pb-3 pt-2 text-[11.5px] leading-[1.45] text-[#9a968d]">
+            <div className="bg-[#f5f4f0] px-3 pb-2.5 pt-1.5 text-[11.5px] leading-[1.45] text-[#9a968d]">
               <span className="mb-0.5 block text-[10px] font-bold tracking-wide text-[#aaa59a]">공고 원문</span>
               <span className="line-through decoration-[#cfcac0]">만 24세 이하 내국인에 한함. 연령 확인 가능한 신분증 등 증빙 지참 요망.</span>
             </div>
@@ -240,7 +240,7 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
             >
               ↓
             </span>
-            <div className="bg-mint px-3 pb-2 pt-3 text-[12.5px] font-semibold leading-[1.45] text-warm-brown">
+            <div className="bg-mint px-3 pb-1.5 pt-2.5 text-[12.5px] font-semibold leading-[1.45] text-warm-brown">
               <span className="mb-0.5 block text-[10px] font-bold tracking-wide text-primary-deep">✨ 씨드온 쉬운 말</span>
               만 24세 이하면 무료예요. 나이 보이는 신분증만 챙겨 가요.
             </div>
@@ -259,7 +259,7 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
                 궁금한 걸 적어 봐요
               </span>
             </div>
-            <div className="flex flex-col gap-1.5 px-2.5 py-2">
+            <div className="flex flex-col gap-1 px-2.5 py-1.5">
               <div className="self-end rounded-[13px_13px_4px_13px] bg-primary-deep px-[11px] py-1.5 text-[12.5px] text-white">
                 저 고2인데 신청할 수 있어요?
               </div>
@@ -287,7 +287,7 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
         </SceneCard>
       </div>
 
-      <div className="flex items-center justify-center gap-1.5 pb-2 pt-1" role="tablist" aria-label="장면 고르기">
+      <div className="flex items-center justify-center gap-1.5 pb-1.5 pt-0.5" role="tablist" aria-label="장면 고르기">
         {Array.from({ length: SCENES }).map((_, i) => (
           <button
             key={i}
@@ -300,13 +300,14 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
           />
         ))}
       </div>
-      <p className="pb-36 text-center text-[11.5px] text-ink-60">
+      <p className="text-center text-[11.5px] text-ink-60">
         {scene < SCENES - 1 ? "옆으로 넘겨 보세요 →" : "이게 씨드온이 하려는 일이에요"}
       </p>
 
-      {/* ── 버튼 하나 (화면 아래에 늘 떠 있음) ───────── */}
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40">
-        <div className="pointer-events-auto mx-auto max-w-md bg-gradient-to-t from-cream via-cream/95 to-transparent px-5 pb-[max(18px,env(safe-area-inset-bottom))] pt-8">
+      {/* ── 버튼 하나 ───────────────────────────── */}
+      {/* 카드 바로 아래에 붙여 둔다. 화면이 작아 아래로 밀리면 바닥에 붙어 따라온다(sticky). */}
+      <div className="sticky bottom-0 z-40">
+        <div className="mx-auto max-w-md bg-gradient-to-t from-cream via-cream to-cream/0 px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-3.5">
           <button
             type="button"
             onClick={openSheet}
@@ -396,14 +397,14 @@ function SceneCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-[372px] flex-[0_0_86%] snap-center flex-col rounded-[22px] border border-[#ece5d6] bg-white px-4 pb-4 pt-4 shadow-[0_12px_28px_-14px_rgba(55,86,47,0.35)]">
+    <div className="flex h-[368px] flex-[0_0_86%] snap-center flex-col rounded-[22px] border border-[#ece5d6] bg-white px-4 pb-4 pt-4 shadow-[0_12px_28px_-14px_rgba(55,86,47,0.35)]">
       <div className="flex items-center gap-2 text-[17px] font-extrabold tracking-[-0.01em]">
         <span className="inline-flex h-[24px] w-[24px] items-center justify-center rounded-full bg-primary-deep text-[12.5px] text-white">
           {n}
         </span>
         {title}
       </div>
-      <p className="mb-3 mt-1.5 text-[13px] leading-normal text-ink-60">{sub}</p>
+      <p className="mb-3 mt-1 text-[13px] leading-normal text-ink-60">{sub}</p>
       {children}
     </div>
   );
