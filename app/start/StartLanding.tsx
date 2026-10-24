@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Logo from "@/app/_components/Logo";
 import { supabase } from "@/lib/supabase";
 
 export type SceneProgram = {
@@ -132,11 +133,10 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
     <div className="mx-auto min-h-screen max-w-md bg-cream text-warm-brown">
       {/* ── 맨 위 ─────────────────────────────── */}
       <section className="bg-seed-900 px-5 pb-6 pt-4 text-white">
-        <div className="mb-[18px] flex items-center gap-[7px] text-[17px] font-extrabold">
-          <span aria-hidden className="relative inline-block h-[14px] w-[26px] rounded-full bg-dark-primary">
-            <span className="absolute right-[2px] top-[2px] h-[10px] w-[10px] rounded-full bg-white" />
-          </span>
-          씨드온
+        {/* 손으로 그린 알약 모양 대신 진짜 로고(토글 + 새싹 잎)를 쓴다.
+            어두운 배경용 색이라 잎이 묻히지 않는다(2026.10.24 로드 "나뭇잎 표시가 안 보여"). */}
+        <div className="mb-[18px]">
+          <Logo tone="dark" height={24} />
         </div>
         <h1 className="text-[28px] font-extrabold leading-[1.28]">
           이미 있는 지원,
@@ -157,7 +157,7 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
         className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-1.5 pt-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         aria-label="씨드온이 하는 일 세 가지"
       >
-        <SceneCard n={1} title="한눈에 보기" live>
+        <SceneCard n={1} title="한눈에 보기">
           <p className="mb-2.5 mt-1.5 text-[13.5px] leading-normal text-ink-60">
             흩어진 지원을 한곳에 모았어요. 문장으로 적어도 찾아 줘요.
           </p>
@@ -187,7 +187,7 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
           ))}
         </SceneCard>
 
-        <SceneCard n={2} title="쉬운 말로 풀어 줘요" live>
+        <SceneCard n={2} title="쉬운 말로 풀어 줘요">
           <p className="mb-2.5 mt-1.5 text-[13.5px] leading-normal text-ink-60">
             어려운 공고, 중학생도 읽을 수 있게 바꿔요.
           </p>
@@ -304,15 +304,14 @@ export default function StartLanding({ programs }: { programs: SceneProgram[] })
   );
 }
 
+/* 카드 오른쪽 위 「지금 돼요」·「만들고 있어요」 표시는 뺐다(2026.10.24 로드). */
 function SceneCard({
   n,
   title,
-  live,
   children,
 }: {
   n: number;
   title: string;
-  live?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -322,15 +321,6 @@ function SceneCard({
           {n}
         </span>
         {title}
-        {live ? (
-          <span className="ml-auto whitespace-nowrap rounded-[9px] bg-mint px-[7px] py-0.5 text-[11px] font-bold text-primary-deep">
-            지금 돼요
-          </span>
-        ) : (
-          <span className="ml-auto whitespace-nowrap rounded-[9px] bg-[#fff3d6] px-[7px] py-0.5 text-[11px] font-bold text-[#8a5d00]">
-            만들고 있어요
-          </span>
-        )}
       </div>
       {children}
     </div>
