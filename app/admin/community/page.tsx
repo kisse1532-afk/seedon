@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { fetchAllCommunityPosts } from "@/lib/queries";
+import { fetchAllCommunityPosts } from "@/lib/queries-admin";
+import { hasAdminKey } from "@/lib/supabase-admin";
 import { deleteCommunityPost, togglePublishCommunityPost } from "./actions";
 import { requireAdmin } from "@/lib/admin-auth";
 
@@ -25,7 +26,11 @@ export default async function AdminCommunityPage() {
       </div>
 
       <div className="rounded-2xl border border-neutral-200 bg-white divide-y divide-neutral-100">
-        {posts.length === 0 && <p className="text-sm text-neutral-400 p-5 text-center">등록된 글이 없어요.</p>}
+        {posts.length === 0 && (
+          <p className="text-sm text-neutral-400 p-5 text-center">
+            {hasAdminKey ? "등록된 글이 없어요." : "서버 키(SUPABASE_SERVICE_ROLE_KEY)가 없어서 못 읽고 있어요."}
+          </p>
+        )}
         {posts.map((p) => (
           <div key={p.id} className="p-4 flex items-center justify-between gap-3">
             <div className="min-w-0">

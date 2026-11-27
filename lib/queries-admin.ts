@@ -1,6 +1,7 @@
 import "server-only";
-import { supabase } from "@/lib/supabase";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { requireAdmin } from "@/lib/admin-auth";
+import type { Program, CommunityPost } from "@/lib/data";
 
 /**
  * 관리자 화면 전용 조회.
@@ -10,6 +11,69 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
  * 브라우저 번들로 딸려 나간다. 실제로 빌드가 그걸 잡아냈다.
  * 개인정보를 읽는 코드는 여기에만 둔다.
  */
+
+/* programs · community_posts · reports 관리자 조회.
+   대기·반려 카드, 비공개 글, 제보함은 공개 키가 아니라 서버 전용 키로 읽는다. */
+export async function fetchAllProgramsForAdmin() {
+  await requireAdmin();
+  if (!supabaseAdmin) return [];
+  const { data, error } = await supabaseAdmin
+    .from("programs")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) return [];
+  return data as (Program & {
+    status: string;
+    link: string | null;
+    last_verified_at: string;
+    review_note: string | null;
+  })[];
+}
+
+export async function fetchProgramForAdmin(id: string): Promise<Program | undefined> {
+  await requireAdmin();
+  if (!supabaseAdmin) return undefined;
+  const { data, error } = await supabaseAdmin.from("programs").select("*").eq("id", id).single();
+  if (error || !data) return undefined;
+  return data as Program;
+}
+
+export async function fetchReports() {
+  await requireAdmin();
+  if (!supabaseAdmin) return [];
+  const { data, error } = await supabaseAdmin
+    .from("reports")
+    .select("*")
+    .eq("status", "pending")
+    .order("created_at", { ascending: false });
+  if (error) return [];
+  return data as {
+    id: string;
+    source_type: "link" | "text" | "helper_question";
+    content: string;
+    status: string;
+    created_at: string;
+  }[];
+}
+
+export async function fetchAllCommunityPosts(): Promise<CommunityPost[]> {
+  await requireAdmin();
+  if (!supabaseAdmin) return [];
+  const { data, error } = await supabaseAdmin
+    .from("community_posts")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error || !data) return [];
+  return data as CommunityPost[];
+}
+
+export async function fetchCommunityPostForAdmin(id: string): Promise<CommunityPost | undefined> {
+  await requireAdmin();
+  if (!supabaseAdmin) return undefined;
+  const { data, error } = await supabaseAdmin.from("community_posts").select("*").eq("id", id).single();
+  if (error || !data) return undefined;
+  return data as CommunityPost;
+}
 
 export async function fetchHelpRequests() {
   // 이름·연락처가 들어 있어 서버 전용 키로만 읽는다. 키가 없으면 빈 목록이고,

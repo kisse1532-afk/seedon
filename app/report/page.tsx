@@ -19,6 +19,7 @@ export default function ReportPage() {
         <input
           type="text"
           name="link"
+          maxLength={4000}
           placeholder="관련 링크를 붙여넣어주세요"
           className="w-full rounded-xl border border-sage-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
@@ -26,6 +27,7 @@ export default function ReportPage() {
         <textarea
           name="text"
           rows={4}
+          maxLength={4000}
           placeholder="내용을 직접 입력해주세요"
           className="w-full rounded-2xl border border-sage-border p-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
         />

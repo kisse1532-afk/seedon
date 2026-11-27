@@ -63,7 +63,7 @@ export async function fetchPublishedPrograms(): Promise<Program[]> {
   return data as Program[];
 }
 
-// --- 관리자용 쿼리 (전체 상태 조회) ---
+// --- 상태로 거르지 않은 전체 조회 (검색 화면이 쓴다. 관리자 화면은 queries-admin.ts) ---
 export async function fetchAllPrograms() {
   const { data, error } = await supabase
     .from("programs")
@@ -76,22 +76,6 @@ export async function fetchAllPrograms() {
     last_verified_at: string;
     review_note: string | null;
   })[];
-}
-
-export async function fetchReports() {
-  const { data, error } = await supabase
-    .from("reports")
-    .select("*")
-    .eq("status", "pending")
-    .order("created_at", { ascending: false });
-  if (error) return [];
-  return data as {
-    id: string;
-    source_type: "link" | "text" | "helper_question";
-    content: string;
-    status: string;
-    created_at: string;
-  }[];
 }
 
 // --- 전환율 이벤트 집계 (관리자 대시보드용) ---
@@ -222,10 +206,4 @@ export async function fetchCommunityPost(id: string): Promise<CommunityPost | un
   const { data, error } = await supabase.from("community_posts").select("*").eq("id", id).single();
   if (error || !data) return undefined;
   return data as CommunityPost;
-}
-
-export async function fetchAllCommunityPosts(): Promise<CommunityPost[]> {
-  const { data, error } = await supabase.from("community_posts").select("*").order("created_at", { ascending: false });
-  if (error || !data) return [];
-  return data as CommunityPost[];
 }
