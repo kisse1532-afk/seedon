@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { categories } from "@/lib/data";
-import { fetchAllPrograms, fetchReports } from "@/lib/queries";
-import { fetchHelpRequests, fetchEventStats, fetchApplications, fetchPendingReviews, fetchCardReach, fetchCardFunnel, fetchDailyCounts } from "@/lib/queries-admin";
+import { fetchAllProgramsForAdmin, fetchReports, fetchHelpRequests, fetchEventStats, fetchApplications, fetchPendingReviews, fetchCardReach, fetchCardFunnel, fetchDailyCounts } from "@/lib/queries-admin";
 import { hasAdminKey } from "@/lib/supabase-admin";
 import { deleteProgram, dismissReport, logout, markHelpRequestContacted, markHelpRequestCompleted, markApplicationContacted, markApplicationCompleted, publishReview, rejectReview } from "./actions";
 import { requireAdmin } from "@/lib/admin-auth";
@@ -21,7 +20,7 @@ export default async function AdminPage({
   const { status, category, q } = await searchParams;
 
   const [programs, reports, helpRequests, eventStats, applications, pendingReviews, cardReach, cardFunnel, dailyCounts] = await Promise.all([
-    fetchAllPrograms(),
+    fetchAllProgramsForAdmin(),
     fetchReports(),
     fetchHelpRequests(),
     fetchEventStats(30),
@@ -125,10 +124,10 @@ export default async function AdminPage({
 
       {!hasAdminKey && (
         <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4">
-          <p className="text-sm font-bold text-amber-900">신청자 목록을 못 읽고 있어요</p>
+          <p className="text-sm font-bold text-amber-900">관리자 목록을 못 읽고 있어요</p>
           <p className="text-xs leading-relaxed text-amber-800 mt-1">
-            신청자 이름·연락처는 아무나 못 보게 서버 전용 키로만 읽도록 해놨어요. 지금 그 키가 없어서
-            신청·도움요청 목록이 비어 보입니다. Vercel 환경변수에{" "}
+            프로그램·제보·신청자 정보는 서버 전용 키로만 읽고 고치게 해놨어요. 지금 그 키가 없어서
+            목록이 비어 보이고 저장도 안 돼요. Vercel 환경변수에{" "}
             <code className="bg-amber-100 px-1 rounded">SUPABASE_SERVICE_ROLE_KEY</code> 를 넣고 다시 배포하면 보여요.
             (<code className="bg-amber-100 px-1 rounded">NEXT_PUBLIC_</code> 를 붙이면 안 됩니다 — 붙이면 브라우저로 새어나가요.)
           </p>

@@ -38,9 +38,15 @@ const UA =
   "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 
 const { requireSupabase } = await import("./lib/env.mjs");
-const { url, key } = requireSupabase();
+const { url, key: readKey } = requireSupabase();
 
 const all = process.argv.includes("--all");
+// 공개 키로는 게시된 카드만 보인다. 대기·반려까지 보려면 서버 전용 키가 있어야 한다.
+if (all && !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  console.error("--all은 SUPABASE_SERVICE_ROLE_KEY 환경변수가 있어야 해요. 게시된 것만 보려면 --all을 빼세요.");
+  process.exit(1);
+}
+const key = all ? process.env.SUPABASE_SERVICE_ROLE_KEY : readKey;
 const query = all
   ? "select=id,title,link,link_kind,status&link=not.is.null"
   : "select=id,title,link,link_kind,status&status=eq.published&link=not.is.null";

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { adminDb } from "@/lib/admin-db";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { requireAdmin } from "@/lib/admin-auth";
 import { ADMIN_COOKIE } from "@/lib/admin-session";
@@ -31,7 +31,8 @@ export async function createProgram(formData: FormData) {
   const review_note = String(formData.get("review_note") || "");
   const tags = parseTags(formData.get("tags"));
 
-  const { error } = await supabase.from("programs").insert({
+  const db = await adminDb();
+  const { error } = await db.from("programs").insert({
     id,
     title,
     org,
@@ -85,7 +86,8 @@ export async function updateProgram(id: string, formData: FormData) {
     update.last_verified_at = new Date().toISOString().slice(0, 10);
   }
 
-  const { error } = await supabase.from("programs").update(update).eq("id", id);
+  const db = await adminDb();
+  const { error } = await db.from("programs").update(update).eq("id", id);
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin");
@@ -95,14 +97,18 @@ export async function updateProgram(id: string, formData: FormData) {
 export async function deleteProgram(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id"));
-  await supabase.from("programs").delete().eq("id", id);
+  const db = await adminDb();
+  const { error } = await db.from("programs").delete().eq("id", id);
+  if (error) console.error("[deleteProgram] failed", error.message);
   revalidatePath("/admin");
 }
 
 export async function dismissReport(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id"));
-  await supabase.from("reports").delete().eq("id", id);
+  const db = await adminDb();
+  const { error } = await db.from("reports").delete().eq("id", id);
+  if (error) console.error("[dismissReport] failed", error.message);
   revalidatePath("/admin");
 }
 

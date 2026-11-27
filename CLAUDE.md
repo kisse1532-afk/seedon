@@ -188,7 +188,7 @@
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 위와 같음 | 코드 기본값으로 동작 |
 | `ADMIN_PASSWORD` | 관리자 로그인 비밀번호 | **관리자 로그인이 안 됨** |
 | `ADMIN_SESSION_SECRET` | 관리자 로그인 증표에 서명 (32자 이상의 아무렇게나 만든 글자) | **관리자 로그인이 안 됨** |
-| **`SUPABASE_SERVICE_ROLE_KEY`** | **신청자·도움요청 조회(관리자 화면)** | **신청자 목록이 비어 보임** |
+| **`SUPABASE_SERVICE_ROLE_KEY`** | **관리자 화면의 모든 저장·삭제, 신청자·도움요청·제보 조회** | **관리자 목록이 비어 보이고 저장이 안 됨** |
 
 - `SUPABASE_SERVICE_ROLE_KEY`에는 Supabase의 **Secret key(`sb_secret_...`)**를 넣는다. 옛 `service_role` JWT는 유출 시 `anon` 키까지 같이 죽는다
 - **절대 `NEXT_PUBLIC_`을 붙이지 않는다.** 붙이는 순간 브라우저 번들에 실려 누구나 신청자 명단을 읽는다

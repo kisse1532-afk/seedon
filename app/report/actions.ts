@@ -21,6 +21,11 @@ export async function submitReport(
     return { error: "링크나 내용 중 하나만 채워주면 돼요" };
   }
 
+  // DB 정책도 4,000자까지만 받는다. 넘으면 이유를 말해준다.
+  if (content.length > 4000) {
+    return { error: "글이 너무 길어요. 4,000자까지 줄여주세요" };
+  }
+
   const { error } = await supabase.from("reports").insert({
     source_type: link ? "link" : "text",
     content,

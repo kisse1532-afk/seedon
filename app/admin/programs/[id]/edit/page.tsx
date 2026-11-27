@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { categories } from "@/lib/data";
-import { fetchProgram } from "@/lib/queries";
+import { fetchProgramForAdmin } from "@/lib/queries-admin";
 import { updateProgram } from "../../../actions";
 import { requireAdmin } from "@/lib/admin-auth";
 
@@ -12,7 +12,7 @@ export default async function EditProgramPage({
 }) {
   await requireAdmin();
   const { id } = await params;
-  const program = await fetchProgram(id);
+  const program = await fetchProgramForAdmin(id);
   if (!program) return notFound();
 
   const update = updateProgram.bind(null, id);

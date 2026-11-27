@@ -27,6 +27,11 @@ const envLib = await import("./lib/env.mjs");
 const { url, key: readKey } = envLib.requireSupabase();
 const writeKey = envLib.writeKey(readKey);
 const fix = process.argv.includes("--fix");
+// 공개 키로는 카드를 고칠 수 없다. 그대로 두면 한 건도 안 바뀌고 "정리함"이라고 말한다.
+if (fix && !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  console.error("--fix는 SUPABASE_SERVICE_ROLE_KEY 환경변수가 있어야 해요. 점검만 하려면 --fix를 빼세요.");
+  process.exit(1);
+}
 const today = new Date().toISOString().slice(0, 10);
 
 async function api(path, init = {}) {
