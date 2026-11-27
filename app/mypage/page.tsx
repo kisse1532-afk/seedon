@@ -114,6 +114,16 @@ export default function MyPage() {
       </div>
 
 
+      {loggedIn && (
+        <Link
+          href="/alerts"
+          className="flex items-center justify-between rounded-2xl border border-sage-border bg-white p-4 text-sm font-bold text-ink hover:border-primary/40"
+        >
+          <span>나에게 맞는 기회</span>
+          <span className="text-sage-border">›</span>
+        </Link>
+      )}
+
       {loggedIn && <MyInfo />}
 
       <section className="space-y-3">
