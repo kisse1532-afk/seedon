@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { requireAdmin } from "@/lib/admin-auth";
+import { ADMIN_COOKIE } from "@/lib/admin-session";
 
 function parseTags(raw: FormDataEntryValue | null) {
   return String(raw || "")
@@ -13,6 +15,7 @@ function parseTags(raw: FormDataEntryValue | null) {
 }
 
 export async function createProgram(formData: FormData) {
+  await requireAdmin();
   const id = String(formData.get("id")).trim();
   const title = String(formData.get("title"));
   const org = String(formData.get("org"));
@@ -53,6 +56,7 @@ export async function createProgram(formData: FormData) {
 }
 
 export async function updateProgram(id: string, formData: FormData) {
+  await requireAdmin();
   const title = String(formData.get("title"));
   const org = String(formData.get("org"));
   const description = String(formData.get("description"));
@@ -89,12 +93,14 @@ export async function updateProgram(id: string, formData: FormData) {
 }
 
 export async function deleteProgram(formData: FormData) {
+  await requireAdmin();
   const id = String(formData.get("id"));
   await supabase.from("programs").delete().eq("id", id);
   revalidatePath("/admin");
 }
 
 export async function dismissReport(formData: FormData) {
+  await requireAdmin();
   const id = String(formData.get("id"));
   await supabase.from("reports").delete().eq("id", id);
   revalidatePath("/admin");
@@ -103,7 +109,7 @@ export async function dismissReport(formData: FormData) {
 export async function logout() {
   const { cookies } = await import("next/headers");
   const cookieStore = await cookies();
-  cookieStore.delete("seedon_admin");
+  cookieStore.delete(ADMIN_COOKIE);
   redirect("/admin/login");
 }
 
@@ -116,10 +122,12 @@ async function setStatus(table: "help_requests" | "applications", id: string, st
 }
 
 export async function markHelpRequestContacted(formData: FormData) {
+  await requireAdmin();
   await setStatus("help_requests", String(formData.get("id")), "contacted");
 }
 
 export async function markHelpRequestCompleted(formData: FormData) {
+  await requireAdmin();
   await setStatus("help_requests", String(formData.get("id")), "completed");
 }
 
@@ -127,6 +135,7 @@ export async function markHelpRequestCompleted(formData: FormData) {
    status를 바꿀 수 있는 건 서버 전용 키뿐이다 — program_reviews에 UPDATE 정책을
    아예 만들지 않아서, 공개 키로는 자기 글도 승인 상태로 못 바꾼다. */
 export async function publishReview(formData: FormData) {
+  await requireAdmin();
   if (!supabaseAdmin) return;
   await supabaseAdmin
     .from("program_reviews")
@@ -137,6 +146,7 @@ export async function publishReview(formData: FormData) {
 }
 
 export async function rejectReview(formData: FormData) {
+  await requireAdmin();
   if (!supabaseAdmin) return;
   // 지우지 않고 상태만 바꾼다. 왜 안 올렸는지 나중에 확인할 수 있어야 한다.
   await supabaseAdmin
@@ -147,9 +157,11 @@ export async function rejectReview(formData: FormData) {
 }
 
 export async function markApplicationContacted(formData: FormData) {
+  await requireAdmin();
   await setStatus("applications", String(formData.get("id")), "contacted");
 }
 
 export async function markApplicationCompleted(formData: FormData) {
+  await requireAdmin();
   await setStatus("applications", String(formData.get("id")), "completed");
 }

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { communityCategories } from "@/lib/data";
 import { createCommunityPost } from "../actions";
+import { requireAdmin } from "@/lib/admin-auth";
 
-export default function NewCommunityPostPage() {
+export default async function NewCommunityPostPage() {
+  await requireAdmin();
   return (
     <div className="max-w-lg mx-auto space-y-6">
       <Link href="/admin/community" className="text-sm text-neutral-400 hover:text-neutral-600">

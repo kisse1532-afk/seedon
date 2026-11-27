@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { categories } from "@/lib/data";
 import { createProgram } from "../../actions";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export default async function NewProgramPage({
   searchParams,
 }: {
   searchParams: Promise<{ prefill?: string }>;
 }) {
+  await requireAdmin();
   const { prefill } = await searchParams;
 
   return (

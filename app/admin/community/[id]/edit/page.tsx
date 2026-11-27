@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import { communityCategories } from "@/lib/data";
 import { fetchCommunityPost } from "@/lib/queries";
 import { updateCommunityPost } from "../../actions";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export default async function EditCommunityPostPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
   const { id } = await params;
   const post = await fetchCommunityPost(id);
   if (!post) return notFound();

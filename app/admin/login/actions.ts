@@ -2,21 +2,30 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  ADMIN_COOKIE,
+  ADMIN_SESSION_SECONDS,
+  createAdminToken,
+  isAdminConfigured,
+  isAdminPassword,
+} from "@/lib/admin-session";
 
 export async function login(formData: FormData) {
-  const password = formData.get("password");
-  const correct = process.env.ADMIN_PASSWORD || "seedon2026";
+  if (!isAdminConfigured()) {
+    redirect("/admin/login?error=setup");
+  }
 
-  if (password !== correct) {
+  const token = (await isAdminPassword(formData.get("password"))) ? await createAdminToken() : null;
+  if (!token) {
     redirect("/admin/login?error=1");
   }
 
   const cookieStore = await cookies();
-  cookieStore.set("seedon_admin", "ok", {
+  cookieStore.set(ADMIN_COOKIE, token, {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: ADMIN_SESSION_SECONDS,
     path: "/",
   });
 

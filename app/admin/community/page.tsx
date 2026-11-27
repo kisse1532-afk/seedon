@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { fetchAllCommunityPosts } from "@/lib/queries";
 import { deleteCommunityPost, togglePublishCommunityPost } from "./actions";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export default async function AdminCommunityPage() {
+  await requireAdmin();
   const posts = await fetchAllCommunityPosts();
 
   return (
