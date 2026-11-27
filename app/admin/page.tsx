@@ -4,6 +4,7 @@ import { fetchAllPrograms, fetchReports } from "@/lib/queries";
 import { fetchHelpRequests, fetchEventStats, fetchApplications, fetchPendingReviews, fetchCardReach, fetchCardFunnel, fetchDailyCounts } from "@/lib/queries-admin";
 import { hasAdminKey } from "@/lib/supabase-admin";
 import { deleteProgram, dismissReport, logout, markHelpRequestContacted, markHelpRequestCompleted, markApplicationContacted, markApplicationCompleted, publishReview, rejectReview } from "./actions";
+import { requireAdmin } from "@/lib/admin-auth";
 
 function isStale(dateStr?: string) {
   if (!dateStr) return false;
@@ -16,6 +17,7 @@ export default async function AdminPage({
 }: {
   searchParams: Promise<{ status?: string; category?: string; q?: string }>;
 }) {
+  await requireAdmin();
   const { status, category, q } = await searchParams;
 
   const [programs, reports, helpRequests, eventStats, applications, pendingReviews, cardReach, cardFunnel, dailyCounts] = await Promise.all([

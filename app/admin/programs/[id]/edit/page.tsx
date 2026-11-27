@@ -3,12 +3,14 @@ import { notFound } from "next/navigation";
 import { categories } from "@/lib/data";
 import { fetchProgram } from "@/lib/queries";
 import { updateProgram } from "../../../actions";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export default async function EditProgramPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await requireAdmin();
   const { id } = await params;
   const program = await fetchProgram(id);
   if (!program) return notFound();

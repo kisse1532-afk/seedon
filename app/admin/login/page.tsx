@@ -22,7 +22,11 @@ export default async function AdminLoginPage({
           className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
         {error && (
-          <p className="text-xs text-red-500">비밀번호가 맞지 않아요.</p>
+          <p className="text-xs text-red-500">
+            {error === "setup"
+              ? "서버 설정이 아직 덜 됐어요. Vercel 환경변수 ADMIN_PASSWORD와 ADMIN_SESSION_SECRET(32자 이상)을 확인해주세요."
+              : "비밀번호가 맞지 않아요."}
+          </p>
         )}
         <button
           type="submit"
