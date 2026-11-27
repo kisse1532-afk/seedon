@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { categories, type Category } from "@/lib/data";
 import { GRADE_VALUES, type Grade } from "@/lib/alerts/options";
-import { NOTICE_SYSTEM_PROMPT } from "@/lib/alerts/notice-prompt";
+import { NOTICE_SYSTEM_PROMPT, noticeContent } from "@/lib/alerts/notice-prompt";
 import { cleanDraft, isRealDate, type NoticeDraft } from "@/lib/alerts/notice";
 
 /**
@@ -46,19 +46,7 @@ export async function draftFromNotice(input: {
 }): Promise<AiDraft | null> {
   if (!process.env.ANTHROPIC_API_KEY) return null;
 
-  const content: Anthropic.ContentBlockParam[] = [];
-  if (input.pdfBase64) {
-    content.push({
-      type: "document",
-      source: { type: "base64", media_type: "application/pdf", data: input.pdfBase64 },
-    });
-  }
-  content.push({
-    type: "text",
-    text: `오늘은 ${input.today}이에요. 아래 공문·공고로 초안을 만들어주세요.\n\n<공문>\n${
-      input.text || "(첨부한 PDF를 읽어주세요)"
-    }\n</공문>`,
-  });
+  const content = noticeContent(input);
 
   try {
     const client = new Anthropic({ timeout: 50_000, maxRetries: 0 });

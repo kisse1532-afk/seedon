@@ -105,7 +105,7 @@ export function parseRegions(raw: string): { regions: string[]; unknown: string[
 }
 
 /** 절대규칙 1·3: 화면에 나가면 안 되는 말. 걸리면 게시를 막는다. */
-const BLOCKED = /저소득|지원\s*대상자|취약\s*계층|결손\s*가정|차상위|수급자|중위\s*소득|소득\s*인정액/g;
+const BLOCKED = /저소득|지원\s*대상자|취약\s*계층|결손\s*가정|차상위|수급자|중위\s*소득|소득\s*인정액|게시판/g;
 /** 풀어 쓰는 게 좋은 행정 말. 막지는 않고 알려만 준다. */
 const HARD = /가구원|산정|선정|의뢰서|배분\s*신청|이수|연계/g;
 
