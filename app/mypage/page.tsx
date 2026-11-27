@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { loadBookmarks, onBookmarksChange, clearLocalBookmarks } from "@/lib/bookmarks";
 import MyInfo from "./MyInfo";
+import UnreadCount from "@/app/alerts/UnreadCount";
 import { SeedonSymbol } from "@/app/_components/Logo";
 import { loadMyProfile } from "@/lib/consent";
 import { emailToUsername } from "@/lib/username";
@@ -120,6 +121,19 @@ export default function MyPage() {
           className="flex items-center justify-between rounded-2xl border border-sage-border bg-white p-4 text-sm font-bold text-ink hover:border-primary/40"
         >
           <span>나에게 맞는 기회</span>
+          <span className="text-sage-border">›</span>
+        </Link>
+      )}
+
+      {loggedIn && (
+        <Link
+          href="/alerts/inbox"
+          className="flex items-center justify-between rounded-2xl border border-sage-border bg-white p-4 text-sm font-bold text-ink hover:border-primary/40"
+        >
+          <span>
+            알림함
+            <UnreadCount />
+          </span>
           <span className="text-sage-border">›</span>
         </Link>
       )}

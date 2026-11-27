@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { startOperatorSession } from "@/lib/alerts/operator-session";
 
 export async function login(formData: FormData) {
   const password = formData.get("password");
@@ -19,6 +20,8 @@ export async function login(formData: FormData) {
     maxAge: 60 * 60 * 24 * 7,
     path: "/",
   });
+
+  await startOperatorSession();
 
   redirect("/admin");
 }
