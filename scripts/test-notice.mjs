@@ -35,6 +35,14 @@ test("낙인 말과 중위소득은 막는다", () => {
     assert.ok(errors({ who: `${word} 학생` }).length, word);
   }
 });
+test("「게시판」과 「수급자」는 어느 칸에 있어도 게시를 막는다", () => {
+  for (const word of ["게시판", "수급자"]) {
+    for (const field of ["title", "org", "description", "who", "applyMethod", "phone"]) {
+      const found = errors({ [field]: `학교 ${word} 확인` });
+      assert.ok(found.some((e) => e.includes(word)), `${field}: ${word}`);
+    }
+  }
+});
 test("어려운 행정 말은 알려만 준다", () => {
   const d = cleanDraft({ ...good, applyMethod: "의뢰서를 내요." });
   assert.deepEqual(hardWords(d), ["의뢰서"]);
