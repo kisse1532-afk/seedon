@@ -132,8 +132,16 @@ export async function aiRecommend(q: string, programs: Program[]): Promise<AiRes
       // 낙인·판정 문장은 이유만 지운다. 카드는 그대로 보여준다
       .map((p) => (BANNED.test(p.reason) ? { ...p, reason: "" } : p));
     return { crisis: parsed.crisis, picks };
-  } catch {
+  } catch (err) {
     // 어떤 실패든 화면을 막지 않는다. 기존 방식이 받아준다
+    // 2026.10.20: 키를 넣었는데 AI가 안 돌아서 이유를 볼 수 없었다 → 실패 이유만 남긴다.
+    // 상태 번호·오류 종류·메시지만 적는다. 키 값과 청소년이 적은 글은 남기지 않는다.
+    const e = err as { status?: number; error?: { error?: { type?: string; message?: string } }; message?: string };
+    console.error("[recommend-ai] AI 호출 실패", {
+      status: e?.status ?? null,
+      type: e?.error?.error?.type ?? null,
+      message: (e?.error?.error?.message ?? e?.message ?? "").slice(0, 300),
+    });
     return null;
   }
 }
