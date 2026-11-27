@@ -1,0 +1,9 @@
+# 2026-10-19 평일 기관 채우기 — 주거(자립지원전담기관·쉼터) 칸 보강. 실장이 크롬으로 연 주소만.
+# 형식: 이름 | 종류 | 지역 | 대문주소 | 공고주소 | 칸 | 메모
+광주자립지원전담기관 | 공공 | 광주 | https://www.gjjarip.or.kr | https://www.gjjarip.or.kr/board/board.php?b_id=8 | 주거,경제·생활비 | 실장 크롬 확인 (2026-10-19) · 자립생활관·역량강화교육 신청 게시판도 있음
+전남자립지원전담기관 | 공공 | 전남 | https://www.jnjarip.or.kr | https://www.jnjarip.or.kr/bbs/board.php?bo_table=tl_notice | 주거,경제·생활비 | 실장 크롬 확인 (2026-10-19) · 프로그램 신청 게시판 있음
+대전광역시자립지원전담기관 | 공공 | 대전 | https://www.djjarip.or.kr |  | 주거,경제·생활비 | 실장 크롬 확인 (2026-10-19) · 공지 게시판 주소는 못 찾음(메뉴가 스크립트)
+강원특별자치도자립지원전담기관 | 공공 | 강원 | https://gwjarip.or.kr | https://gwjarip.or.kr/notice | 주거,경제·생활비 | 실장 크롬 확인 (2026-10-19) · 교육·프로그램 신청 게시판 있음
+굿네이버스 전북특별자치도자립지원전담기관 | 공공 | 전북 | https://jbjarip.gnk.or.kr | https://jbjarip.gnk.or.kr/gnjbjarip/board/cd103101100/default | 주거,경제·생활비 | 실장 크롬 확인 (2026-10-19) · 굿네이버스 위탁
+경상북도자립지원전담기관 | 공공 | 경북 | https://www.kbjarip.or.kr |  | 주거,경제·생활비 | 실장 크롬 확인 (2026-10-19) · 공지 게시판 주소는 못 찾음
+시립금천여자단기청소년쉼터 | 공공 | 서울 | https://www.youthzone.or.kr | https://www.youthzone.or.kr/y41 | 주거 | 실장 크롬 확인 (2026-10-19) · 여자 청소년 단기 쉼터
