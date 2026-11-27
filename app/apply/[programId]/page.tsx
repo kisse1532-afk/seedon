@@ -11,6 +11,7 @@ import ApplySteps from "./ApplySteps";
 import HelpChatbot from "./HelpChatbot";
 import Reviews from "./Reviews";
 import CardReportButton from "./CardReportButton";
+import NoticeFacts from "./NoticeFacts";
 import { submitCardReport } from "./report-actions";
 import TrackPageView from "@/app/_components/TrackPageView";
 import { OG_IMAGE_PATH, OG_ALT } from "@/lib/og-card";
@@ -105,6 +106,8 @@ export default async function ApplyPage({
         <p className="text-xs text-meta">{program.org}</p>
         <p className="text-sm leading-relaxed text-body">{program.description}</p>
       </div>
+
+      <NoticeFacts program={program} />
 
       {program.apply_steps && <ApplySteps steps={program.apply_steps} />}
 
