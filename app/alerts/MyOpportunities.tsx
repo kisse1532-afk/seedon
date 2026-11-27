@@ -8,6 +8,7 @@ import { kstToday } from "@/lib/alerts/options";
 import { dDay, forStudent } from "@/lib/alerts/match";
 import { loadSettings } from "@/lib/alerts/settings";
 import StudentGate from "./StudentGate";
+import UnreadCount from "./UnreadCount";
 
 export default function MyOpportunities() {
   return <StudentGate>{(student) => <List userId={student.userId} />}</StudentGate>;
@@ -46,9 +47,15 @@ function List({ userId }: { userId: string }) {
     <div className="mx-auto max-w-md space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-extrabold tracking-tight text-ink">나에게 맞는 기회</h1>
-        <Link href="/alerts/settings" className="text-xs font-semibold text-primary-deep hover:underline">
-          맞춤 설정
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/alerts/inbox" className="text-xs font-semibold text-primary-deep hover:underline">
+            알림함
+            <UnreadCount />
+          </Link>
+          <Link href="/alerts/settings" className="text-xs font-semibold text-primary-deep hover:underline">
+            맞춤 설정
+          </Link>
+        </div>
       </div>
 
       {view.state === "loading" && <p className="py-10 text-center text-sm text-ink-60">찾고 있어요…</p>}

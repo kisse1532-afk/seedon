@@ -1,4 +1,7 @@
 import type { Program } from "@/lib/data";
+import { kstToday } from "@/lib/alerts/options";
+import { isShareable, shareClosed, shareMessage } from "@/lib/alerts/share";
+import ShareWithAdult from "./ShareWithAdult";
 
 /**
  * 「맞춤 알림」 카드에만 붙는 칸 — 마감, 누가, 추천, 확인한 날짜.
@@ -11,7 +14,8 @@ const day = (iso: string) => {
   return `${y}년 ${m}월 ${d}일`;
 };
 
-export default function NoticeFacts({ program }: { program: Program }) {
+/** forAdult: 어른에게 보낸 화면(/share)에서는 학생에게 하는 말과 보내기 버튼을 뺀다. */
+export default function NoticeFacts({ program, forAdult = false }: { program: Program; forAdult?: boolean }) {
   if (!program.target_grades?.length) return null;
 
   return (
@@ -26,11 +30,14 @@ export default function NoticeFacts({ program }: { program: Program }) {
           <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-body">{program.who_text}</p>
         </details>
       )}
-      {program.needs_recommendation && (
+      {program.needs_recommendation && !forAdult && (
         <p className="rounded-xl bg-mint px-3.5 py-2.5 text-xs leading-relaxed text-body">
           어른의 추천이 필요해요. 나를 아는 선생님께 &ldquo;이거 신청하고 싶은데 추천해주실 수 있어요?&rdquo;라고
           말해보세요.
         </p>
+      )}
+      {!forAdult && isShareable(program) && !shareClosed(program, kstToday()) && (
+        <ShareWithAdult programId={program.id} message={shareMessage(program)} />
       )}
       {program.last_verified_at && <p className="text-xs text-meta">확인한 날짜 {day(program.last_verified_at)}</p>}
     </div>

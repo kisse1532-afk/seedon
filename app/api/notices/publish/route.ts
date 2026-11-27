@@ -1,9 +1,10 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getUploader } from "@/lib/alerts/uploader";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { checkDraft, cleanDraft, toProgramRow, MAX_SOURCE_CHARS } from "@/lib/alerts/notice";
 import { kstToday } from "@/lib/alerts/options";
+import { notifyPublished } from "@/lib/alerts/notify";
 
 const fail = (message: string, status: number, errors: string[] = []) =>
   NextResponse.json({ error: message, errors }, { status });
@@ -69,5 +70,7 @@ export async function POST(request: Request) {
   await supabaseAdmin.from("notices").update({ program_id: programId }).eq("id", noticeId);
 
   revalidatePath("/", "layout");
+  // 알림은 응답을 보낸 뒤에 만든다. 실패해도 게시는 그대로다.
+  after(() => notifyPublished(programId));
   return NextResponse.json({ programId });
 }
