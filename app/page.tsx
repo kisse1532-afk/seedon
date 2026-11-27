@@ -64,7 +64,7 @@ const trustPoints = [
   },
   {
     title: "최소한만",
-    body: "소득·가정 상황 안 물어봐요",
+    body: "소득 금액·증명서 안 받아요",
     icon: (
       <>
         <rect x="4.6" y="10.4" width="14.8" height="9.2" rx="2.2" />
