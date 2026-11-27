@@ -51,3 +51,15 @@ test("관리자 조회 함수는 로그인을 먼저 확인한다", () => {
   }
   assert.match(readFileSync(join(root, "lib/admin-db.ts"), "utf8"), /await requireAdmin\(\);\s+if \(!supabaseAdmin\)/);
 });
+
+/* 마이그레이션이 넓은 정책을 다시 만들지 않는지. */
+test("마이그레이션은 제보 넣기 정책 하나만 만든다", () => {
+  const sql = readFileSync(join(root, "supabase/migrations/20261128_lock_public_writes.sql"), "utf8")
+    .replace(/--.*$/gm, "");
+  assert.equal(sql.match(/drop policy if exists/g).length, 12);
+  const created = [...sql.matchAll(/create policy "([^"]+)" on public\.(\w+)\s+for (\w+)/g)].map((m) => m.slice(1));
+  assert.deepEqual(created, [["public can submit pending report", "reports", "insert"]]);
+  for (const kept of ["public read published programs", "community_posts_select_published"]) {
+    assert.ok(!sql.includes(kept), kept);
+  }
+});

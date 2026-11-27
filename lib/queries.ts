@@ -63,7 +63,7 @@ export async function fetchPublishedPrograms(): Promise<Program[]> {
   return data as Program[];
 }
 
-// --- 상태로 거르지 않은 전체 조회 (검색 화면이 쓴다. 관리자 화면은 queries-admin.ts) ---
+// --- 검색 화면용. 공개 키라 게시된 카드만 온다 (관리자 화면은 queries-admin.ts) ---
 export async function fetchAllPrograms() {
   const { data, error } = await supabase
     .from("programs")
