@@ -93,6 +93,8 @@ export default async function AdminPage({
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-bold">관리자 대시보드</h1>
         <div className="flex items-center gap-3">
+          <Link href="/notices" className="text-xs text-sky-600 hover:underline">공문 올리기</Link>
+          <Link href="/admin/teachers" className="text-xs text-sky-600 hover:underline">선생님 초대</Link>
           <Link href="/admin/community" className="text-xs text-sky-600 hover:underline">커뮤니티 관리</Link>
           <form action={logout}>
             <button className="text-xs text-neutral-400 hover:text-neutral-600">

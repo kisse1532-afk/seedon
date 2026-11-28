@@ -104,6 +104,7 @@ export async function logout() {
   const { cookies } = await import("next/headers");
   const cookieStore = await cookies();
   cookieStore.delete("seedon_admin");
+  cookieStore.delete("seedon_operator");
   redirect("/admin/login");
 }
 
