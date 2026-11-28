@@ -182,8 +182,8 @@ export default function NoticeTool() {
 
       <div className={card}>
         <p className="rounded-xl bg-sos-tile px-3.5 py-2.5 text-xs leading-relaxed text-sos-ink">
-          학생 이름·연락처·명단이 든 문서는 올리지 마세요. 넣은 글과 PDF는 씨드온에 보관되고, 초안을 만들 때 AI
-          회사(Anthropic) 서버로 보내요.
+          학생 이름·연락처·명단이 든 문서는 올리지 마세요. 넣은 글과 PDF는 초안을 만들 때 AI
+          회사(Anthropic) 서버로 보내요. 씨드온은 게시하고 30일(게시하지 않으면 올리고 30일) 뒤에 지워요.
         </p>
         <label className="block space-y-1">
           <span className="text-xs font-semibold text-ink-60">공문 글 붙여넣기</span>

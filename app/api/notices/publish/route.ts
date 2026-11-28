@@ -58,6 +58,10 @@ export async function POST(request: Request) {
   if (claimError) return fail(notReady, 503);
   if (!claimed?.length) return fail("이미 게시했거나 찾을 수 없는 공문이에요.", 409);
 
+  // 30일이 지나 이미 비운 초안을 뒤늦게 게시하면 방금 넣은 draft가 남는다.
+  // 표시를 되돌려서 게시 30일 뒤에 다시 비우게 한다.
+  await supabaseAdmin.from("notices").update({ source_purged_at: null }).eq("id", noticeId);
+
   const programId = `alert-${today.replaceAll("-", "")}-${crypto.randomUUID().slice(0, 8)}`;
   const { error } = await supabaseAdmin
     .from("programs")

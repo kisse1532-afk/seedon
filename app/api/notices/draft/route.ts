@@ -56,8 +56,11 @@ export async function POST(request: Request) {
       })
       .select("id")
       .single();
-    if (error) warnings.push("원문을 보관하지 못했어요. 게시가 안 되면 씨드온에 알려주세요.");
-    else noticeId = data.id;
+    if (error) {
+      warnings.push("원문을 보관하지 못했어요. 게시가 안 되면 씨드온에 알려주세요.");
+      // 기록이 없는 파일은 30일 삭제 작업이 못 찾는다. 바로 치운다.
+      if (filePath) await supabaseAdmin.storage.from("notice-files").remove([filePath]);
+    } else noticeId = data.id;
   } else {
     warnings.push("서버 설정이 덜 돼서 지금은 게시할 수 없어요.");
   }
