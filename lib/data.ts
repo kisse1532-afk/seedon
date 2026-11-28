@@ -60,6 +60,18 @@ export type Program = {
    * 섞여 나온다. 그때 멀쩡한 것처럼 보여주면 청소년이 헛걸음한다.
    */
   status?: "published" | "pending" | "rejected";
+  /* 「맞춤 알림」 대상 조건 (supabase/migrations/20261128_custom_alerts.sql).
+     마이그레이션을 적용하기 전에는 값이 아예 없다. */
+  /** 'm1'~'h3'. 비어 있으면 맞춤 알림 대상이 아닌 카드다. */
+  target_grades?: string[] | null;
+  /** 비어 있으면 전국. '경기' 또는 '경기 수원시' 모양. */
+  target_regions?: string[] | null;
+  /** 비어 있으면 category를 관심 분야로 본다. */
+  target_interests?: string[] | null;
+  /** 목록 순서에만 쓴다. 화면에 라벨로 보여주지 않는다(절대규칙 1·2). */
+  edu_benefit_priority?: boolean;
+  needs_recommendation?: boolean;
+  who_text?: string | null;
 };
 
 /**
